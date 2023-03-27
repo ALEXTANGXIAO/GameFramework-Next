@@ -54,7 +54,7 @@ namespace GameFramework.Resource
             {
                 if (_cacheData.TryGetValue(filePath, out bool result) == false)
                 {
-                    result = CurrentActivity.Call<bool>("checkAssetExist", filePath);
+                    result = CurrentActivity.Call<bool>("CheckAssetExist", filePath);
                     _cacheData.Add(filePath, result);
                 }
 
