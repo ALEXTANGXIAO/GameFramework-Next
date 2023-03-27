@@ -89,7 +89,7 @@ MonoBehaviour:
   m_MinUnloadUnusedAssetsInterval: 60
   m_MaxUnloadUnusedAssetsInterval: 300
   PackageName: DefaultPackage
-  PlayMode: 2
+  PlayMode: 0
   VerifyLevel: 1
   m_ReadWritePathType: 0
   Milliseconds: 30
@@ -1466,7 +1466,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 750, y: 1330}
+  m_ReferenceResolution: {x: 1170, y: 2532}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3

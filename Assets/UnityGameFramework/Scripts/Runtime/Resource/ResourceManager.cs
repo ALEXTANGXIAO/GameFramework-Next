@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityGameFramework.Resource;
 using UnityGameFramework.Runtime;
 using YooAsset;
 
@@ -45,6 +47,16 @@ namespace GameFramework.Resource
         /// 实例化的根节点。
         /// </summary>
         public Transform InstanceRoot { get; set; }
+        
+        /// <summary>
+        /// 资源生命周期服务器。
+        /// </summary>
+        public ResourceHelper ResourceHelper { get; set; }
+        
+        /// <summary>
+        /// Propagates notification that operations should be canceled.
+        /// </summary>
+        public CancellationToken CancellationToken { get; set; }
 
         /// <summary>
         /// 资源服务器地址。
@@ -135,6 +147,8 @@ namespace GameFramework.Resource
                 defaultPackage = YooAssets.CreatePackage(packageName);
                 YooAssets.SetDefaultPackage(defaultPackage);
             }
+            ResourceHelper = InstanceRoot.gameObject.AddComponent<ResourceHelper>();
+            CancellationToken = ResourceHelper.GetCancellationTokenOnDestroy();
         }
 
         #region 设置接口
@@ -396,7 +410,7 @@ namespace GameFramework.Resource
 
         public async UniTask<TObject> LoadAsync<TObject>(string location) where TObject : UnityEngine.Object
         {
-            var assetPackage =  YooAssets.TryGetPackage("DefaultPackage");
+            var assetPackage =  YooAssets.TryGetPackage(PackageName);
             
             var handle = assetPackage.LoadAssetAsync<TObject>(location);
 
@@ -428,7 +442,7 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Load asset callbacks is invalid.");
             }
             
-            var assetPackage =  YooAssets.TryGetPackage("DefaultPackage");
+            var assetPackage =  YooAssets.TryGetPackage(PackageName);
             
             AssetInfo assetInfo = assetPackage.GetAssetInfo(assetName);
 
@@ -457,8 +471,7 @@ namespace GameFramework.Resource
                 handleBase = assetPackage.LoadAssetAsync(assetName, assetType);
             }
             
-            await handleBase.ToUniTask();
-
+            await handleBase.ToUniTask(ResourceHelper);
 
             if (isRawResource)
             {
@@ -550,7 +563,7 @@ namespace GameFramework.Resource
 
             OperationHandleBase handleBase;
 
-            bool isRawResource = assetInfo.IsInvalid == false;
+            bool isRawResource = assetInfo.IsInvalid;
             
             if (isRawResource)
             {
@@ -561,7 +574,7 @@ namespace GameFramework.Resource
                 handleBase = assetPackage.LoadAssetAsync(assetInfo);
             }
             
-            await handleBase.ToUniTask();
+            await handleBase.ToUniTask(ResourceHelper);
 
 
             if (isRawResource)

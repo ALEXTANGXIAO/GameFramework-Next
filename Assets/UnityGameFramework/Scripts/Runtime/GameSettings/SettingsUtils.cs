@@ -172,7 +172,7 @@ public static class SettingsUtils
         return "Android";
 #elif UNITY_IOS
         return "IOS";
-#endif
+#else
         switch (Application.platform)
         {
             case RuntimePlatform.WindowsEditor:
@@ -193,6 +193,7 @@ public static class SettingsUtils
                 throw new System.NotSupportedException(string.Format("Platform '{0}' is not supported.",
                     Application.platform.ToString()));
         }
+#endif
     }
     
     public static string GetConfigAsset(string assetName)
