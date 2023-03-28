@@ -77,6 +77,11 @@ namespace UnityGameFramework.Runtime
             m_SettingManager.Save();
         }
 
+        private void OnDestroy()
+        {
+            m_SettingManager.Save();
+        }
+
         /// <summary>
         /// 获取所有游戏配置项的名称。
         /// </summary>
