@@ -609,7 +609,6 @@ namespace GameFramework.Resource
             
             await handleBase.ToUniTask(ResourceHelper);
 
-
             if (isRawResource)
             {
                 RawFileOperationHandle handle = (RawFileOperationHandle)handleBase;
@@ -734,7 +733,7 @@ namespace GameFramework.Resource
 
             SceneOperationHandle handle = YooAssets.LoadSceneAsync(sceneAssetName,LoadSceneMode.Single,activateOnLoad:true,priority:priority);
 
-            await handle.ToUniTask();
+            await handle.ToUniTask(ResourceHelper);
             
             if (loadSceneCallbacks.LoadSceneSuccessCallback != null)
             {
