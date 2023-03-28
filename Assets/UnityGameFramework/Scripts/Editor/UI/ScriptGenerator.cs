@@ -56,6 +56,9 @@ public class ScriptGenerator
 
             if (includeListener)
             {
+#if ENABLE_TEXTMESHPRO
+                strFile.Append("namespace TMPro\n");
+#endif
                 strFile.Append("using UnityEngine;\n");
                 strFile.Append("using UnityEngine.UI;\n");
                 strFile.Append("using UnityGameFramework.Runtime;\n\n");
@@ -163,6 +166,9 @@ public class ScriptGenerator
         {"m_curve","AnimationCurve"},
         {"m_fightWidget","CommonFightWidget"},
         {"m_canvasGroup","CanvasGroup"},
+#if ENABLE_TEXTMESHPRO
+        {"m_tmp","TextMeshProUGUI"},
+#endif
     };
 
     private static void WriteScript(Transform root, Transform child, ref StringBuilder strVar, ref StringBuilder strBind, ref StringBuilder strOnCreate, ref StringBuilder strCallback, bool isActorName)
