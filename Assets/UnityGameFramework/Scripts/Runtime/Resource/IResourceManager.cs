@@ -148,6 +148,39 @@ namespace GameFramework.Resource
         /// 强制回收所有资源
         /// </summary>
         void ForceUnloadAllAssets();
+
+        /// <summary>
+        /// 同步加载资源。
+        /// </summary>
+        /// <param name="assetName">要加载资源的名称。</param>
+        /// <typeparam name="T">要加载资源的类型。</typeparam>
+        /// <returns>资源实例。</returns>
+        T LoadAsset<T>(string assetName) where T : UnityEngine.Object;
+        
+        /// <summary>
+        /// 同步加载资源。
+        /// </summary>
+        /// <param name="assetName">要加载资源的名称。</param>
+        /// <param name="parent">父节点位置。</param>
+        /// <typeparam name="T">要加载资源的类型。</typeparam>
+        /// <returns>资源实例。</returns>
+        T LoadAsset<T>(string assetName,Transform parent) where T : UnityEngine.Object;
+        
+        /// <summary>
+        /// 异步加载资源并获取句柄。
+        /// </summary>
+        /// <param name="assetName">要加载资源的名称。</param>
+        /// <typeparam name="T">要加载资源的类型。</typeparam>
+        /// <returns>同步加载资源句柄。</returns>
+        AssetOperationHandle LoadAssetAsync<T>(string assetName) where T : UnityEngine.Object;
+        
+        /// <summary>
+        /// 同步加载资源并获取句柄。
+        /// </summary>
+        /// <param name="assetName">要加载资源的名称。</param>
+        /// <typeparam name="T">要加载资源的类型。</typeparam>
+        /// <returns>同步加载资源句柄。</returns>
+        AssetOperationHandle LoadAssetGetOperation<T>(string assetName) where T : UnityEngine.Object;
         
         /// <summary>
         /// 异步加载资源。

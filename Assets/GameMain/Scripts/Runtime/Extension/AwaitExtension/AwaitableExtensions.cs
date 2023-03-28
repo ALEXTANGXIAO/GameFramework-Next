@@ -247,7 +247,7 @@ namespace UGFExtensions.Await
             Task<T>[] tasks = new Task<T>[assets.Length];
             for (int i = 0; i < tasks.Length; i++)
             {
-                tasks[i] = resourceComponent.LoadAssetAsync<T>(assetName[i]);
+                tasks[i] = AwaitableExtensions.LoadAssetAsync<T>(resourceComponent,assetName[i]);
             }
 
             await Task.WhenAll(tasks);

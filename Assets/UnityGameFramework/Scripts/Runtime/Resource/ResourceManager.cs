@@ -51,12 +51,12 @@ namespace GameFramework.Resource
         /// <summary>
         /// 资源生命周期服务器。
         /// </summary>
-        public ResourceHelper ResourceHelper { get; set; }
+        public ResourceHelper ResourceHelper { get;private set; }
         
         /// <summary>
         /// Propagates notification that operations should be canceled.
         /// </summary>
-        public CancellationToken CancellationToken { get; set; }
+        public CancellationToken CancellationToken { get;private set; }
 
         /// <summary>
         /// 资源服务器地址。
@@ -223,14 +223,6 @@ namespace GameFramework.Resource
             }
 
             return initializationOperation;
-            // {
-            //     _machine.ChangeState<FsmUpdateVersion>();
-            // }
-            // else
-            // {
-            //     Log.Warning($"{initializationOperation.Error}");
-            //     PatchEventDefine.InitializeFailed.SendEventMessage();
-            // }
         }
 
         internal override void Update(float elapseSeconds, float realElapseSeconds)
@@ -388,7 +380,48 @@ namespace GameFramework.Resource
             return YooAssets.LoadAssetAsync(location, type);
         }
 
-    
+        /// <summary>
+        /// 同步加载资源并获取句柄。
+        /// </summary>
+        /// <param name="location">要加载资源的名称。</param>
+        /// <typeparam name="T">要加载资源的类型。</typeparam>
+        /// <returns>同步加载资源句柄。</returns>
+        public AssetOperationHandle LoadAssetGetOperation<T>(string location) where T : UnityEngine.Object
+        {
+            var handle = LoadAssetSync<T>(location);
+
+            return handle;
+        }
+        
+        /// <summary>
+        /// 同步加载资源对象。
+        /// </summary>
+        /// <param name="location">资源的定位地址。</param>
+        /// <typeparam name="T">资源类型。</typeparam>
+        /// <returns>资源实例。</returns>
+        public T LoadAsset<T>(string location) where T : UnityEngine.Object
+        {
+            var assetPackage =  YooAssets.TryGetPackage(PackageName);
+            
+            AssetInfo assetInfo = assetPackage.GetAssetInfo(location);
+
+            if (assetInfo == null)
+            {
+                string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", location);
+
+                throw new GameFrameworkException(errorMessage);
+            }
+
+            var handle = LoadAssetSync<T>(location);
+
+            if (typeof(T) == typeof(UnityEngine.GameObject))
+            {
+                return handle.InstantiateSync() as T;
+            }
+
+            return handle.AssetObject as T;
+        }
+        
         /// <summary>
         /// 同步加载资源对象。
         /// </summary>
@@ -396,7 +429,7 @@ namespace GameFramework.Resource
         /// <param name="parent">父节点。</param>
         /// <typeparam name="TObject">资源类型。</typeparam>
         /// <returns>资源实例。</returns>
-        public TObject Load<TObject>(string location,Transform parent = null) where TObject : UnityEngine.Object
+        public TObject LoadAsset<TObject>(string location,Transform parent) where TObject : UnityEngine.Object
         {
             var handle = LoadAssetSync<TObject>(location);
 
@@ -414,7 +447,7 @@ namespace GameFramework.Resource
             
             var handle = assetPackage.LoadAssetAsync<TObject>(location);
 
-            await handle.ToUniTask();
+            await handle.ToUniTask(ResourceHelper);
 
             return handle.AssetObject as TObject;
         }
@@ -545,7 +578,7 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Load asset callbacks is invalid.");
             }
             
-            var assetPackage =  YooAssets.TryGetPackage("DefaultPackage");
+            var assetPackage =  YooAssets.TryGetPackage(PackageName);
             
             AssetInfo assetInfo = assetPackage.GetAssetInfo(assetName);
 
