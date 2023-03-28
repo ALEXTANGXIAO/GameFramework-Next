@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace UnityGameFramework.Editor
@@ -18,6 +19,22 @@ namespace UnityGameFramework.Editor
                 string assetPath = AssetDatabase.GetAssetPath(selObj);
                 EditorGUIUtility.systemCopyBuffer = assetPath;
                 Debug.Log($"Asset path is {assetPath}");
+            }
+        }
+        
+        [MenuItem("Assets/Get Addressable Path", priority = 3)]
+        static void GetAddressablePath()
+        {
+            UnityEngine.Object selObj = Selection.activeObject;
+
+            if (selObj != null)
+            {
+                string assetPath = AssetDatabase.GetAssetPath(selObj);
+                var split = assetPath.Split('/');
+                var name = split.Last();
+                assetPath = name.Split('.').First();
+                EditorGUIUtility.systemCopyBuffer = assetPath;
+                Debug.Log($"Addressable path is {assetPath}");
             }
         }
     }
