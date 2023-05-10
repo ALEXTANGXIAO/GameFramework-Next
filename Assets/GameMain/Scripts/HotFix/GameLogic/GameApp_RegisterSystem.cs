@@ -5,7 +5,7 @@ public partial class GameApp
 {
     private List<ILogicSys> _listLogicMgr;
     
-    private void Init()
+    private void InitSystem()
     {
         _listLogicMgr = new List<ILogicSys>();
         RegisterAllSystem();

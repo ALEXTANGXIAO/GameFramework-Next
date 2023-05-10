@@ -6,7 +6,7 @@ using GameFramework.Fsm;
 using GameFramework.Procedure;
 using GameFramework.Resource;
 
-#if HybridCLR_Enable
+#if ENABLE_HYBRIDCLR
 using HybridCLR;
 #endif
 using UnityEngine;
@@ -125,7 +125,7 @@ namespace GameMain
                 Log.Fatal($"Main logic assembly missing.");
                 return;
             }
-            var appType = m_MainLogicAssembly.GetType("GameMain");
+            var appType = m_MainLogicAssembly.GetType("GameApp");
             if (appType == null)
             {
                 Log.Fatal($"Main logic type 'GameMain' missing.");
@@ -141,7 +141,7 @@ namespace GameMain
             entryMethod.Invoke(appType, objects);
             ChangeState<ProcedureStartGame>(m_procedureOwner);
         }
-
+ 
         private Assembly GetMainLogicAssembly()
         {
             Assembly mainLogicAssembly = null;
@@ -278,7 +278,7 @@ namespace GameMain
                 byte[] dllBytes = textAsset.bytes;
                 fixed (byte* ptr = dllBytes)
                 {
-#if HybridCLR_Enable
+#if ENABLE_HYBRIDCLR
                     // 加载assembly对应的dll，会自动为它hook。一旦Aot泛型函数的native函数不存在，用解释器版本代码
                     HomologousImageMode mode = HomologousImageMode.SuperSet;
                     LoadImageErrorCode err = (LoadImageErrorCode)HybridCLR.RuntimeApi.LoadMetadataForAOTAssembly(dllBytes,mode); 

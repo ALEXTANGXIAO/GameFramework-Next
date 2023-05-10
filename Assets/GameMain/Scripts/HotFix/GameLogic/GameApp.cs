@@ -11,7 +11,7 @@ public partial class GameApp:Singleton<GameApp>
     {
         Log.Warning("======= 看到此条日志代表你成功运行了热更新代码 =======");
         Log.Warning("======= Entrance GameApp =======");
-        Instance.Init();
+        Instance.InitSystem();
         Instance.Start();
         Utility.Unity.AddUpdateListener(Instance.Update);
         Utility.Unity.AddFixedUpdateListener(Instance.FixedUpdate);
