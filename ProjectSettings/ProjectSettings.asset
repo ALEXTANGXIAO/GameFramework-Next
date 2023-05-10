@@ -667,14 +667,15 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLDecompressionFallback: 0
   scriptingDefineSymbols:
-    1: ENABLE_LOG
-    4: ENABLE_LOG
-    7: ENABLE_LOG
-    13: ENABLE_LOG
-    14: ENABLE_LOG
+    1: ENABLE_LOG;ENABLE_HYBRIDCLR
+    4: ENABLE_LOG;ENABLE_HYBRIDCLR
+    7: ENABLE_LOG;ENABLE_HYBRIDCLR
+    13: ENABLE_LOG;ENABLE_HYBRIDCLR
+    14: ENABLE_LOG;ENABLE_HYBRIDCLR
   additionalCompilerArguments: {}
   platformArchitecture: {}
-  scriptingBackend: {}
+  scriptingBackend:
+    Standalone: 1
   il2cppCompilerConfiguration: {}
   managedStrippingLevel: {}
   incrementalIl2cppBuild: {}
@@ -685,10 +686,11 @@ PlayerSettings:
   enableRoslynAnalyzers: 1
   additionalIl2CppArgs: 
   scriptingRuntimeVersion: 1
-  gcIncremental: 1
+  gcIncremental: 0
   assemblyVersionValidation: 1
   gcWBarrierValidation: 0
-  apiCompatibilityLevelPerPlatform: {}
+  apiCompatibilityLevelPerPlatform:
+    Standalone: 3
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: 2D_BuiltInRenderer
