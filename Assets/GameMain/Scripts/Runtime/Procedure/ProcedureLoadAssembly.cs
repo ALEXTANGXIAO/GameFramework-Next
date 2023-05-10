@@ -26,6 +26,7 @@ namespace GameMain
         /// </summary>
         public bool NeedLoadDll => GameModule.Resource.PlayMode == EPlayMode.HostPlayMode || GameModule.Resource.PlayMode == EPlayMode.OfflinePlayMode;
 
+        private bool m_enableAddressable = true;
 
         public override bool UseNativeDialog => true;
         private LoadAssetCallbacks m_LoadAssetCallbacks;
@@ -61,14 +62,19 @@ namespace GameMain
                     m_LoadAssetCallbacks ??= new LoadAssetCallbacks(LoadAssetSuccess, LoadAssetFailure);
                     foreach (var hotUpdateDllName in SettingsUtils.HybridCLRCustomGlobalSettings.HotUpdateAssemblies)
                     {
-                        var assetPath = Utility.Path.GetRegularPath(
-                            Path.Combine(
-                                "Assets",
-                                SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetPath,
-                                $"{hotUpdateDllName}{SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetExtension}"));
-                        Log.Debug($"LoadAsset: [ {assetPath} ]");
+                        var assetLocation = hotUpdateDllName;
+                        if (!m_enableAddressable)
+                        {
+                            assetLocation = Utility.Path.GetRegularPath(
+                                Path.Combine(
+                                    "Assets",
+                                    SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetPath,
+                                    $"{hotUpdateDllName}{SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetExtension}"));
+                        }
+                           
+                        Log.Debug($"LoadAsset: [ {assetLocation} ]");
                         m_LoadAssetCount++;
-                        GameModule.Resource.LoadAssetAsync(assetPath,typeof(UnityEngine.TextAsset), m_LoadAssetCallbacks, hotUpdateDllName);
+                        GameModule.Resource.LoadAssetAsync(assetLocation,typeof(UnityEngine.TextAsset), m_LoadAssetCallbacks, hotUpdateDllName);
                     }
 
                     m_LoadAssemblyWait = true;
@@ -115,11 +121,6 @@ namespace GameMain
         
         private void AllAssemblyLoadComplete()
         {
-            if (GameModule.Resource.PlayMode == EPlayMode.EditorSimulateMode)
-            {
-                ChangeState<ProcedureStartGame>(m_procedureOwner);
-                return;
-            }
             if (m_MainLogicAssembly == null)
             {
                 Log.Fatal($"Main logic assembly missing.");
@@ -243,14 +244,18 @@ namespace GameMain
             m_LoadMetadataAssetCallbacks ??= new LoadAssetCallbacks(LoadMetadataAssetSuccess, LoadMetadataAssetFailure);
             foreach (var aotDllName in SettingsUtils.HybridCLRCustomGlobalSettings.AOTMetaAssemblies)
             {
-                var assetPath = Utility.Path.GetRegularPath(
-                    Path.Combine(
-                        "Assets",
-                        SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetPath, 
-                        $"{aotDllName}{SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetExtension}"));
-                Log.Debug($"LoadMetadataAsset: [ {assetPath} ]");
+                var assetLocation = aotDllName;
+                if (!m_enableAddressable)
+                {
+                    assetLocation = Utility.Path.GetRegularPath(
+                        Path.Combine(
+                            "Assets",
+                            SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetPath,
+                            $"{aotDllName}{SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetExtension}"));
+                }
+                Log.Debug($"LoadMetadataAsset: [ {assetLocation} ]");
                 m_LoadMetadataAssetCount++;
-                GameModule.Resource.LoadAssetAsync(assetPath,typeof(UnityEngine.TextAsset), m_LoadMetadataAssetCallbacks, aotDllName);
+                GameModule.Resource.LoadAssetAsync(assetLocation,typeof(UnityEngine.TextAsset), m_LoadMetadataAssetCallbacks, aotDllName);
             }
             m_LoadMetadataAssemblyWait = true;
         }
