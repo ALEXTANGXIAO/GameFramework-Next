@@ -48,7 +48,7 @@ MonoBehaviour:
     - mscorlib.dll
     - System.dll
     - System.Core.dll
-    LogicMainDllName: GameMain.dll
+    LogicMainDllName: GameLogic.dll
     AssemblyTextAssetExtension: .bytes
-    AssemblyTextAssetPath: GameMain/AssetsHotfix/Assembly
+    AssemblyTextAssetPath: AssetRaw/DLL
     HybridCLRGlobalSettings: Settings/HybridCLRGlobalSettings
