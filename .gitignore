@@ -68,6 +68,9 @@ crashlytics-build.properties
 [Aa]ssets/AATemp/
 [Aa]ssets/AATemp.meta
 
+[Aa]ssets/StreamingAssets/
+[Aa]ssets/StreamingAssets.meta
+
 #Rider
 /.idea/
 
