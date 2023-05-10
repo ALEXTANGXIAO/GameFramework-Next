@@ -493,65 +493,29 @@ namespace GameFramework.Resource
 
             OperationHandleBase handleBase;
 
-            bool isRawResource = assetInfo.IsInvalid == false;
-            
-            if (isRawResource)
-            {
-                handleBase = assetPackage.LoadRawFileAsync(assetInfo);
-            }
-            else
-            {
-                handleBase = assetPackage.LoadAssetAsync(assetName, assetType);
-            }
+            handleBase = assetPackage.LoadAssetAsync(assetName, assetType);
             
             await handleBase.ToUniTask(ResourceHelper);
 
-            if (isRawResource)
+            AssetOperationHandle handle = (AssetOperationHandle)handleBase;
+            if (handle == null || handle.AssetObject == null || handle.Status == EOperationStatus.Failed)
             {
-                RawFileOperationHandle handle = (RawFileOperationHandle)handleBase;
-                if (handle == null || handle.Status == EOperationStatus.Failed)
+                string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", assetName);
+                if (loadAssetCallbacks.LoadAssetFailureCallback != null)
                 {
-                    string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", assetName);
-                    if (loadAssetCallbacks.LoadAssetFailureCallback != null)
-                    {
-                        loadAssetCallbacks.LoadAssetFailureCallback(assetName, LoadResourceStatus.NotReady, errorMessage, userData);
-                        return;
-                    }
+                    loadAssetCallbacks.LoadAssetFailureCallback(assetName, LoadResourceStatus.NotReady, errorMessage, userData);
+                    return;
+                }
 
-                    throw new GameFrameworkException(errorMessage);
-                }
-                else
-                {
-                    if (loadAssetCallbacks.LoadAssetSuccessCallback != null)
-                    {
-                        duration = Time.time - duration;
-                    
-                        loadAssetCallbacks.LoadAssetSuccessCallback(assetName, handle, duration, userData);
-                    }
-                }
+                throw new GameFrameworkException(errorMessage);
             }
             else
             {
-                AssetOperationHandle handle = (AssetOperationHandle)handleBase;
-                if (handle == null || handle.AssetObject == null || handle.Status == EOperationStatus.Failed)
+                if (loadAssetCallbacks.LoadAssetSuccessCallback != null)
                 {
-                    string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", assetName);
-                    if (loadAssetCallbacks.LoadAssetFailureCallback != null)
-                    {
-                        loadAssetCallbacks.LoadAssetFailureCallback(assetName, LoadResourceStatus.NotReady, errorMessage, userData);
-                        return;
-                    }
-
-                    throw new GameFrameworkException(errorMessage);
-                }
-                else
-                {
-                    if (loadAssetCallbacks.LoadAssetSuccessCallback != null)
-                    {
-                        duration = Time.time - duration;
+                    duration = Time.time - duration;
                     
-                        loadAssetCallbacks.LoadAssetSuccessCallback(assetName, handle.AssetObject, duration, userData);
-                    }
+                    loadAssetCallbacks.LoadAssetSuccessCallback(assetName, handle.AssetObject, duration, userData);
                 }
             }
         }
@@ -596,65 +560,29 @@ namespace GameFramework.Resource
 
             OperationHandleBase handleBase;
 
-            bool isRawResource = assetInfo.IsInvalid;
-            
-            if (isRawResource)
-            {
-                handleBase = assetPackage.LoadRawFileAsync(assetInfo);
-            }
-            else
-            {
-                handleBase = assetPackage.LoadAssetAsync(assetInfo);
-            }
+            handleBase = assetPackage.LoadAssetAsync(assetInfo);
             
             await handleBase.ToUniTask(ResourceHelper);
 
-            if (isRawResource)
+            AssetOperationHandle handle = (AssetOperationHandle)handleBase;
+            if (handle == null || handle.AssetObject == null || handle.Status == EOperationStatus.Failed)
             {
-                RawFileOperationHandle handle = (RawFileOperationHandle)handleBase;
-                if (handle == null || handle.Status == EOperationStatus.Failed)
+                string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", assetName);
+                if (loadAssetCallbacks.LoadAssetFailureCallback != null)
                 {
-                    string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", assetName);
-                    if (loadAssetCallbacks.LoadAssetFailureCallback != null)
-                    {
-                        loadAssetCallbacks.LoadAssetFailureCallback(assetName, LoadResourceStatus.NotReady, errorMessage, userData);
-                        return;
-                    }
+                    loadAssetCallbacks.LoadAssetFailureCallback(assetName, LoadResourceStatus.NotReady, errorMessage, userData);
+                    return;
+                }
 
-                    throw new GameFrameworkException(errorMessage);
-                }
-                else
-                {
-                    if (loadAssetCallbacks.LoadAssetSuccessCallback != null)
-                    {
-                        duration = Time.time - duration;
-                    
-                        loadAssetCallbacks.LoadAssetSuccessCallback(assetName, handle, duration, userData);
-                    }
-                }
+                throw new GameFrameworkException(errorMessage);
             }
             else
             {
-                AssetOperationHandle handle = (AssetOperationHandle)handleBase;
-                if (handle == null || handle.AssetObject == null || handle.Status == EOperationStatus.Failed)
+                if (loadAssetCallbacks.LoadAssetSuccessCallback != null)
                 {
-                    string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", assetName);
-                    if (loadAssetCallbacks.LoadAssetFailureCallback != null)
-                    {
-                        loadAssetCallbacks.LoadAssetFailureCallback(assetName, LoadResourceStatus.NotReady, errorMessage, userData);
-                        return;
-                    }
-
-                    throw new GameFrameworkException(errorMessage);
-                }
-                else
-                {
-                    if (loadAssetCallbacks.LoadAssetSuccessCallback != null)
-                    {
-                        duration = Time.time - duration;
-                    
-                        loadAssetCallbacks.LoadAssetSuccessCallback(assetName, handle.AssetObject, duration, userData);
-                    }
+                    duration = Time.time - duration;
+                
+                    loadAssetCallbacks.LoadAssetSuccessCallback(assetName, handle.AssetObject, duration, userData);
                 }
             }
         }
