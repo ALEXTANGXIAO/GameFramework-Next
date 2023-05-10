@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.focus-creative-games.hybridclr_unity": {
+      "version": "2.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.cn"
+    },
     "com.unity.2d.animation": {
       "version": "5.2.0",
       "depth": 0,
