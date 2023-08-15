@@ -57,7 +57,7 @@ public class ScriptGenerator
             if (includeListener)
             {
 #if ENABLE_TEXTMESHPRO
-                strFile.Append("namespace TMPro\n");
+                strFile.Append("using TMPro\n");
 #endif
                 strFile.Append("using UnityEngine;\n");
                 strFile.Append("using UnityEngine.UI;\n");
