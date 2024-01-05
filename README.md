@@ -22,14 +22,6 @@ Assets/GameMain/Scripts
 |           └── GameApp_RegisterSystem.cs   // 热更主入口注册系统
 └── Runtime             // Runtime程序集
 ```
----
-## 日志记录编辑器下运行
-![image](Books/Src/Editor.png)
-
----
-## Win64位包运行
-
-![image](Books/Src/PC.png)
 
 ## <strong>特别鸣谢
 #### <a href="https://github.com/tuyoogame/YooAsset"><strong>YooAsset</strong></a> - YooAsset是一套商业级经历百万DAU游戏验证的资源管理系统。
