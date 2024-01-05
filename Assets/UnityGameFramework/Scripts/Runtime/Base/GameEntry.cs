@@ -78,7 +78,7 @@ namespace UnityGameFramework.Runtime
         public static void Shutdown(ShutdownType shutdownType)
         {
             Log.Info("Shutdown Game Framework ({0})...", shutdownType);
-            Utility.Unity.Release();
+            Utility.Unity.Shutdown();
             BaseComponent baseComponent = GetComponent<BaseComponent>();
             if (baseComponent != null)
             {

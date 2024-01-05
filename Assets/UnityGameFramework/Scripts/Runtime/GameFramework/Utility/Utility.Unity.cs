@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Internal;
@@ -109,6 +109,12 @@ namespace GameFramework
             public static void AddUpdateListener(UnityAction fun)
             {
                 _MakeEntity();
+                AddUpdateListenerImp(fun).Forget();
+            }
+            
+            private static async UniTaskVoid AddUpdateListenerImp(UnityAction fun)
+            {
+                await UniTask.Yield(/*PlayerLoopTiming.LastPreUpdate*/);
                 _behaviour.AddUpdateListener(fun);
             }
 
@@ -119,6 +125,12 @@ namespace GameFramework
             public static void AddFixedUpdateListener(UnityAction fun)
             {
                 _MakeEntity();
+                AddFixedUpdateListenerImp(fun).Forget();
+            }
+            
+            private static async UniTaskVoid AddFixedUpdateListenerImp(UnityAction fun)
+            {
+                await UniTask.Yield(PlayerLoopTiming.LastEarlyUpdate);
                 _behaviour.AddFixedUpdateListener(fun);
             }
 
@@ -129,6 +141,12 @@ namespace GameFramework
             public static void AddLateUpdateListener(UnityAction fun)
             {
                 _MakeEntity();
+                AddLateUpdateListenerImp(fun).Forget();
+            }
+
+            private static async UniTaskVoid AddLateUpdateListenerImp(UnityAction fun)
+            {
+                await UniTask.Yield(/*PlayerLoopTiming.LastPreLateUpdate*/);
                 _behaviour.AddLateUpdateListener(fun);
             }
 
@@ -192,7 +210,7 @@ namespace GameFramework
             public static void AddOnDrawGizmosListener(UnityAction fun)
             {
                 _MakeEntity();
-                _behaviour.RemoveDestroyListener(fun);
+                _behaviour.AddOnDrawGizmosListener(fun);
             }
 
             /// <summary>
@@ -202,7 +220,7 @@ namespace GameFramework
             public static void RemoveOnDrawGizmosListener(UnityAction fun)
             {
                 _MakeEntity();
-                _behaviour.RemoveDestroyListener(fun);
+                _behaviour.RemoveOnDrawGizmosListener(fun);
             }
                 
             /// <summary>
@@ -222,19 +240,10 @@ namespace GameFramework
             public static void RemoveOnApplicationPauseListener(UnityAction<bool> fun)
             {
                 _MakeEntity();
-                _behaviour.AddOnApplicationPauseListener(fun);
+                _behaviour.RemoveOnApplicationPauseListener(fun);
             }
             #endregion
             
-            /// <summary>
-            /// 释放Behaviour生命周期。
-            /// </summary>
-            public static void Release()
-            {
-                _MakeEntity();
-                _behaviour.Release();
-            }
-
             private static void _MakeEntity()
             {
                 if (_entity != null)
@@ -242,12 +251,8 @@ namespace GameFramework
                     return;
                 }
 
-                _entity = new GameObject("__MonoUtility__")
-                {
-                    hideFlags = HideFlags.HideAndDontSave
-                };
+                _entity = new GameObject("[Unity.Utility]");
                 _entity.SetActive(true);
-
 #if UNITY_EDITOR
                 if (Application.isPlaying)
 #endif
@@ -259,131 +264,147 @@ namespace GameFramework
                 _behaviour = _entity.AddComponent<MainBehaviour>();
             }
 
+            /// <summary>
+            /// 释放Behaviour生命周期。
+            /// </summary>
+            public static void Shutdown()
+            {
+                if (_behaviour != null)
+                {
+                    _behaviour.Release();
+                }
+                if (_entity != null)
+                {
+                    Object.Destroy(_entity);
+                }
+                _entity = null;
+            }
+
             private class MainBehaviour : MonoBehaviour
             {
-                private event UnityAction updateEvent;
-                private event UnityAction fixedUpdateEvent;
-                private event UnityAction lateUpdateEvent;
-                private event UnityAction destroyEvent;
-                private event UnityAction onDrawGizmosEvent; 
-                private event UnityAction<bool> onApplicationPause;
+                private event UnityAction UpdateEvent;
+                private event UnityAction FixedUpdateEvent;
+                private event UnityAction LateUpdateEvent;
+                private event UnityAction DestroyEvent;
+                private event UnityAction OnDrawGizmosEvent; 
+                private event UnityAction<bool> OnApplicationPauseEvent;
 
                 void Update()
                 {
-                    if (updateEvent != null)
+                    if (UpdateEvent != null)
                     {
-                        updateEvent();
+                        UpdateEvent();
                     }
                 }
 
                 void FixedUpdate()
                 {
-                    if (fixedUpdateEvent != null)
+                    if (FixedUpdateEvent != null)
                     {
-                        fixedUpdateEvent();
+                        FixedUpdateEvent();
                     }
                 }
 
                 void LateUpdate()
                 {
-                    if (lateUpdateEvent != null)
+                    if (LateUpdateEvent != null)
                     {
-                        lateUpdateEvent();
+                        LateUpdateEvent();
                     }
                 }
 
                 private void OnDestroy()
                 {
-                    if (destroyEvent != null)
+                    if (DestroyEvent != null)
                     {
-                        destroyEvent();
+                        DestroyEvent();
                     }
                 }
 
                 private void OnDrawGizmos()
                 {
-                    if (onDrawGizmosEvent != null)
+                    if (OnDrawGizmosEvent != null)
                     {
-                        onDrawGizmosEvent();
+                        OnDrawGizmosEvent();
                     }
                 }
 
                 private void OnApplicationPause(bool pauseStatus)
                 {
-                    if (onApplicationPause != null)
+                    if (OnApplicationPauseEvent != null)
                     {
-                        onApplicationPause(pauseStatus);
+                        OnApplicationPauseEvent(pauseStatus);
                     }
                 }
 
                 public void AddLateUpdateListener(UnityAction fun)
                 {
-                    lateUpdateEvent += fun;
+                    LateUpdateEvent += fun;
                 }
 
                 public void RemoveLateUpdateListener(UnityAction fun)
                 {
-                    lateUpdateEvent -= fun;
+                    LateUpdateEvent -= fun;
                 }
 
                 public void AddFixedUpdateListener(UnityAction fun)
                 {
-                    fixedUpdateEvent += fun;
+                    FixedUpdateEvent += fun;
                 }
 
                 public void RemoveFixedUpdateListener(UnityAction fun)
                 {
-                    fixedUpdateEvent -= fun;
+                    FixedUpdateEvent -= fun;
                 }
 
                 public void AddUpdateListener(UnityAction fun)
                 {
-                    updateEvent += fun;
+                    UpdateEvent += fun;
                 }
 
                 public void RemoveUpdateListener(UnityAction fun)
                 {
-                    updateEvent -= fun;
+                    UpdateEvent -= fun;
                 }
                 
                 public void AddDestroyListener(UnityAction fun)
                 {
-                    destroyEvent += fun;
+                    DestroyEvent += fun;
                 }
 
                 public void RemoveDestroyListener(UnityAction fun)
                 {
-                    destroyEvent -= fun;
+                    DestroyEvent -= fun;
                 }
                 
                 public void AddOnDrawGizmosListener(UnityAction fun)
                 {
-                    onDrawGizmosEvent += fun;
+                    OnDrawGizmosEvent += fun;
                 }
 
                 public void RemoveOnDrawGizmosListener(UnityAction fun)
                 {
-                    onDrawGizmosEvent -= fun;
+                    OnDrawGizmosEvent -= fun;
                 }
                 
                 public void AddOnApplicationPauseListener(UnityAction<bool> fun)
                 {
-                    onApplicationPause += fun;
+                    OnApplicationPauseEvent += fun;
                 }
 
                 public void RemoveOnApplicationPauseListener(UnityAction<bool> fun)
                 {
-                    onApplicationPause -= fun;
+                    OnApplicationPauseEvent -= fun;
                 }
 
                 public void Release()
                 {
-                    updateEvent = null;
-                    fixedUpdateEvent = null;
-                    lateUpdateEvent = null;
-                    onDrawGizmosEvent = null;
-                    destroyEvent = null;
-                    onApplicationPause = null;
+                    UpdateEvent = null;
+                    FixedUpdateEvent = null;
+                    LateUpdateEvent = null;
+                    OnDrawGizmosEvent = null;
+                    DestroyEvent = null;
+                    OnApplicationPauseEvent = null;
                 }
             }
         }
