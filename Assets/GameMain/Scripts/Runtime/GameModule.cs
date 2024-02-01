@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GameFramework;
-using GameMain;
-using UGFExtensions.SpriteCollection;
 using UGFExtensions.Texture;
 using UnityGameFramework.Runtime;
 
@@ -118,24 +116,9 @@ public class GameModule:AbsGameModuleMgr<GameModule>
     public static TimerComponent Timer { get; private set; }
     
     /// <summary>
-    /// 获取逻辑组件。
-    /// </summary>
-    public static LogicComponent Logic{ get; private set; }
-    
-    /// <summary>
     /// 获取设置Texture组件。
     /// </summary>
     public static TextureSetComponent TextureSet{ get; private set; }
-    
-    /// <summary>
-    /// 获取设置Sprite组件。
-    /// </summary>
-    public static SpriteCollectionComponent SpriteCollection{ get; private set; }
-    
-    /// <summary>
-    /// 获取数据中心组件。
-    /// </summary>
-    public static DataCenterComponent DataCenter{ get; private set; }
     
     #endregion
 
@@ -165,10 +148,7 @@ public class GameModule:AbsGameModuleMgr<GameModule>
         UI = Get<UIComponent>();
         WebRequest = Get<WebRequestComponent>();
         Timer = Get<TimerComponent>();
-        Logic = Get<LogicComponent>();
         TextureSet = Get<TextureSetComponent>();
-        SpriteCollection = Get<SpriteCollectionComponent>();
-        DataCenter = Get<DataCenterComponent>();
     }
 
     public static void InitCustomComponents()
