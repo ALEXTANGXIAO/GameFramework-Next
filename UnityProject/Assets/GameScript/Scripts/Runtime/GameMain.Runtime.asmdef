@@ -3,7 +3,8 @@
     "rootNamespace": "GameMain",
     "references": [
         "GUID:363c5eb08ff8e6a439b85e37b8c20d96",
-        "GUID:6055be8ebefd69e48b49212b09b47b2f"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -12,17 +13,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "com.unity.textmeshpro",
-            "expression": "",
-            "define": "ENABLE_TEXTMESHPRO"
-        },
-        {
-            "name": "com.focus-creative-games.hybridclr_unity",
-            "expression": "",
-            "define": "ENABLE_HYBRIDCLR"
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }
