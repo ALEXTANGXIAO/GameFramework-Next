@@ -600,7 +600,7 @@ namespace GameFramework.Resource
 
             await handleBase.ToUniTask();
 
-            AssetOperationHandle handle = (AssetOperationHandle)handleBase;
+            AssetHandle handle = (AssetHandle)handleBase;
             if (handle == null || handle.AssetObject == null || handle.Status == EOperationStatus.Failed)
             {
                 string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", location);
@@ -660,13 +660,13 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException(errorMessage);
             }
 
-            OperationHandleBase handleBase;
+            AssetHandle handleBase;
 
             handleBase = assetPackage.LoadAssetAsync(assetInfo);
 
             await handleBase.ToUniTask();
 
-            AssetOperationHandle handle = (AssetOperationHandle)handleBase;
+            AssetHandle handle = (AssetHandle)handleBase;
             if (handle == null || handle.AssetObject == null || handle.Status == EOperationStatus.Failed)
             {
                 string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", location);
@@ -749,7 +749,7 @@ namespace GameFramework.Resource
 
             float duration = Time.time;
 
-            SceneOperationHandle handle = YooAssets.LoadSceneAsync(sceneAssetName, LoadSceneMode.Single, activateOnLoad: true, priority: priority);
+            SceneHandle handle = YooAssets.LoadSceneAsync(sceneAssetName, LoadSceneMode.Single, suspendLoad: false, priority: (uint)priority);
 
             await handle.ToUniTask();
 
