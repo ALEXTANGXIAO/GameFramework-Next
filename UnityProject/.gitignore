@@ -62,6 +62,7 @@ crashlytics-build.properties
 #HybirdCLR(HuaTuo)
 /HybirdCLRData/
 [Hh]ybridCLRData/
+[Aa]ssets/HybridCLRData.meta
 
 
 #AATemp
@@ -79,6 +80,3 @@ Bundles/
 
 #Sandbox
 Sandbox/
-
-#HybridCLR
-Assets/HybridCLRData.meta
