@@ -2,7 +2,6 @@
     "name": "GameBase",
     "rootNamespace": "GameBase",
     "references": [
-        "GUID:aa06d4cc755c979489c256c1bcca1dfb",
         "GUID:363c5eb08ff8e6a439b85e37b8c20d96"
     ],
     "includePlatforms": [],
