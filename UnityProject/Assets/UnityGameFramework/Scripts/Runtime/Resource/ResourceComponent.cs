@@ -230,7 +230,7 @@ namespace UnityGameFramework.Runtime
                 m_ResourceManager.SetReadWritePath(Application.persistentDataPath);
             }
             
-            m_ResourceManager.PackageName = PackageName;
+            m_ResourceManager.DefaultPackageName = PackageName;
             m_ResourceManager.PlayMode = PlayMode;
             m_ResourceManager.VerifyLevel = VerifyLevel;
             m_ResourceManager.Milliseconds = Milliseconds;
@@ -256,65 +256,7 @@ namespace UnityGameFramework.Runtime
         }
 
         #region 加载资源
-        /// <summary>
-        /// 同步加载资源。
-        /// </summary>
-        /// <param name="assetName">要加载资源的名称。</param>
-        /// <typeparam name="T">要加载的资源类型。</typeparam>
-        /// <returns>资源实例。</returns>
-        public T LoadAsset<T>(string assetName) where T : UnityEngine.Object
-        {
-            if (string.IsNullOrEmpty(assetName))
-            {
-                Log.Error("Asset name is invalid.");
-                return default;
-            }
-            
-            return m_ResourceManager.LoadAsset<T>(assetName);
-        }
-
-        /// <summary>
-        /// 异步加载资源。
-        /// </summary>
-        /// <param name="assetName">要加载资源的名称。</param>
-        /// <typeparam name="T">要加载的资源类型。</typeparam>
-        /// <returns>UniTask资源实例。</returns>
-        public async UniTask<T> LoadAssetAsync<T>(string assetName) where T : UnityEngine.Object
-        {
-            if (string.IsNullOrEmpty(assetName))
-            {
-                Log.Error("Asset name is invalid.");
-                return default;
-            }
-
-            AssetOperationHandle operationHandle = m_ResourceManager.LoadAssetAsync<T>(assetName);
-
-            await operationHandle.ToUniTask(this);
-
-            return operationHandle.AssetObject as T;
-        }
         
-        /// <summary>
-        /// 异步加载资源。
-        /// </summary>
-        /// <param name="assetName">要加载资源的名称。</param>
-        /// <param name="cancellationToken">取消操作Token。</param>
-        /// <typeparam name="T">要加载的资源类型。</typeparam>
-        /// <returns>UniTask资源实例。</returns>
-        public async UniTask<T> LoadAssetAsync<T>(string assetName,CancellationToken cancellationToken) where T : UnityEngine.Object
-        {
-            if (string.IsNullOrEmpty(assetName))
-            {
-                Log.Error("Asset name is invalid.");
-                return default;
-            }
-
-            AssetOperationHandle operationHandle = m_ResourceManager.LoadAssetAsync<T>(assetName);
-
-            await operationHandle.ToUniTask(cancellationToken:cancellationToken).SuppressCancellationThrow();
-
-            return operationHandle.AssetObject as T;
-        }
 
         /// <summary>
         /// 异步加载资源。
@@ -411,7 +353,7 @@ namespace UnityGameFramework.Runtime
 
         public void ClearSandbox()
         {
-            YooAssets.ClearSandbox();
+            
         }
 
         private void Update()
