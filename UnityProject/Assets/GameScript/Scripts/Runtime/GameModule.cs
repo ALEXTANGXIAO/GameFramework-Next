@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameFramework;
 using UGFExtensions.Texture;
+using UnityEngine;
 using UnityGameFramework.Runtime;
 
 /// <summary>
 /// 游戏模块
 /// </summary>
-public class GameModule:AbsGameModuleMgr<GameModule>
+public class GameModule : MonoBehaviour
 {
     #region BaseComponents
     /// <summary>
@@ -158,7 +158,7 @@ public class GameModule:AbsGameModuleMgr<GameModule>
   
     private static readonly Dictionary<Type, GameFrameworkComponent> s_Components = new Dictionary<Type, GameFrameworkComponent>();
 
-    public static T Get<T>()where T : GameFrameworkComponent
+    public static T Get<T>() where T : GameFrameworkComponent
     {
         Type type = typeof(T);
         
@@ -176,12 +176,12 @@ public class GameModule:AbsGameModuleMgr<GameModule>
         return component;
     }
 
-    public override void Active()
+    private void Awake()
     {
-        Log.Info("GameModule Active");
+        Init();
     }
 
-    protected override void Init()
+    private void Init()
     {
         InitFrameWorkComponents();
         InitCustomComponents();
