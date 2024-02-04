@@ -162,18 +162,18 @@ public class GameModule : MonoBehaviour
     {
         Type type = typeof(T);
         
-        if (s_Components.ContainsKey(type))
+        if (s_Components.TryGetValue(type, out GameFrameworkComponent component))
         {
-            return s_Components[type] as T;
+            return (T)component;
         }
         
-        T component = UnityGameFramework.Runtime.GameEntry.GetComponent<T>();
+        component = UnityGameFramework.Runtime.GameEntry.GetComponent<T>();
         
         Log.Assert(condition:component != null,$"{typeof(T)} is null");
         
         s_Components.Add(type,component);
 
-        return component;
+        return (T)component;
     }
 
     private void Awake()
