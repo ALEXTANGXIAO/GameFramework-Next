@@ -65,11 +65,6 @@ namespace GameFramework.Resource
 
         public string FallbackHostServerURL { get; set; }
 
-        /// <summary>
-        /// The total number of frames since the start of the game (Read Only).
-        /// </summary>
-        private static int _lastUpdateFrame = 0;
-
         private string m_ApplicableGameVersion;
 
         private int m_InternalResourceVersion;
