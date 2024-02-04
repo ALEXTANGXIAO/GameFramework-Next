@@ -179,7 +179,7 @@ namespace GameFramework.Resource
 #if UNITY_EDITOR
             //编辑器模式使用。
             EPlayMode playMode = (EPlayMode)UnityEditor.EditorPrefs.GetInt("EditorPlayMode");
-            Log.Warning($"编辑器模式使用:{playMode}");
+            Log.Warning($"Editor Module Used :{playMode}");
 #else
             //运行时使用。
             EPlayMode playMode = (EPlayMode)PlayMode;
@@ -594,9 +594,7 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException(errorMessage);
             }
 
-            OperationHandleBase handleBase;
-
-            handleBase = assetPackage.LoadAssetAsync(location, assetType);
+            var handleBase = assetPackage.LoadAssetAsync(location, assetType);
 
             await handleBase.ToUniTask();
 

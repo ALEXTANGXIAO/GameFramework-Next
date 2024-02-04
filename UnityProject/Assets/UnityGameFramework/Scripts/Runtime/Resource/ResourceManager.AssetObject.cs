@@ -18,16 +18,6 @@ namespace GameFramework.Resource
                 m_Resource = null;
             }
 
-            public override bool CustomCanReleaseFlag
-            {
-                get
-                {
-                    int targetReferenceCount = 0;
-                    m_ResourceLoader.m_AssetDependencyCount.TryGetValue(Target, out targetReferenceCount);
-                    return base.CustomCanReleaseFlag && targetReferenceCount <= 0;
-                }
-            }
-
             public static AssetObject Create(string name, object target, object resource, ResourceManager resourceManager)
             {
                 if (resource == null)
@@ -62,9 +52,9 @@ namespace GameFramework.Resource
             {
                 if (!isShutdown)
                 {
-                    m_ResourceLoader.m_ResourcePool.Unspawn(m_Resource);
+                    // m_ResourceLoader.m_ResourcePool.Unspawn(m_Resource);
                 }
-                m_ResourceHelper.Release(Target);
+                // m_ResourceHelper.Release(Target);
             }
         }
     }
