@@ -16,6 +16,8 @@ luban
 
 hybridclr
 
+PS:main分支正在开发中，旧版GameFramework-at-YooAsset请挪步去classic分支
+
 实现初衷：YooAsset确实十分好用，但是市面上较大的开源框架只有ET接入较多。且GameFramework的资源模块存在一定的设计过度问题。故在此首次把YooAsset接入GF并实现热更新。（HybridCLR热更新流程已经实现）
 
 ``` json
