@@ -147,7 +147,7 @@ namespace GameFramework.Resource
         T LoadAsset<T>(string location, bool needCache = false, string packageName = "") where T : UnityEngine.Object;
 
         /// <summary>
-        /// 同步加载资源。
+        /// 同步加载游戏物体并实例化。
         /// </summary>
         /// <param name="location">资源的定位地址。</param>
         /// <param name="needCache">是否需要缓存。</param>
@@ -165,7 +165,7 @@ namespace GameFramework.Resource
         public TObject[] LoadSubAssetsSync<TObject>(string location, string packageName = "") where TObject : UnityEngine.Object;
 
         /// <summary>
-        /// 异步加载子资源对象
+        /// 异步加载子资源对象。
         /// </summary>
         /// <typeparam name="TObject">资源类型。</typeparam>
         /// <param name="location">资源的定位地址。</param>
@@ -185,7 +185,7 @@ namespace GameFramework.Resource
             bool needCache = false, string packageName = "") where T : UnityEngine.Object;
 
         /// <summary>
-        /// 异步加载游戏物体。
+        /// 异步加载游戏物体并实例化。
         /// </summary>
         /// <param name="location">资源定位地址。</param>
         /// <param name="cancellationToken">取消操作Token。</param>

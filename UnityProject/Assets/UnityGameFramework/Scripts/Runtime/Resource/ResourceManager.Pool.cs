@@ -9,6 +9,8 @@ namespace GameFramework.Resource
     {
         private IObjectPool<AssetObject> m_AssetPool;
         
-        private Dictionary<UnityEngine.Object,AssetHandle> m_AssetHandleMap = new Dictionary<Object, AssetHandle>();
+        private readonly Dictionary<UnityEngine.Object,AssetHandle> m_AssetHandleMap = new Dictionary<Object, AssetHandle>();
+        
+        private readonly Dictionary<string, AssetHandle> m_AssetHandlesCacheMap = new Dictionary<string, AssetHandle>();
     }
 }

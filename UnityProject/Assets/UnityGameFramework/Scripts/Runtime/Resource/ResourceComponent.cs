@@ -250,7 +250,7 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
-        /// 同步加载资源。
+        /// 同步加载游戏物体并实例化。
         /// </summary>
         /// <param name="location">资源的定位地址。</param>
         /// <param name="needCache">是否需要缓存。</param>
@@ -290,7 +290,7 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
-        /// 异步加载游戏物体。
+        /// 异步加载游戏物体并实例化。
         /// </summary>
         /// <param name="location">资源定位地址。</param>
         /// <param name="cancellationToken">取消操作Token。</param>

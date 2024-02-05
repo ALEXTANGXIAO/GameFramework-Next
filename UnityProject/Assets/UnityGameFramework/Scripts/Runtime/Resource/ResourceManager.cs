@@ -440,7 +440,6 @@ namespace GameFramework.Resource
         #endregion
 
         #region 资源加载
-        private static readonly Type _typeOfGameObject = typeof(GameObject);
 
         #region 获取资源句柄
         /// <summary>
@@ -468,8 +467,29 @@ namespace GameFramework.Resource
                 var package = YooAssets.GetPackage(packageName);
                 return package.LoadAssetSync(location, assetType);
             }
-
-            return null;
+            
+            // 缓存key
+            var cacheKey = string.IsNullOrEmpty(packageName) || packageName.Equals(DefaultPackageName)
+                ? location
+                : $"{packageName}/{location}";
+                
+            if (m_AssetHandlesCacheMap.TryGetValue(cacheKey,out AssetHandle handle) && handle is { IsValid: false })
+            {
+                return handle;
+            }
+            
+            if (string.IsNullOrEmpty(packageName))
+            {
+                handle = YooAssets.LoadAssetSync(cacheKey, assetType);
+            }
+            else
+            {
+                var package = YooAssets.GetPackage(packageName);
+                handle = package.LoadAssetSync(cacheKey, assetType);
+            }
+            m_AssetHandlesCacheMap[cacheKey] = handle;
+            
+            return handle;
         }
 
         /// <summary>
@@ -497,8 +517,28 @@ namespace GameFramework.Resource
                 var package = YooAssets.GetPackage(packageName);
                 return package.LoadAssetAsync(location, assetType);
             }
-
-            return null;
+            
+            // 缓存key
+            var cacheKey = string.IsNullOrEmpty(packageName) || packageName.Equals(DefaultPackageName)
+                ? location
+                : $"{packageName}/{location}";
+            
+            if (m_AssetHandlesCacheMap.TryGetValue(cacheKey,out AssetHandle handle) && handle is { IsValid: false })
+            {
+                return handle;
+            }
+            if (string.IsNullOrEmpty(packageName))
+            {
+                handle = YooAssets.LoadAssetAsync(cacheKey, assetType);
+            }
+            else
+            {
+                var package = YooAssets.GetPackage(packageName);
+                handle = package.LoadAssetAsync(cacheKey, assetType);
+            }
+            m_AssetHandlesCacheMap[cacheKey] = handle;
+            
+            return handle;
         }
         #endregion
         
@@ -509,22 +549,13 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Asset name is invalid.");
             }
             
-            Type assetType = typeof(T);
+            AssetHandle handle = GetHandleSync<T>(location, needCache, packageName: packageName);
 
-            if (assetType == _typeOfGameObject)
-            {
-                return LoadGameObject(location, needCache, packageName) as T;
-            }
-            else
-            {
-                AssetHandle handle = GetHandleSync<T>(location, needCache, packageName: packageName);
-
-                T ret = handle.AssetObject as T;
+            T ret = handle.AssetObject as T;
                 
-                m_AssetHandleMap.Add(handle.AssetObject, handle);
+            m_AssetHandleMap.Add(handle.AssetObject, handle);
 
-                return ret;
-            }
+            return ret;
         }
 
         public GameObject LoadGameObject(string location, bool needCache = false, string packageName = "", Transform parent = null)
@@ -567,14 +598,7 @@ namespace GameFramework.Resource
             {
                 throw new GameFrameworkException("Asset name is invalid.");
             }
-            
-            Type assetType = typeof(T);
-
-            if (assetType == _typeOfGameObject)
-            {
-                return await LoadGameObjectAsync(location, cancellationToken, needCache, packageName) as T;
-            }
-
+ 
             AssetHandle handle = GetHandleAsync<T>(location, needCache, packageName: packageName);
 
             bool cancelOrFailed = await handle.ToUniTask().AttachExternalCancellation(cancellationToken).SuppressCancellationThrow();
