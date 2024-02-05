@@ -15,14 +15,14 @@ namespace UnityGameFramework.Runtime
 
             public override void Initialize(params object[] args)
             {
-                m_BaseComponent = GameEntry.GetComponent<BaseComponent>();
+                m_BaseComponent = GameSystem.GetComponent<BaseComponent>();
                 if (m_BaseComponent == null)
                 {
                     Log.Fatal("Base component is invalid.");
                     return;
                 }
 
-                m_ResourceComponent = GameEntry.GetComponent<ResourceComponent>();
+                m_ResourceComponent = GameSystem.GetComponent<ResourceComponent>();
                 if (m_ResourceComponent == null)
                 {
                     Log.Fatal("Resource component is invalid.");

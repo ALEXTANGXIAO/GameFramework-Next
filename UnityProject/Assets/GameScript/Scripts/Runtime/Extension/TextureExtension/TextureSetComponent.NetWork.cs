@@ -13,8 +13,8 @@ namespace UGFExtensions.Texture
         
         private void InitializedWeb()
         {
-            m_WebRequestComponent = UnityGameFramework.Runtime.GameEntry.GetComponent<WebRequestComponent>();
-            EventComponent eventComponent = UnityGameFramework.Runtime.GameEntry.GetComponent<EventComponent>();
+            m_WebRequestComponent = UnityGameFramework.Runtime.GameSystem.GetComponent<WebRequestComponent>();
+            EventComponent eventComponent = UnityGameFramework.Runtime.GameSystem.GetComponent<EventComponent>();
             eventComponent.Subscribe(WebRequestSuccessEventArgs.EventId,OnWebGetTextureSuccess);
             eventComponent.Subscribe(WebRequestFailureEventArgs.EventId,OnWebGetTextureFailure);
         }

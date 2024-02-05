@@ -42,8 +42,8 @@ namespace UGFExtensions.Texture
 
         private void InitializedFileSystem()
         {
-            SettingComponent settingComponent = UnityGameFramework.Runtime.GameEntry.GetComponent<SettingComponent>();
-            m_FileSystemComponent = UnityGameFramework.Runtime.GameEntry.GetComponent<FileSystemComponent>();
+            SettingComponent settingComponent = UnityGameFramework.Runtime.GameSystem.GetComponent<SettingComponent>();
+            m_FileSystemComponent = UnityGameFramework.Runtime.GameSystem.GetComponent<FileSystemComponent>();
             m_Buffer = new byte[m_InitBufferLength];
             string fileName = settingComponent.GetString("TextureFileSystemFullPath", "TextureFileSystem");
             m_FullPath = Utility.Path.GetRegularPath(Path.Combine(Application.persistentDataPath, $"{fileName}.dat"));
@@ -130,8 +130,8 @@ namespace UGFExtensions.Texture
 
             if (m_TextureFileSystem.FileCount < m_TextureFileSystem.MaxFileCount) return;
             FileSystemComponent fileSystemComponent =
-                UnityGameFramework.Runtime.GameEntry.GetComponent<FileSystemComponent>();
-            SettingComponent settingComponent = UnityGameFramework.Runtime.GameEntry.GetComponent<SettingComponent>();
+                UnityGameFramework.Runtime.GameSystem.GetComponent<FileSystemComponent>();
+            SettingComponent settingComponent = UnityGameFramework.Runtime.GameSystem.GetComponent<SettingComponent>();
             string fileName = settingComponent.GetString("TextureFileSystemFullPath", "TextureFileSystem");
             fileName = fileName != "TextureFileSystem" ? "TextureFileSystem" : "TextureFileSystemNew";
             m_FullPath = Path.Combine(Application.persistentDataPath, $"{fileName}.dat");

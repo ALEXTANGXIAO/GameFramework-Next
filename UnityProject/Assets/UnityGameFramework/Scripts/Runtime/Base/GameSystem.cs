@@ -7,9 +7,10 @@ using UnityEngine.SceneManagement;
 namespace UnityGameFramework.Runtime
 {
     /// <summary>
-    /// 游戏入口。
+    /// 游戏系统。
+    /// <remarks>管理内部游戏框架组。</remarks>
     /// </summary>
-    public static class GameEntry
+    public static class GameSystem
     {
         private static readonly GameFrameworkLinkedList<GameFrameworkComponent> s_GameFrameworkComponents = new GameFrameworkLinkedList<GameFrameworkComponent>();
 

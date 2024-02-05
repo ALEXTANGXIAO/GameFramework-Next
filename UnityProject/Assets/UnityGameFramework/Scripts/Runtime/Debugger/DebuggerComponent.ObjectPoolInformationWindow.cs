@@ -12,7 +12,7 @@ namespace UnityGameFramework.Runtime
 
             public override void Initialize(params object[] args)
             {
-                m_ObjectPoolComponent = GameEntry.GetComponent<ObjectPoolComponent>();
+                m_ObjectPoolComponent = GameSystem.GetComponent<ObjectPoolComponent>();
                 if (m_ObjectPoolComponent == null)
                 {
                     Log.Fatal("Object pool component is invalid.");

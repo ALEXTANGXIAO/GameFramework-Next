@@ -12,7 +12,7 @@ namespace UnityGameFramework.Runtime
 
             public override void Initialize(params object[] args)
             {
-                m_NetworkComponent = GameEntry.GetComponent<NetworkComponent>();
+                m_NetworkComponent = GameSystem.GetComponent<NetworkComponent>();
                 if (m_NetworkComponent == null)
                 {
                     Log.Fatal("Network component is invalid.");

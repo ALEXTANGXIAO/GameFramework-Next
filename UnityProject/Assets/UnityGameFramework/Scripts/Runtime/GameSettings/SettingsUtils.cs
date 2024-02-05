@@ -204,6 +204,6 @@ public static class SettingsUtils
     public static string GetDictionaryAsset(string assetName, bool fromBytes)
     {
         return Utility.Text.Format("Assets/GameMain/Localization/{0}/Dictionaries/{1}.{2}",
-            GameEntry.GetComponent<LocalizationComponent>().Language.ToString(), assetName, fromBytes ? "bytes" : "xml");
+            GameSystem.GetComponent<LocalizationComponent>().Language.ToString(), assetName, fromBytes ? "bytes" : "xml");
     }
 }

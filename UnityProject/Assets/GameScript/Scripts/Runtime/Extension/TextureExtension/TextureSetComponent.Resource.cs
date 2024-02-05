@@ -15,7 +15,7 @@ namespace UGFExtensions.Texture
 
         private void InitializedResources()
         {
-            m_ResourceComponent = UnityGameFramework.Runtime.GameEntry.GetComponent<ResourceComponent>();
+            m_ResourceComponent = UnityGameFramework.Runtime.GameSystem.GetComponent<ResourceComponent>();
             m_LoadAssetCallbacks = new LoadAssetCallbacks(OnLoadAssetSuccess, OnLoadAssetFailure);
         }
 

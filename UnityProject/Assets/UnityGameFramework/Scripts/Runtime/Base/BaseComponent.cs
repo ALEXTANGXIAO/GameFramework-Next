@@ -369,13 +369,13 @@ namespace UnityGameFramework.Runtime
         {
             Log.Info("Low memory reported...");
 
-            ObjectPoolComponent objectPoolComponent = GameEntry.GetComponent<ObjectPoolComponent>();
+            ObjectPoolComponent objectPoolComponent = GameSystem.GetComponent<ObjectPoolComponent>();
             if (objectPoolComponent != null)
             {
                 objectPoolComponent.ReleaseAllUnused();
             }
 
-            ResourceComponent resourceComponent = GameEntry.GetComponent<ResourceComponent>();
+            ResourceComponent resourceComponent = GameSystem.GetComponent<ResourceComponent>();
             if (resourceComponent != null)
             {
                 resourceComponent.ForceUnloadUnusedAssets(true);

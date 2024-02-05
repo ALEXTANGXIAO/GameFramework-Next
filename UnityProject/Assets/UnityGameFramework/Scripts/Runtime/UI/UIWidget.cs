@@ -108,7 +108,7 @@ namespace UnityGameFramework.Runtime
         #endregion
 
         #region UIEvent
-        EventComponent m_EventComponent = GameEntry.GetComponent<EventComponent>();
+        EventComponent m_EventComponent = GameSystem.GetComponent<EventComponent>();
 
         private List<int> m_listEventTypes;
         

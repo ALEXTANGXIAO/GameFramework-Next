@@ -11,7 +11,7 @@ namespace UnityGameFramework.Runtime
                 GUILayout.Label("<b>Operations</b>");
                 GUILayout.BeginVertical("box");
                 {
-                    ObjectPoolComponent objectPoolComponent = GameEntry.GetComponent<ObjectPoolComponent>();
+                    ObjectPoolComponent objectPoolComponent = GameSystem.GetComponent<ObjectPoolComponent>();
                     if (objectPoolComponent != null)
                     {
                         if (GUILayout.Button("Object Pool Release", GUILayout.Height(30f)))
@@ -25,7 +25,7 @@ namespace UnityGameFramework.Runtime
                         }
                     }
 
-                    ResourceComponent resourceCompoent = GameEntry.GetComponent<ResourceComponent>();
+                    ResourceComponent resourceCompoent = GameSystem.GetComponent<ResourceComponent>();
                     if (resourceCompoent != null)
                     {
                         if (GUILayout.Button("Unload Unused Assets", GUILayout.Height(30f)))
@@ -41,15 +41,15 @@ namespace UnityGameFramework.Runtime
 
                     if (GUILayout.Button("Shutdown Game Framework (None)", GUILayout.Height(30f)))
                     {
-                        GameEntry.Shutdown(ShutdownType.None);
+                        GameSystem.Shutdown(ShutdownType.None);
                     }
                     if (GUILayout.Button("Shutdown Game Framework (Restart)", GUILayout.Height(30f)))
                     {
-                        GameEntry.Shutdown(ShutdownType.Restart);
+                        GameSystem.Shutdown(ShutdownType.Restart);
                     }
                     if (GUILayout.Button("Shutdown Game Framework (Quit)", GUILayout.Height(30f)))
                     {
-                        GameEntry.Shutdown(ShutdownType.Quit);
+                        GameSystem.Shutdown(ShutdownType.Quit);
                     }
                 }
                 GUILayout.EndVertical();

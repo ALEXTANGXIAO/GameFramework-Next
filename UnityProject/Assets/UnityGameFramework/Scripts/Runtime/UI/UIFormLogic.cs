@@ -210,7 +210,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         protected virtual void Close()
         {
-            GameEntry.GetComponent<UIComponent>().CloseUIForm(this.UIForm);
+            GameSystem.GetComponent<UIComponent>().CloseUIForm(this.UIForm);
         }
         #region FindChildComponent
 

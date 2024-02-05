@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using GameFramework;
 using GameFramework.Resource;
@@ -19,22 +18,27 @@ namespace UnityGameFramework.Runtime
 
         private const int DefaultPriority = 0;
 
-        /// <summary>
-        /// 当前最新的包裹版本。
-        /// </summary>
-        public string PackageVersion { set; get; }
-
         private IResourceManager m_ResourceManager;
+        
         private bool m_ForceUnloadUnusedAssets = false;
+        
         private bool m_PreorderUnloadUnusedAssets = false;
+        
         private bool m_PerformGCCollect = false;
+        
         private AsyncOperation m_AsyncOperation = null;
+        
         private float m_LastUnloadUnusedAssetsOperationElapseSeconds = 0f;
 
         [SerializeField] private float m_MinUnloadUnusedAssetsInterval = 60f;
 
         [SerializeField] private float m_MaxUnloadUnusedAssetsInterval = 300f;
 
+        /// <summary>
+        /// 当前最新的包裹版本。
+        /// </summary>
+        public string PackageVersion { set; get; }
+        
         /// <summary>
         /// 资源包名称。
         /// </summary>
@@ -64,49 +68,40 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public int DownloadingMaxNum
         {
-            get { return m_DownloadingMaxNum; }
-            set { m_DownloadingMaxNum = value; }
+            get => m_DownloadingMaxNum;
+            set => m_DownloadingMaxNum = value;
         }
 
         public int m_FailedTryAgain = 3;
 
         public int FailedTryAgain
         {
-            get { return m_FailedTryAgain; }
-            set { m_FailedTryAgain = value; }
+            get => m_FailedTryAgain;
+            set => m_FailedTryAgain = value;
         }
 
         /// <summary>
         /// 获取当前资源适用的游戏版本号。
         /// </summary>
-        public string ApplicableGameVersion
-        {
-            get { return m_ResourceManager.ApplicableGameVersion; }
-        }
+        public string ApplicableGameVersion => m_ResourceManager.ApplicableGameVersion;
 
         /// <summary>
         /// 获取当前内部资源版本号。
         /// </summary>
-        public int InternalResourceVersion
-        {
-            get { return m_ResourceManager.InternalResourceVersion; }
-        }
+        public int InternalResourceVersion => m_ResourceManager.InternalResourceVersion;
 
         /// <summary>
         /// 获取资源读写路径类型。
         /// </summary>
-        public ReadWritePathType ReadWritePathType
-        {
-            get { return m_ReadWritePathType; }
-        }
+        public ReadWritePathType ReadWritePathType => m_ReadWritePathType;
 
         /// <summary>
         /// 获取或设置无用资源释放的最小间隔时间，以秒为单位。
         /// </summary>
         public float MinUnloadUnusedAssetsInterval
         {
-            get { return m_MinUnloadUnusedAssetsInterval; }
-            set { m_MinUnloadUnusedAssetsInterval = value; }
+            get => m_MinUnloadUnusedAssetsInterval;
+            set => m_MinUnloadUnusedAssetsInterval = value;
         }
 
         /// <summary>
@@ -114,39 +109,30 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public float MaxUnloadUnusedAssetsInterval
         {
-            get { return m_MaxUnloadUnusedAssetsInterval; }
-            set { m_MaxUnloadUnusedAssetsInterval = value; }
+            get => m_MaxUnloadUnusedAssetsInterval;
+            set => m_MaxUnloadUnusedAssetsInterval = value;
         }
 
         /// <summary>
         /// 获取无用资源释放的等待时长，以秒为单位。
         /// </summary>
-        public float LastUnloadUnusedAssetsOperationElapseSeconds
-        {
-            get { return m_LastUnloadUnusedAssetsOperationElapseSeconds; }
-        }
+        public float LastUnloadUnusedAssetsOperationElapseSeconds => m_LastUnloadUnusedAssetsOperationElapseSeconds;
 
         /// <summary>
         /// 获取资源只读路径。
         /// </summary>
-        public string ReadOnlyPath
-        {
-            get { return m_ResourceManager.ReadOnlyPath; }
-        }
+        public string ReadOnlyPath => m_ResourceManager.ReadOnlyPath;
 
         /// <summary>
         /// 获取资源读写路径。
         /// </summary>
-        public string ReadWritePath
-        {
-            get { return m_ResourceManager.ReadWritePath; }
-        }
+        public string ReadWritePath => m_ResourceManager.ReadWritePath;
 
         #endregion
 
         private void Start()
         {
-            BaseComponent baseComponent = GameEntry.GetComponent<BaseComponent>();
+            BaseComponent baseComponent = GameSystem.GetComponent<BaseComponent>();
             if (baseComponent == null)
             {
                 Log.Fatal("Base component is invalid.");
@@ -156,7 +142,7 @@ namespace UnityGameFramework.Runtime
             m_ResourceManager = GameFrameworkEntry.GetModule<IResourceManager>();
             if (m_ResourceManager == null)
             {
-                Log.Fatal("YooAssetsManager component is invalid.");
+                Log.Fatal("Resource component is invalid.");
                 return;
             }
 
@@ -199,10 +185,9 @@ namespace UnityGameFramework.Runtime
         /// <returns></returns>
         public void InitPackage()
         {
-            m_ResourceManager = GameFrameworkEntry.GetModule<IResourceManager>();
             if (m_ResourceManager == null)
             {
-                Log.Fatal("YooAssetsManager component is invalid.");
+                Log.Fatal("Resource component is invalid.");
                 return;
             }
 
@@ -267,6 +252,19 @@ namespace UnityGameFramework.Runtime
         public void ForceUnloadUnusedAssets(bool performGCCollect)
         {
             m_ForceUnloadUnusedAssets = true;
+            if (performGCCollect)
+            {
+                m_PerformGCCollect = true;
+            }
+        }
+        
+        /// <summary>
+        /// 预订执行释放未被使用的资源。
+        /// </summary>
+        /// <param name="performGCCollect">是否使用垃圾回收。</param>
+        public void UnloadUnusedAssets(bool performGCCollect)
+        {
+            m_PreorderUnloadUnusedAssets = true;
             if (performGCCollect)
             {
                 m_PerformGCCollect = true;

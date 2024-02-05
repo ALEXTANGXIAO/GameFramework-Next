@@ -167,7 +167,7 @@ public class GameModule : MonoBehaviour
             return (T)component;
         }
         
-        component = UnityGameFramework.Runtime.GameEntry.GetComponent<T>();
+        component = UnityGameFramework.Runtime.GameSystem.GetComponent<T>();
         
         Log.Assert(condition:component != null,$"{typeof(T)} is null");
         

@@ -53,7 +53,7 @@ namespace UGFExtensions.Texture
         private IEnumerator Start()
         {
             yield return new WaitForEndOfFrame();
-            ObjectPoolComponent objectPoolComponent = UnityGameFramework.Runtime.GameEntry.GetComponent<ObjectPoolComponent>();
+            ObjectPoolComponent objectPoolComponent = UnityGameFramework.Runtime.GameSystem.GetComponent<ObjectPoolComponent>();
             m_TexturePool = objectPoolComponent.CreateMultiSpawnObjectPool<TextureItemObject>(
                 "TexturePool",
                 m_AutoReleaseInterval, 16, 60, 0);

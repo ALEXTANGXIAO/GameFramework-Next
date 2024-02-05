@@ -39,7 +39,7 @@ namespace UGFExtensions.Await
         /// </summary>
         public static void SubscribeEvent()
         {
-            EventComponent eventComponent = UnityGameFramework.Runtime.GameEntry.GetComponent<EventComponent>();
+            EventComponent eventComponent = UnityGameFramework.Runtime.GameSystem.GetComponent<EventComponent>();
             eventComponent.Subscribe(OpenUIFormSuccessEventArgs.EventId, OnOpenUIFormSuccess);
             eventComponent.Subscribe(OpenUIFormFailureEventArgs.EventId, OnOpenUIFormFailure);
 
