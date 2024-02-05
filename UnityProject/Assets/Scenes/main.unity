@@ -613,7 +613,7 @@ GameObject:
   - component: {fileID: 1434803862}
   - component: {fileID: 1434803864}
   m_Layer: 0
-  m_Name: GameEntry
+  m_Name: GameModule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
