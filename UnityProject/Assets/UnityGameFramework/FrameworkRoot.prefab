@@ -316,7 +316,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EditorLanguage: 8
   m_TextHelperTypeName: UnityGameFramework.Runtime.DefaultTextHelper
-  m_VersionHelperTypeName: 
+  m_VersionHelperTypeName: UnityGameFramework.Runtime.DefaultVersionHelper
   m_LogHelperTypeName: GameMain.DinLogHelper
   m_CompressionHelperTypeName: UnityGameFramework.Runtime.DefaultCompressionHelper
   m_JsonHelperTypeName: GameMain.NewtonsoftJsonHelper
