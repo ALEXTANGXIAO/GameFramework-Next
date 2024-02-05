@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using GameFramework;
 using UGFExtensions;
 using UGFExtensions.Timer;
@@ -280,43 +280,43 @@ public class TimerComponent : GameFrameworkComponent
         switch (timer.TimerType)
         {
             case TimerType.OnceWait:
-                {
-                    TaskCompletionSource<bool> tcs = timer.Callback as TaskCompletionSource<bool>;
-                    RemoveTimer(timer.ID);
-                    tcs?.SetResult(true);
-                    break;
-                }
+            {
+                UniTaskCompletionSource<bool> tcs = timer.Callback as UniTaskCompletionSource<bool>;
+                RemoveTimer(timer.ID);
+                tcs?.TrySetResult(true);
+                break;
+            }
             case TimerType.Once:
-                {
-                    Action action = timer.Callback as Action;
-                    RemoveTimer(timer.ID);
-                    action?.Invoke();
-                    break;
-                }
+            {
+                Action action = timer.Callback as Action;
+                RemoveTimer(timer.ID);
+                action?.Invoke();
+                break;
+            }
             case TimerType.Repeated:
+            {
+                Action action = timer.Callback as Action;
+                long nowTime = TimerTimeUtility.Now();
+                long tillTime = nowTime + timer.Time;
+                if (timer.RepeatCount == 1)
                 {
-                    Action action = timer.Callback as Action;
-                    long nowTime = TimerTimeUtility.Now();
-                    long tillTime = nowTime + timer.Time;
-                    if (timer.RepeatCount == 1)
-                    {
-                        RemoveTimer(timer.ID);
-                    }
-                    else
-                    {
-                        if (timer.RepeatCount > 1)
-                        {
-                            timer.RepeatCount--;
-                        }
-
-                        timer.StartTime = nowTime;
-                        AddTimer(tillTime, timer.ID);
-                    }
-
-                    action?.Invoke();
-
-                    break;
+                    RemoveTimer(timer.ID);
                 }
+                else
+                {
+                    if (timer.RepeatCount > 1)
+                    {
+                        timer.RepeatCount--;
+                    }
+
+                    timer.StartTime = nowTime;
+                    AddTimer(tillTime, timer.ID);
+                }
+
+                action?.Invoke();
+
+                break;
+            }
         }
     }
 
@@ -495,7 +495,7 @@ public class TimerComponent : GameFrameworkComponent
     /// <param name="time">定时时间 1000/秒</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<bool> OnceTimerAsync(long time, CancellationToken cancellationToken = null)
+    public async UniTask<bool> OnceTimerAsync(long time, CancellationToken cancellationToken = null)
     {
         long nowTime = TimerTimeUtility.Now();
         if (time <= 0)
@@ -503,7 +503,7 @@ public class TimerComponent : GameFrameworkComponent
             return true;
         }
 
-        TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+        UniTaskCompletionSource<bool> tcs = new UniTaskCompletionSource<bool>();
         Timer timer = Timer.Create(time, nowTime, TimerType.OnceWait, tcs);
         m_Timers.Add(timer.ID, timer);
         int timerId = timer.ID;
@@ -513,7 +513,7 @@ public class TimerComponent : GameFrameworkComponent
         void CancelAction()
         {
             RemoveTimer(timerId);
-            tcs.SetResult(false);
+            tcs.TrySetResult(false);
         }
 
         bool result;
@@ -534,7 +534,7 @@ public class TimerComponent : GameFrameworkComponent
     /// 可等待的帧定时器
     /// </summary>
     /// <returns>定时器 ID</returns>
-    public async Task<bool> FrameAsync(CancellationToken cancellationToken = null)
+    public async UniTask<bool> FrameAsync(CancellationToken cancellationToken = null)
     {
         return await OnceTimerAsync(1, cancellationToken);
     }
