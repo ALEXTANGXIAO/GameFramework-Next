@@ -6,7 +6,7 @@ using Debug = UnityEngine.Debug;
 
 namespace GameMain
 {
-    public class DinLogHelper: GameFrameworkLog.ILogHelper
+    public class LogHelper: GameFrameworkLog.ILogHelper
     {
         private enum ELogLevel
         {
