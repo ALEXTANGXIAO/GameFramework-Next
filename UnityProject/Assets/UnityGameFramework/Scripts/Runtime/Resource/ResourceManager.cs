@@ -473,7 +473,7 @@ namespace GameFramework.Resource
                 ? location
                 : $"{packageName}/{location}";
                 
-            if (m_AssetHandlesCacheMap.TryGetValue(cacheKey,out AssetHandle handle) && handle is { IsValid: false })
+            if (m_AssetHandlesCacheMap.TryGetValue(cacheKey,out AssetHandle handle) && handle is { IsValid: true })
             {
                 return handle;
             }
@@ -523,7 +523,7 @@ namespace GameFramework.Resource
                 ? location
                 : $"{packageName}/{location}";
             
-            if (m_AssetHandlesCacheMap.TryGetValue(cacheKey,out AssetHandle handle) && handle is { IsValid: false })
+            if (m_AssetHandlesCacheMap.TryGetValue(cacheKey,out AssetHandle handle) && handle is { IsValid: true })
             {
                 return handle;
             }
@@ -789,6 +789,7 @@ namespace GameFramework.Resource
 			return;
 #else
             m_AssetHandleMap.Clear();
+            m_AssetHandlesCacheMap.Clear();
             
             foreach (var package in PackageMap.Values)
             {
@@ -812,6 +813,17 @@ namespace GameFramework.Resource
             {
                 if (m_AssetHandleMap.TryGetValue(unityObject, out AssetHandle handle))
                 {
+                    AssetInfo assetInfo = handle.GetAssetInfo();
+                    
+                    if (m_AssetHandlesCacheMap.TryGetValue(assetInfo.Address,out AssetHandle cacheHandle))
+                    {
+                        if (cacheHandle is { IsValid: true })
+                        {
+                            cacheHandle.Dispose();
+                        }
+                        m_AssetHandlesCacheMap.Remove(assetInfo.Address);
+                    }
+                    
                     if (handle is { IsValid: true })
                     {
                         handle.Dispose();
