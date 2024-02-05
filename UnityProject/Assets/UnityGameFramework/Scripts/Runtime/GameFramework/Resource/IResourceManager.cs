@@ -122,7 +122,8 @@ namespace GameFramework.Resource
         /// <param name="priority">加载资源的优先级。</param>
         /// <param name="loadAssetCallbacks">加载资源回调函数集。</param>
         /// <param name="userData">用户自定义数据。</param>
-        void LoadAssetAsync(string location, int priority, LoadAssetCallbacks loadAssetCallbacks, object userData);
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包。</param>
+        void LoadAssetAsync(string location, int priority, LoadAssetCallbacks loadAssetCallbacks, object userData, string packageName = "");
 
         /// <summary>
         /// 异步加载资源。
@@ -132,7 +133,8 @@ namespace GameFramework.Resource
         /// <param name="priority">加载资源的优先级。</param>
         /// <param name="loadAssetCallbacks">加载资源回调函数集。</param>
         /// <param name="userData">用户自定义数据。</param>
-        void LoadAssetAsync(string location, Type assetType, int priority, LoadAssetCallbacks loadAssetCallbacks, object userData);
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包。</param>
+        void LoadAssetAsync(string location, Type assetType, int priority, LoadAssetCallbacks loadAssetCallbacks, object userData, string packageName = "");
 
         /// <summary>
         /// 同步加载资源。
@@ -177,11 +179,10 @@ namespace GameFramework.Resource
         /// <param name="cancellationToken">取消操作Token。</param>
         /// <param name="needCache">是否需要缓存。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
-        /// <param name="parent">资源实例父节点。</param>
         /// <typeparam name="T">要加载资源的类型。</typeparam>
         /// <returns>异步资源实例。</returns>
         UniTask<T> LoadAssetAsync<T>(string location, CancellationToken cancellationToken = default,
-            bool needCache = false, string packageName = "", Transform parent = null) where T : UnityEngine.Object;
+            bool needCache = false, string packageName = "") where T : UnityEngine.Object;
 
         /// <summary>
         /// 异步加载游戏物体。

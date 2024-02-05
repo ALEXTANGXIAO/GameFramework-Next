@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using GameFramework;
 using GameFramework.Resource;
@@ -19,15 +20,15 @@ namespace UnityGameFramework.Runtime
         private const int DefaultPriority = 0;
 
         private IResourceManager m_ResourceManager;
-        
+
         private bool m_ForceUnloadUnusedAssets = false;
-        
+
         private bool m_PreorderUnloadUnusedAssets = false;
-        
+
         private bool m_PerformGCCollect = false;
-        
+
         private AsyncOperation m_AsyncOperation = null;
-        
+
         private float m_LastUnloadUnusedAssetsOperationElapseSeconds = 0f;
 
         [SerializeField] private float m_MinUnloadUnusedAssetsInterval = 60f;
@@ -38,7 +39,7 @@ namespace UnityGameFramework.Runtime
         /// 当前最新的包裹版本。
         /// </summary>
         public string PackageVersion { set; get; }
-        
+
         /// <summary>
         /// 资源包名称。
         /// </summary>
@@ -176,7 +177,7 @@ namespace UnityGameFramework.Runtime
             m_ResourceManager.InstanceRoot = transform;
             m_ResourceManager.HostServerURL = SettingsUtils.GetResDownLoadPath();
             m_ResourceManager.Initialize();
-            Log.Info($"AssetsComponent Run Mode：{PlayMode}");
+            Log.Info($"ResourceComponent Run Mode：{PlayMode}");
         }
 
         /// <summary>
@@ -199,32 +200,115 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 异步加载资源。
         /// </summary>
-        /// <param name="assetName">要加载资源的名称。</param>
+        /// <param name="location">资源的定位地址。</param>
         /// <param name="assetType">要加载资源的类型。</param>
         /// <param name="loadAssetCallbacks">加载资源回调函数集。</param>
         /// <param name="userData">用户自定义数据。</param>
-        public void LoadAssetAsync(string assetName, Type assetType, LoadAssetCallbacks loadAssetCallbacks, object userData = null)
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包。</param>
+        public void LoadAssetAsync(string location, Type assetType, LoadAssetCallbacks loadAssetCallbacks, object userData = null, string packageName = "")
         {
-            LoadAssetAsync(assetName, assetType, DefaultPriority, loadAssetCallbacks, userData);
+            LoadAssetAsync(location, assetType, DefaultPriority, loadAssetCallbacks, userData, packageName);
         }
 
         /// <summary>
         /// 异步加载资源。
         /// </summary>
-        /// <param name="assetName">要加载资源的名称。</param>
+        /// <param name="location">资源的定位地址。</param>
         /// <param name="assetType">要加载资源的类型。</param>
         /// <param name="priority">加载资源的优先级。</param>
         /// <param name="loadAssetCallbacks">加载资源回调函数集。</param>
         /// <param name="userData">用户自定义数据。</param>
-        public void LoadAssetAsync(string assetName, Type assetType, int priority, LoadAssetCallbacks loadAssetCallbacks, object userData)
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包。</param>
+        public void LoadAssetAsync(string location, Type assetType, int priority, LoadAssetCallbacks loadAssetCallbacks, object userData, string packageName = "")
         {
-            if (string.IsNullOrEmpty(assetName))
+            if (string.IsNullOrEmpty(location))
             {
                 Log.Error("Asset name is invalid.");
                 return;
             }
 
-            m_ResourceManager.LoadAssetAsync(assetName, assetType, priority, loadAssetCallbacks, userData);
+            m_ResourceManager.LoadAssetAsync(location, assetType, priority, loadAssetCallbacks, userData, packageName);
+        }
+
+        /// <summary>
+        /// 同步加载资源。
+        /// </summary>
+        /// <param name="location">资源的定位地址。</param>
+        /// <param name="needCache">是否需要缓存。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包。</param>
+        /// <typeparam name="T">要加载资源的类型。</typeparam>
+        /// <returns>资源实例。</returns>
+        public T LoadAsset<T>(string location, bool needCache = false, string packageName = "") where T : UnityEngine.Object
+        {
+            if (string.IsNullOrEmpty(location))
+            {
+                Log.Error("Asset name is invalid.");
+                return null;
+            }
+
+            return m_ResourceManager.LoadAsset<T>(location, needCache, packageName);
+        }
+
+        /// <summary>
+        /// 同步加载资源。
+        /// </summary>
+        /// <param name="location">资源的定位地址。</param>
+        /// <param name="needCache">是否需要缓存。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包。</param>
+        /// <param name="parent">资源实例父节点。</param>
+        /// <returns>资源实例。</returns>
+        public GameObject LoadGameObject(string location, bool needCache = false, string packageName = "", Transform parent = null)
+        {
+            if (string.IsNullOrEmpty(location))
+            {
+                Log.Error("Asset name is invalid.");
+                return null;
+            }
+
+            return m_ResourceManager.LoadGameObject(location, needCache, packageName, parent);
+        }
+
+        /// <summary>
+        /// 异步加载资源。
+        /// </summary>
+        /// <param name="location">资源定位地址。</param>
+        /// <param name="cancellationToken">取消操作Token。</param>
+        /// <param name="needCache">是否需要缓存。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包。</param>
+        /// <typeparam name="T">要加载资源的类型。</typeparam>
+        /// <returns>异步资源实例。</returns>
+        public async UniTask<T> LoadAssetAsync<T>(string location, CancellationToken cancellationToken = default, bool needCache = false,
+            string packageName = "") where T : UnityEngine.Object
+        {
+            if (string.IsNullOrEmpty(location))
+            {
+                Log.Error("Asset name is invalid.");
+                return null;
+            }
+
+            return await m_ResourceManager.LoadAssetAsync<T>(location, cancellationToken, needCache, packageName);
+        }
+
+        /// <summary>
+        /// 异步加载游戏物体。
+        /// </summary>
+        /// <param name="location">资源定位地址。</param>
+        /// <param name="cancellationToken">取消操作Token。</param>
+        /// <param name="needCache">是否需要缓存。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包。</param>
+        /// <param name="parent">资源实例父节点。</param>
+        /// <returns>异步游戏物体实例。</returns>
+        public async UniTask<GameObject> LoadGameObjectAsync(string location, CancellationToken cancellationToken = default, bool needCache = false,
+            string packageName = "",
+            Transform parent = null)
+        {
+            if (string.IsNullOrEmpty(location))
+            {
+                Log.Error("Asset name is invalid.");
+                return null;
+            }
+
+            return await m_ResourceManager.LoadGameObjectAsync(location, cancellationToken, needCache, packageName, parent);
         }
 
         #endregion
@@ -237,13 +321,24 @@ namespace UnityGameFramework.Runtime
         /// <param name="asset">要卸载的资源。</param>
         public void UnloadAsset(object asset)
         {
-            if (asset == null)
-            {
-                throw new GameFrameworkException("Asset is invalid.");
-            }
+            m_ResourceManager.UnloadAsset(asset);
         }
 
         #endregion
+
+        #region 清理资源
+
+        /// <summary>
+        /// 清理沙盒路径的资源。
+        /// </summary>
+        /// <param name="packageName">资源包名称。</param>
+        public void ClearSandbox(string packageName = "")
+        {
+        }
+
+        #endregion
+
+        #region 释放资源
 
         /// <summary>
         /// 强制执行释放未被使用的资源。
@@ -257,7 +352,7 @@ namespace UnityGameFramework.Runtime
                 m_PerformGCCollect = true;
             }
         }
-        
+
         /// <summary>
         /// 预订执行释放未被使用的资源。
         /// </summary>
@@ -269,10 +364,6 @@ namespace UnityGameFramework.Runtime
             {
                 m_PerformGCCollect = true;
             }
-        }
-
-        public void ClearSandbox()
-        {
         }
 
         private void Update()
@@ -300,5 +391,7 @@ namespace UnityGameFramework.Runtime
                 }
             }
         }
+
+        #endregion
     }
 }
