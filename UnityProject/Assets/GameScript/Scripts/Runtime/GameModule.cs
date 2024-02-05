@@ -176,7 +176,7 @@ public class GameModule : MonoBehaviour
         return (T)component;
     }
 
-    private void Awake()
+    private void Start()
     {
         Init();
     }
