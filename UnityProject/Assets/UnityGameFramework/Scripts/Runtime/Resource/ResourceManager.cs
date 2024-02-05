@@ -573,13 +573,11 @@ namespace GameFramework.Resource
             
             float duration = Time.time;
 
-            var assetPackage = YooAssets.TryGetPackage(DefaultPackageName);
+            AssetInfo assetInfo = GetAssetInfo(location, DefaultPackageName);
 
-            AssetInfo assetInfo = assetPackage.GetAssetInfo(location);
-
-            if (assetInfo == null)
+            if (!assetInfo.Error.IsNullOrEmpty())
             {
-                string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", location);
+                string errorMessage = Utility.Text.Format("Can not load asset '{0}' because :'{1}'.", location, assetInfo.Error);
                 if (loadAssetCallbacks.LoadAssetFailureCallback != null)
                 {
                     loadAssetCallbacks.LoadAssetFailureCallback(location, LoadResourceStatus.NotExist, errorMessage, userData);
@@ -588,6 +586,8 @@ namespace GameFramework.Resource
 
                 throw new GameFrameworkException(errorMessage);
             }
+            
+            var assetPackage = YooAssets.TryGetPackage(DefaultPackageName);
 
             var handleBase = assetPackage.LoadAssetAsync(location, assetType);
 

@@ -317,7 +317,7 @@ MonoBehaviour:
   m_EditorLanguage: 8
   m_TextHelperTypeName: UnityGameFramework.Runtime.DefaultTextHelper
   m_VersionHelperTypeName: UnityGameFramework.Runtime.DefaultVersionHelper
-  m_LogHelperTypeName: GameMain.DinLogHelper
+  m_LogHelperTypeName: UnityGameFramework.Runtime.DefaultLogHelper
   m_CompressionHelperTypeName: UnityGameFramework.Runtime.DefaultCompressionHelper
   m_JsonHelperTypeName: GameMain.NewtonsoftJsonHelper
   m_FrameRate: 60

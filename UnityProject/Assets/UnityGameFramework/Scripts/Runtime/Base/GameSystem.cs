@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 namespace UnityGameFramework.Runtime
 {
     /// <summary>
-    /// 游戏系统。
+    /// 游戏框架系统。
     /// <remarks>管理内部游戏框架组。</remarks>
     /// </summary>
     public static class GameSystem

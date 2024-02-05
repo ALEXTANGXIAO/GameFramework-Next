@@ -183,15 +183,15 @@ namespace UnityGameFramework.Runtime
         /// 初始化操作。
         /// </summary>
         /// <returns></returns>
-        public void InitPackage()
+        public async UniTask<bool> InitPackage()
         {
             if (m_ResourceManager == null)
             {
                 Log.Fatal("Resource component is invalid.");
-                return;
+                return false;
             }
 
-            m_ResourceManager.InitPackage(PackageName);
+            return await m_ResourceManager.InitPackage(PackageName);
         }
 
         #region 加载资源
