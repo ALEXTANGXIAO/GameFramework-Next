@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class GameFrameworkSettingsProvider : SettingsProvider
 {
-    const string k_SettingsPath = "Assets/GameMain/Resources/Settings/GameFrameworkGlobalSettings.asset";
+    const string k_SettingsPath = "Assets/GameScript/Resources/Settings/GameFrameworkGlobalSettings.asset";
     private const string headerName = "GameFramework/GameFrameworkSettings";
     private SerializedObject m_CustomSettings;
 
