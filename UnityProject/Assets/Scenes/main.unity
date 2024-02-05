@@ -186,10 +186,6 @@ PrefabInstance:
       propertyPath: m_InstanceRoot
       value: 
       objectReference: {fileID: 226473277}
-    - target: {fileID: 11499388, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
-      propertyPath: m_LogHelperTypeName
-      value: UnityGameFramework.Runtime.DefaultLogHelper
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
 --- !u!4 &194006812 stripped
