@@ -676,7 +676,7 @@ namespace GameFramework.Resource
             
             float duration = Time.time;
 
-            AssetHandle handle = GetHandleAsync(location, assetType, packageName: packageName);
+            AssetHandle handle = GetHandleAsync(location, assetType, needCache:assetInfo.AssetType == typeof(GameObject), packageName: packageName);
 
             await handle.ToUniTask();
 
@@ -740,7 +740,7 @@ namespace GameFramework.Resource
             
             float duration = Time.time;
 
-            AssetHandle handle = GetHandleAsync(location, assetInfo.AssetType, packageName: packageName);
+            AssetHandle handle = GetHandleAsync(location, assetInfo.AssetType, needCache:assetInfo.AssetType == typeof(GameObject), packageName: packageName);
 
             await handle.ToUniTask();
 
