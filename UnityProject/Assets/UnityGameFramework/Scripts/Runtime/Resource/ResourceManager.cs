@@ -829,6 +829,7 @@ namespace GameFramework.Resource
                     package.UnloadUnusedAssets();
                 }
             }
+            m_AssetPool.ReleaseAllUnused();
         }
 
         public void ForceUnloadAllAssets()
@@ -837,7 +838,6 @@ namespace GameFramework.Resource
             Log.Warning($"WebGL not support invoke {nameof(ForceUnloadAllAssets)}");
 			return;
 #else
-            m_AssetPool.ReleaseAllUnused();
             m_AssetHandlesCacheMap.Clear();
             
             foreach (var package in PackageMap.Values)
