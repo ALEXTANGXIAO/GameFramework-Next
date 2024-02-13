@@ -48,10 +48,10 @@ namespace GameFramework
         public static T GetModule<T>() where T : class
         {
             Type interfaceType = typeof(T);
-            // if (!interfaceType.IsInterface)
-            // {
-            //     throw new GameFrameworkException(Utility.Text.Format("You must get module by interface, but '{0}' is not.", interfaceType.FullName));
-            // }
+            if (!interfaceType.IsInterface)
+            {
+                throw new GameFrameworkException(Utility.Text.Format("You must get module by interface, but '{0}' is not.", interfaceType.FullName));
+            }
 
             if (!interfaceType.FullName.StartsWith("GameFramework.", StringComparison.Ordinal))
             {
