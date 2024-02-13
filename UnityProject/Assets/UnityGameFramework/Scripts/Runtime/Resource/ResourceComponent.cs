@@ -412,7 +412,6 @@ namespace UnityGameFramework.Runtime
 
             if (m_AsyncOperation is { isDone: true })
             {
-                m_ResourceManager.UnloadUnusedAssets();
                 m_AsyncOperation = null;
                 if (m_PerformGCCollect)
                 {
