@@ -1,5 +1,7 @@
 ﻿using GameFramework.ObjectPool;
 using System.Collections.Generic;
+using UnityGameFramework.Runtime;
+using YooAsset;
 
 namespace GameFramework.Resource
 {
@@ -10,17 +12,19 @@ namespace GameFramework.Resource
         /// </summary>
         private sealed class AssetObject : ObjectBase
         {
-            private object m_Resource;
+            private object m_AssetHandle;
             private ResourceManager m_ResourceManager;
+
+            public object AssetHandle => m_AssetHandle;
 
             public AssetObject()
             {
-                m_Resource = null;
+                m_AssetHandle = null;
             }
 
-            public static AssetObject Create(string name, object target, object resource, ResourceManager resourceManager)
+            public static AssetObject Create(string name, object target, object assetHandle, ResourceManager resourceManager)
             {
-                if (resource == null)
+                if (assetHandle == null)
                 {
                     throw new GameFrameworkException("Resource is invalid.");
                 }
@@ -32,7 +36,7 @@ namespace GameFramework.Resource
 
                 AssetObject assetObject = ReferencePool.Acquire<AssetObject>();
                 assetObject.Initialize(name, target);
-                assetObject.m_Resource = resource;
+                assetObject.m_AssetHandle = assetHandle;
                 assetObject.m_ResourceManager = resourceManager;
                 return assetObject;
             }
@@ -40,21 +44,26 @@ namespace GameFramework.Resource
             public override void Clear()
             {
                 base.Clear();
-                m_Resource = null;
+                m_AssetHandle = null;
             }
 
             protected internal override void OnUnspawn()
             {
                 base.OnUnspawn();
+                Log.Warning($"OnUnspawn: {Target} {AssetHandle}");
             }
 
             protected internal override void Release(bool isShutdown)
             {
                 if (!isShutdown)
                 {
-                    // m_ResourceLoader.m_ResourcePool.Unspawn(m_Resource);
+                    AssetHandle handle = AssetHandle as AssetHandle;
+                    Log.Warning($"Release Handle:" + handle);
+                    if (handle != null)
+                    {
+                        handle.Dispose();
+                    }
                 }
-                // m_ResourceHelper.Release(Target);
             }
         }
     }

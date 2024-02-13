@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using GameFramework.ObjectPool;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityGameFramework.Runtime;
@@ -94,6 +95,7 @@ namespace GameFramework.Resource
 
         public int DownloadingMaxNum { get; set; }
         public int FailedTryAgain { get; set; }
+        
 
         /// <summary>
         /// 默认资源包。
@@ -134,6 +136,9 @@ namespace GameFramework.Resource
                 YooAssets.SetDefaultPackage(defaultPackage);
                 DefaultPackage = defaultPackage;
             }
+
+            IObjectPoolManager objectPoolManager = GameFrameworkEntry.GetModule<IObjectPoolManager>();
+            SetObjectPoolManager(objectPoolManager);
         }
 
         #region 设置接口
@@ -549,11 +554,18 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Asset name is invalid.");
             }
             
+            AssetObject assetObject = m_AssetPool.Spawn(location);
+            if (assetObject != null)
+            {
+                return assetObject.Target as T;
+            }
+            
             AssetHandle handle = GetHandleSync<T>(location, needCache, packageName: packageName);
 
             T ret = handle.AssetObject as T;
                 
-            m_AssetHandleMap.Add(handle.AssetObject, handle);
+            assetObject = AssetObject.Create(location, handle.AssetObject, handle,this);
+            m_AssetPool.Register(assetObject, true);
 
             return ret;
         }
@@ -565,11 +577,18 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Asset name is invalid.");
             }
             
+            AssetObject assetObject = m_AssetPool.Spawn(location);
+            if (assetObject != null)
+            {
+                return assetObject.Target as GameObject;
+            }
+            
             AssetHandle handle = GetHandleSync<GameObject>(location, needCache, packageName: packageName);
 
             GameObject gameObject = handle.InstantiateSync(parent);
 
-            m_AssetHandleMap.Add(gameObject, handle);
+            assetObject = AssetObject.Create(location, handle.AssetObject, handle,this);
+            m_AssetPool.Register(assetObject, true);
             
             return gameObject;
         }
@@ -598,6 +617,12 @@ namespace GameFramework.Resource
             {
                 throw new GameFrameworkException("Asset name is invalid.");
             }
+            
+            AssetObject assetObject = m_AssetPool.Spawn(location);
+            if (assetObject != null)
+            {
+                return assetObject.Target as T;
+            }
  
             AssetHandle handle = GetHandleAsync<T>(location, needCache, packageName: packageName);
 
@@ -608,7 +633,8 @@ namespace GameFramework.Resource
                 return null;
             }
             
-            m_AssetHandleMap.Add(handle.AssetObject, handle);
+            assetObject = AssetObject.Create(location, handle.AssetObject, handle,this);
+            m_AssetPool.Register(assetObject, true);
             
             return handle.AssetObject as T;
         }
@@ -619,6 +645,12 @@ namespace GameFramework.Resource
             if (string.IsNullOrEmpty(location))
             {
                 throw new GameFrameworkException("Asset name is invalid.");
+            }
+            
+            AssetObject assetObject = m_AssetPool.Spawn(location);
+            if (assetObject != null)
+            {
+                return assetObject.Target as GameObject;
             }
             
             AssetHandle handle = GetHandleAsync<GameObject>(location, needCache, packageName: packageName);
@@ -632,7 +664,8 @@ namespace GameFramework.Resource
 
             GameObject gameObject = handle.InstantiateSync(parent);
             
-            m_AssetHandleMap.Add(gameObject, handle);
+            assetObject = AssetObject.Create(location, handle.AssetObject, handle,this);
+            m_AssetPool.Register(assetObject, true);
 
             return gameObject;
         }
@@ -658,6 +691,13 @@ namespace GameFramework.Resource
             if (loadAssetCallbacks == null)
             {
                 throw new GameFrameworkException("Load asset callbacks is invalid.");
+            }
+            
+            AssetObject assetObject = m_AssetPool.Spawn(location);
+            if (assetObject != null)
+            {
+                loadAssetCallbacks.LoadAssetSuccessCallback(location, assetObject.Target, 0, userData);
+                return;
             }
             
             AssetInfo assetInfo = GetAssetInfo(location, packageName);
@@ -693,7 +733,8 @@ namespace GameFramework.Resource
             }
             else
             {
-                m_AssetHandleMap.Add(handle.AssetObject, handle);
+                assetObject = AssetObject.Create(location, handle.AssetObject, handle,this);
+                m_AssetPool.Register(assetObject, true);
                 
                 if (loadAssetCallbacks.LoadAssetSuccessCallback != null)
                 {
@@ -722,6 +763,13 @@ namespace GameFramework.Resource
             if (loadAssetCallbacks == null)
             {
                 throw new GameFrameworkException("Load asset callbacks is invalid.");
+            }
+            
+            AssetObject assetObject = m_AssetPool.Spawn(location);
+            if (assetObject != null)
+            {
+                loadAssetCallbacks.LoadAssetSuccessCallback(location, assetObject.Target, 0, userData);
+                return;
             }
 
             AssetInfo assetInfo = GetAssetInfo(location, packageName);
@@ -757,7 +805,8 @@ namespace GameFramework.Resource
             }
             else
             {
-                m_AssetHandleMap.Add(handle.AssetObject, handle);
+                assetObject = AssetObject.Create(location, handle.AssetObject, handle,this);
+                m_AssetPool.Register(assetObject, true);
 
                 if (loadAssetCallbacks.LoadAssetSuccessCallback != null)
                 {
@@ -788,7 +837,7 @@ namespace GameFramework.Resource
             Log.Warning($"WebGL not support invoke {nameof(ForceUnloadAllAssets)}");
 			return;
 #else
-            m_AssetHandleMap.Clear();
+            m_AssetPool.ReleaseAllUnused();
             m_AssetHandlesCacheMap.Clear();
             
             foreach (var package in PackageMap.Values)
@@ -802,42 +851,42 @@ namespace GameFramework.Resource
         }
 
         // TODO 临时写法
-        public void UnloadAsset(object asset)
-        {
-            if (asset == null)
-            {
-                throw new GameFrameworkException("Asset is invalid.");
-            }
-            
-            if (asset is UnityEngine.Object unityObject)
-            {
-                if (m_AssetHandleMap.TryGetValue(unityObject, out AssetHandle handle))
-                {
-                    AssetInfo assetInfo = handle.GetAssetInfo();
-                    
-                    if (m_AssetHandlesCacheMap.TryGetValue(assetInfo.Address,out AssetHandle cacheHandle))
-                    {
-                        if (cacheHandle is { IsValid: true })
-                        {
-                            cacheHandle.Dispose();
-                        }
-                        m_AssetHandlesCacheMap.Remove(assetInfo.Address);
-                    }
-                    
-                    if (handle is { IsValid: true })
-                    {
-                        handle.Dispose();
-                    }
-                    
-                    m_AssetHandleMap.Remove(unityObject);
-                }
-                unityObject = null;
-            }
-            else
-            {
-                asset = null;
-            }
-        }
+        // public void UnloadAsset(object asset)
+        // {
+        //     if (asset == null)
+        //     {
+        //         throw new GameFrameworkException("Asset is invalid.");
+        //     }
+        //     
+        //     if (asset is UnityEngine.Object unityObject)
+        //     {
+        //         if (m_AssetHandleMap.TryGetValue(unityObject, out AssetHandle handle))
+        //         {
+        //             AssetInfo assetInfo = handle.GetAssetInfo();
+        //             
+        //             if (m_AssetHandlesCacheMap.TryGetValue(assetInfo.Address,out AssetHandle cacheHandle))
+        //             {
+        //                 if (cacheHandle is { IsValid: true })
+        //                 {
+        //                     cacheHandle.Dispose();
+        //                 }
+        //                 m_AssetHandlesCacheMap.Remove(assetInfo.Address);
+        //             }
+        //             
+        //             if (handle is { IsValid: true })
+        //             {
+        //                 handle.Dispose();
+        //             }
+        //             
+        //             m_AssetHandleMap.Remove(unityObject);
+        //         }
+        //         unityObject = null;
+        //     }
+        //     else
+        //     {
+        //         asset = null;
+        //     }
+        // }
         #endregion
 
         /// <summary>

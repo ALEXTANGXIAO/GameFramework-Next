@@ -129,6 +129,29 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public string ReadWritePath => m_ResourceManager.ReadWritePath;
 
+        [SerializeField]
+        private float m_AssetAutoReleaseInterval = 60f;
+
+        [SerializeField]
+        private int m_AssetCapacity = 64;
+
+        [SerializeField]
+        private float m_AssetExpireTime = 60f;
+
+        [SerializeField]
+        private int m_AssetPriority = 0;
+
+        [SerializeField]
+        private float m_ResourceAutoReleaseInterval = 60f;
+
+        [SerializeField]
+        private int m_ResourceCapacity = 16;
+
+        [SerializeField]
+        private float m_ResourceExpireTime = 60f;
+
+        [SerializeField]
+        private int m_ResourcePriority = 0;
         #endregion
 
         private void Start()
@@ -177,6 +200,14 @@ namespace UnityGameFramework.Runtime
             m_ResourceManager.InstanceRoot = transform;
             m_ResourceManager.HostServerURL = SettingsUtils.GetResDownLoadPath();
             m_ResourceManager.Initialize();
+            m_ResourceManager.AssetAutoReleaseInterval = m_AssetAutoReleaseInterval;
+            m_ResourceManager.AssetCapacity = m_AssetCapacity;
+            m_ResourceManager.AssetExpireTime = m_AssetExpireTime;
+            m_ResourceManager.AssetPriority = m_AssetPriority;
+            m_ResourceManager.ResourceAutoReleaseInterval = m_ResourceAutoReleaseInterval;
+            m_ResourceManager.ResourceCapacity = m_ResourceCapacity;
+            m_ResourceManager.ResourceExpireTime = m_ResourceExpireTime;
+            m_ResourceManager.ResourcePriority = m_ResourcePriority;
             Log.Info($"ResourceComponent Run Mode：{PlayMode}");
         }
 

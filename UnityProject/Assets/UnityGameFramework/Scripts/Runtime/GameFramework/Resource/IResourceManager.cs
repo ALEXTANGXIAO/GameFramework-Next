@@ -90,6 +90,78 @@ namespace GameFramework.Resource
         /// 热更链接URL。
         /// </summary>
         string HostServerURL { get; set; }
+        
+        /// <summary>
+        /// 获取或设置资源对象池自动释放可释放对象的间隔秒数。
+        /// </summary>
+        float AssetAutoReleaseInterval
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 获取或设置资源对象池的容量。
+        /// </summary>
+        int AssetCapacity
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 获取或设置资源对象池对象过期秒数。
+        /// </summary>
+        float AssetExpireTime
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 获取或设置资源对象池的优先级。
+        /// </summary>
+        int AssetPriority
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 获取或设置资源对象池自动释放可释放对象的间隔秒数。
+        /// </summary>
+        float ResourceAutoReleaseInterval
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 获取或设置资源对象池的容量。
+        /// </summary>
+        int ResourceCapacity
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 获取或设置资源对象池对象过期秒数。
+        /// </summary>
+        float ResourceExpireTime
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// 获取或设置资源对象池的优先级。
+        /// </summary>
+        int ResourcePriority
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// 卸载资源。
