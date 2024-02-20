@@ -1,0 +1,18 @@
+{
+    "name": "GameplayAbilitySystem.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GameplayAbilitySystem"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

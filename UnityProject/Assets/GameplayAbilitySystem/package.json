@@ -1,0 +1,23 @@
+{
+  "name": "com.dinstudio.gameplayabilitysystem",
+  "version": "1.0.0",
+  "displayName": "Gameplay Ability System",
+  "unity": "2021.3",
+  "unityRelease": "20f1",
+  "documentationUrl": "https://example.com/",
+  "changelogUrl": "https://example.com/changelog.html",
+  "licensesUrl": "https://example.com/licensing.html",
+  "keywords": [
+    "Gameplay",
+    "Ability",
+    "System",
+    "Framework",
+    "Battle"
+  ],
+  "author": {
+    "name": "ALEXTANGXIAO",
+    "email": "574809918@qq.com",
+    "url": "https://www.unity3d.com"
+  },
+  "description": "The Gameplay Ability System is a highly-flexible framework for Unity to building abilities and attributes of the type you might find in an RPG or MOBA title. You can build actions or passive abilities for the characters in your games to use, status effects that can build up or wear down various attributes as a result of these actions,."
+}
