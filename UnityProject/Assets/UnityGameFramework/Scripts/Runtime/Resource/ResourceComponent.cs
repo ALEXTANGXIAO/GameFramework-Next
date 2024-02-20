@@ -48,7 +48,35 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 资源系统运行模式。
         /// </summary>
-        public EPlayMode PlayMode = EPlayMode.EditorSimulateMode;
+        [SerializeField] private EPlayMode playMode = EPlayMode.EditorSimulateMode;
+
+        /// <summary>
+        /// 资源系统运行模式。
+        /// <remarks>编辑器内优先使用。</remarks>
+        /// </summary>
+        public EPlayMode PlayMode
+        {
+            get
+            {
+#if UNITY_EDITOR
+                //编辑器模式使用。
+                return (EPlayMode)UnityEditor.EditorPrefs.GetInt("EditorPlayMode");
+#else
+                if (playMode == EPlayMode.EditorSimulateMode)
+                {
+                    playMode = EPlayMode.OfflinePlayMode;
+                }
+                //运行时使用。
+                return playMode;
+#endif
+            }
+            set
+            {
+#if UNITY_EDITOR
+                playMode = value;
+#endif
+            }
+        }
 
         /// <summary>
         /// 下载文件校验等级。
@@ -62,7 +90,7 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         [SerializeField] public long Milliseconds = 30;
 
-        public int m_DownloadingMaxNum = 2;
+        public int m_DownloadingMaxNum = 10;
 
         /// <summary>
         /// 获取或设置同时最大下载数目。
@@ -215,7 +243,7 @@ namespace UnityGameFramework.Runtime
         /// 初始化操作。
         /// </summary>
         /// <returns></returns>
-        public async UniTask<InitializationOperation> InitPackage()
+        public async UniTask<InitializationOperation> InitPackage(string packageName = "")
         {
             if (m_ResourceManager == null)
             {
@@ -223,8 +251,109 @@ namespace UnityGameFramework.Runtime
                 return null;
             }
 
-            return await m_ResourceManager.InitPackage(PackageName);
+            return await m_ResourceManager.InitPackage(string.IsNullOrEmpty(packageName) ? PackageName:packageName);
         }
+
+        #region 版本更新
+        /// <summary>
+        /// 获取当前资源包版本。
+        /// </summary>
+        /// <param name="customPackageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <returns>资源包版本。</returns>
+        public string GetPackageVersion(string customPackageName = "")
+        {
+            var package = string.IsNullOrEmpty(customPackageName)
+                ? YooAssets.GetPackage(PackageName)
+                : YooAssets.GetPackage(customPackageName);
+            if (package == null)
+            {
+                return string.Empty;
+            }
+
+            return package.GetPackageVersion();
+        }
+
+        /// <summary>
+        /// 异步更新最新包的版本。
+        /// </summary>
+        /// <param name="appendTimeTicks">请求URL是否需要带时间戳。</param>
+        /// <param name="timeout">超时时间。</param>
+        /// <param name="customPackageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <returns>请求远端包裹的最新版本操作句柄。</returns>
+        public UpdatePackageVersionOperation UpdatePackageVersionAsync(bool appendTimeTicks = false, int timeout = 60,
+            string customPackageName = "")
+        {
+            var package = string.IsNullOrEmpty(customPackageName)
+                ? YooAssets.GetPackage(PackageName)
+                : YooAssets.GetPackage(customPackageName);
+            return package.UpdatePackageVersionAsync(appendTimeTicks, timeout);
+        }
+
+        /// <summary>
+        /// 向网络端请求并更新清单
+        /// </summary>
+        /// <param name="packageVersion">更新的包裹版本</param>
+        /// <param name="autoSaveVersion">更新成功后自动保存版本号，作为下次初始化的版本。</param>
+        /// <param name="timeout">超时时间（默认值：60秒）</param>
+        /// <param name="customPackageName">指定资源包的名称。不传使用默认资源包</param>
+        public UpdatePackageManifestOperation UpdatePackageManifestAsync(string packageVersion,
+            bool autoSaveVersion = true, int timeout = 60, string customPackageName = "")
+        {
+            var package = string.IsNullOrEmpty(customPackageName)
+                ? YooAssets.GetPackage(PackageName)
+                : YooAssets.GetPackage(customPackageName);
+            return package.UpdatePackageManifestAsync(packageVersion, autoSaveVersion, timeout);
+        }
+        
+        /// <summary>
+        /// 资源下载器，用于下载当前资源版本所有的资源包文件。
+        /// </summary>
+        public ResourceDownloaderOperation Downloader { get; set; }
+        
+        /// <summary>
+        /// 创建资源下载器，用于下载当前资源版本所有的资源包文件。
+        /// </summary>
+        /// <param name="customPackageName">指定资源包的名称。不传使用默认资源包</param>
+        public ResourceDownloaderOperation CreateResourceDownloader(string customPackageName = "")
+        {
+            if (string.IsNullOrEmpty(customPackageName))
+            {
+                var package = YooAssets.GetPackage(PackageName);
+                Downloader = package.CreateResourceDownloader(DownloadingMaxNum, FailedTryAgain);
+                return Downloader;
+            }
+            else
+            {
+                var package = YooAssets.GetPackage(customPackageName);
+                Downloader = package.CreateResourceDownloader(DownloadingMaxNum, FailedTryAgain);
+                return Downloader;
+            }
+        }
+        
+        /// <summary>
+        /// 清理包裹未使用的缓存文件。
+        /// </summary>
+        /// <param name="customPackageName">指定资源包的名称。不传使用默认资源包</param>
+        public ClearUnusedCacheFilesOperation ClearUnusedCacheFilesAsync(string customPackageName = "")
+        {
+            var package = string.IsNullOrEmpty(customPackageName)
+                ? YooAssets.GetPackage(PackageName)
+                : YooAssets.GetPackage(customPackageName);
+            return package.ClearUnusedCacheFilesAsync();
+        }
+
+        /// <summary>
+        /// 清理沙盒路径。
+        /// </summary>
+        /// <param name="customPackageName">指定资源包的名称。不传使用默认资源包</param>
+        public void ClearSandbox(string customPackageName = "")
+        {
+            var package = string.IsNullOrEmpty(customPackageName)
+                ? YooAssets.GetPackage(PackageName)
+                : YooAssets.GetPackage(customPackageName);
+            package.ClearPackageSandbox();
+        }
+        #endregion
 
         #region 加载资源
 
@@ -353,18 +482,6 @@ namespace UnityGameFramework.Runtime
         public void UnloadAsset(object asset)
         {
             m_ResourceManager.UnloadAsset(asset);
-        }
-
-        #endregion
-
-        #region 清理资源
-
-        /// <summary>
-        /// 清理沙盒路径的资源。
-        /// </summary>
-        /// <param name="packageName">资源包名称。</param>
-        public void ClearSandbox(string packageName = "")
-        {
         }
 
         #endregion

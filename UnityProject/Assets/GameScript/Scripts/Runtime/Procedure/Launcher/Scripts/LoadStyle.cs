@@ -24,20 +24,20 @@ namespace GameMain
 
         public enum StyleEnum
         {
-            Style_Default = 0,//默认
-            Style_QuitApp = 1,//退出应用
-            Style_RestartApp = 2,//重启应用
-            Style_Retry = 3,//重试
-            Style_StartUpdate_Notice = 4,//提示更新
-            Style_DownLoadApk = 5,//下载底包
-            Style_Clear = 6,//修复客户端
-            Style_DownZip = 7,//继续下载压缩包
+            Style_Default = 0, //默认
+            Style_QuitApp = 1, //退出应用
+            Style_RestartApp = 2, //重启应用
+            Style_Retry = 3, //重试
+            Style_StartUpdate_Notice = 4, //提示更新
+            Style_DownLoadApk = 5, //下载底包
+            Style_Clear = 6, //修复客户端
+            Style_DownZip = 7, //继续下载压缩包
         }
 
         public enum BtnEnum
         {
-            BtnOK = 0,    //确定按钮
-            BtnIgnore = 1,//取消按钮
+            BtnOK = 0, //确定按钮
+            BtnIgnore = 1, //取消按钮
             BtnOther = 2, //其他按钮
         }
 
@@ -46,10 +46,11 @@ namespace GameMain
         /// </summary>
         private class StyleItem
         {
-            public Alignment Align;//对其方式
-            public bool Show;//是否隐藏
-            public string Desc;//按钮描述
+            public Alignment Align; //对其方式
+            public bool Show; //是否隐藏
+            public string Desc; //按钮描述
         }
+
         /// <summary>
         /// 对齐方式
         /// </summary>
@@ -81,6 +82,7 @@ namespace GameMain
         }
 
         #region 初始化配置文件
+
         private string SetFilePath(string path)
         {
 #if UNITY_ANDROID
@@ -105,9 +107,12 @@ namespace GameMain
             {
                 loadConfig = JsonConvert.DeserializeObject<Dictionary<StyleEnum, Dictionary<BtnEnum, StyleItem>>>(www.downloadHandler.text);
             }
+
             www.Dispose();
         }
+
         #endregion
+
         /// <summary>
         /// 设置样式
         /// </summary>
@@ -129,6 +134,7 @@ namespace GameMain
                 Log.Error($"LoadConfig, Can not find type:{type},please check it");
                 return;
             }
+
             SetButtonStyle(style);
         }
 

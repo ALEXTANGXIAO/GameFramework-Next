@@ -25,9 +25,9 @@ namespace GameMain
 
         void Start()
         {
-            EventTriggerListener.Get(_btn_update.gameObject).OnClick = _OnGameUpdate;
-            EventTriggerListener.Get(_btn_ignore.gameObject).OnClick = _OnGameIgnor;
-            EventTriggerListener.Get(_btn_package.gameObject).OnClick = _OnInvoke;
+            EventTriggerListener.Get(_btn_update.gameObject).OnClick = OnGameUpdate;
+            EventTriggerListener.Get(_btn_ignore.gameObject).OnClick = OnGameIgnore;
+            EventTriggerListener.Get(_btn_package.gameObject).OnClick = OnInvoke;
         }
 
         public override void OnEnter(object data)
@@ -54,7 +54,7 @@ namespace GameMain
             _label_desc.text = data.ToString();
         }
 
-        private void _OnGameUpdate(GameObject obj)
+        private void OnGameUpdate(GameObject obj)
         {
             if (OnOk == null)
             {
@@ -67,7 +67,7 @@ namespace GameMain
             }
         }
 
-        private void _OnGameIgnor(GameObject obj)
+        private void OnGameIgnore(GameObject obj)
         {
             if (OnCancle == null)
             {
@@ -80,7 +80,7 @@ namespace GameMain
             }
         }
 
-        private void _OnInvoke(GameObject obj)
+        private void OnInvoke(GameObject obj)
         {
             if (OnOk == null)
             {

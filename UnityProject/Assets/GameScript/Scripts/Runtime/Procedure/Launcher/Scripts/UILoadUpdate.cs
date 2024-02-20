@@ -1,4 +1,5 @@
-﻿using GameFramework;
+﻿using Cysharp.Threading.Tasks;
+using GameFramework;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityGameFramework.Runtime;
@@ -21,11 +22,8 @@ namespace GameMain
 
         public virtual void OnEnable()
         {
-            LoadUpdateLogic.Instance.DownloadCompleteAction += DownLoad_Complete_Action;
-            LoadUpdateLogic.Instance.DownProgressAction += DownLoad_Progress_Action;
-            LoadUpdateLogic.Instance.UnpackedCompleteAction += Unpacked_Complete_Action;
-            LoadUpdateLogic.Instance.UnpackedProgressAction += Unpacked_Progress_Action;
             RefreshVersion();
+            GameEvent.AddEventListener<float>(StringId.StringToHash("DownProgress"),DownLoad_Progress_Action);
         }
 
         public override void OnEnter(object param)
@@ -66,7 +64,7 @@ namespace GameMain
                 LoadStyle.StyleEnum.Style_Clear,
                 () =>
                 {
-                    GameModule.Resource.ClearSandbox();
+                    GameModule.Resource.ClearUnusedCacheFilesAsync();
                     Application.Quit();
                 }, () => { OnContinue(null); });
         }
@@ -131,9 +129,8 @@ namespace GameMain
 
         public virtual void OnDisable()
         {
+            GameEvent.RemoveEventListener<float>(StringId.StringToHash("DownProgress"),DownLoad_Progress_Action);
             OnStop(null);
-            LoadUpdateLogic.Instance.DownloadCompleteAction -= DownLoad_Complete_Action;
-            LoadUpdateLogic.Instance.DownProgressAction -= DownLoad_Progress_Action;
         }
     }
 }

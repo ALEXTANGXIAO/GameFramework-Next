@@ -25,7 +25,7 @@ namespace UnityGameFramework.Editor
         static EditorResourceMode()
         {
             ToolbarExtender.RightToolbarGUI.Add(OnToolbarGUI);
-            _resourceModeIndex = EditorPrefs.GetInt("EditorResourceMode", 0);
+            _playModeIndex = EditorPrefs.GetInt("EditorPlayMode", 0);
         }
 
         private const string ButtonStyleName = "Tab middle";
@@ -39,8 +39,8 @@ namespace UnityGameFramework.Editor
             "WebPlayMode (WebGL运行模式)"
         };
 
-        private static int _resourceModeIndex = 0;
-        public static int ResourceModeIndex => _resourceModeIndex;
+        private static int _playModeIndex = 0;
+        public static int PlayModeIndex => _playModeIndex;
 
         static void OnToolbarGUI()
         {
@@ -51,13 +51,13 @@ namespace UnityGameFramework.Editor
                 GUILayout.FlexibleSpace();
 
                 // 资源模式
-                int selectedIndex = EditorGUILayout.Popup("", _resourceModeIndex, _resourceModeNames, ToolbarStyles.ToolBarButtonGuiStyle);
+                int selectedIndex = EditorGUILayout.Popup("", _playModeIndex, _resourceModeNames, ToolbarStyles.ToolBarButtonGuiStyle);
                 // ReSharper disable once RedundantCheckBeforeAssignment
-                if (selectedIndex != _resourceModeIndex)
+                if (selectedIndex != _playModeIndex)
                 {
                     Debug.Log($"更改编辑器资源运行模式 : {_resourceModeNames[selectedIndex]}");
-                    _resourceModeIndex = selectedIndex;
-                    EditorPrefs.SetInt("EditorResourceMode", selectedIndex);
+                    _playModeIndex = selectedIndex;
+                    EditorPrefs.SetInt("EditorPlayMode", selectedIndex);
                 }
 
                 GUILayout.FlexibleSpace();
