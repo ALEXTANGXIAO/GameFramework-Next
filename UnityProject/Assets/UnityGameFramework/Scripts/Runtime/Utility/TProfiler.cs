@@ -39,7 +39,7 @@ namespace UnityGameFramework.Runtime
             m_currLevel--;
         }
 
-        [Conditional("DIN_PROFILER")]
+        [Conditional("T_PROFILER")]
         public static void BeginSample(string name)
         {
             m_currLevel++;
@@ -52,7 +52,7 @@ namespace UnityGameFramework.Runtime
             Profiler.BeginSample(name);
         }
 
-        [Conditional("DIN_PROFILER")]
+        [Conditional("T_PROFILER")]
         public static void EndSample()
         {
             if (m_currLevel <= m_sampleLevel)
