@@ -13,9 +13,7 @@ namespace GameMain
         protected override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(procedureOwner, elapseSeconds, realElapseSeconds);
-
-            // 播放 Splash 动画
-            //Splash.Active(splashTime:3f);
+            //播放 Splash 动画
             //热更新阶段文本初始化
             LoadText.Instance.InitConfigData(null);
             //热更新UI初始化

@@ -121,6 +121,9 @@ namespace GameMain
         
         private void AllAssemblyLoadComplete()
         {
+#if UNITY_EDITOR
+            m_MainLogicAssembly = GetMainLogicAssembly();
+#endif
             if (m_MainLogicAssembly == null)
             {
                 Log.Fatal($"Main logic assembly missing.");
@@ -156,7 +159,7 @@ namespace GameMain
 
                 foreach (var hotUpdateDllName in SettingsUtils.HybridCLRCustomGlobalSettings.HotUpdateAssemblies)
                 {
-                    if (hotUpdateDllName == $"{assembly.GetName().Name}.dll")
+                    if (hotUpdateDllName == $"{assembly.GetName().Name}.dll" && string.IsNullOrEmpty(assembly.Location))
                     {
                         m_HotfixAssemblys.Add(assembly);
                     }

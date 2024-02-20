@@ -186,4 +186,14 @@ public class GameModule : MonoBehaviour
         InitFrameWorkComponents();
         InitCustomComponents();
     }
+    
+    public static void QuitApplication()
+    {
+#if UNITY_EDITOR
+
+        UnityEditor.EditorApplication.ExecuteMenuItem("Edit/Play");
+
+#endif
+        Application.Quit();
+    }
 }

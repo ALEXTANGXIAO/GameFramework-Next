@@ -23,54 +23,64 @@ namespace GameMain
 
         private async UniTaskVoid InitPackage(ProcedureOwner procedureOwner)
         {
-            var initializationOperation = GameModule.Resource.InitPackage();
-
-            await UniTask.Delay(TimeSpan.FromSeconds(1f));
-
-            await initializationOperation.ToUniTask();
-
-            if (initializationOperation.Status == EOperationStatus.Succeed)
+            await UniTask.WaitForSeconds(0.1f);
+            try
             {
-                // 编辑器模式。
-                if (GameModule.Resource.PlayMode == EPlayMode.EditorSimulateMode)
-                {
-                    Log.Info("Editor resource mode detected.");
-                    ChangeState<ProcedurePreload>(procedureOwner);
-                }
-                // 单机模式。
-                else if (GameModule.Resource.PlayMode == EPlayMode.OfflinePlayMode)
-                {
-                    Log.Info("Package resource mode detected.");
-                    ChangeState<ProcedureInitResources>(procedureOwner);
-                }
-                // 可更新模式。
-                else if (GameModule.Resource.PlayMode == EPlayMode.HostPlayMode)
-                {
-                    // 打开启动UI。
-                    UILoadMgr.Show(UIDefine.UILoadUpdate);
+                var initializationOperation = await GameModule.Resource.InitPackage();
 
-                    Log.Info("Updatable resource mode detected.");
-                    ChangeState<ProcedureUpdateVersion>(procedureOwner);
+                if (initializationOperation.Status == EOperationStatus.Succeed)
+                {
+                    // 编辑器模式。
+                    if (GameModule.Resource.PlayMode == EPlayMode.EditorSimulateMode)
+                    {
+                        Log.Info("Editor resource mode detected.");
+                        ChangeState<ProcedurePreload>(procedureOwner);
+                    }
+                    // 单机模式。
+                    else if (GameModule.Resource.PlayMode == EPlayMode.OfflinePlayMode)
+                    {
+                        Log.Info("Package resource mode detected.");
+                        ChangeState<ProcedureInitResources>(procedureOwner);
+                    }
+                    // 可更新模式。
+                    else if (GameModule.Resource.PlayMode == EPlayMode.HostPlayMode)
+                    {
+                        // 打开启动UI。
+                        UILoadMgr.Show(UIDefine.UILoadUpdate);
+
+                        Log.Info("Updatable resource mode detected.");
+                        ChangeState<ProcedureUpdateVersion>(procedureOwner);
+                    }
+                    else
+                    {
+                        Log.Error("UnKnow resource mode detected Please check???");
+                    }
                 }
                 else
                 {
-                    Log.Error("UnKnow resource mode detected Please check???");
+                    OnInitPackageFailed(procedureOwner, initializationOperation.Error);
                 }
             }
-            else
+            catch (Exception e)
             {
-                // 打开启动UI。
-                UILoadMgr.Show(UIDefine.UILoadUpdate);
-
-                Log.Error($"{initializationOperation.Error}");
-
-                // 打开启动UI。
-                UILoadMgr.Show(UIDefine.UILoadUpdate, $"资源初始化失败！");
-
-                UILoadTip.ShowMessageBox($"资源初始化失败！点击确认重试 \n \n <color=#FF0000>原因{initializationOperation.Error}</color>", MessageShowType.TwoButton,
-                    LoadStyle.StyleEnum.Style_Retry
-                    , () => { Retry(procedureOwner); }, UnityEngine.Application.Quit);
+                OnInitPackageFailed(procedureOwner, e.Message);
             }
+        }
+
+        private void OnInitPackageFailed(ProcedureOwner procedureOwner, string message)
+        {
+            // 打开启动UI。
+            UILoadMgr.Show(UIDefine.UILoadUpdate);
+
+            Log.Error($"{message}");
+
+            // 打开启动UI。
+            UILoadMgr.Show(UIDefine.UILoadUpdate, $"资源初始化失败！");
+
+            UILoadTip.ShowMessageBox($"资源初始化失败！点击确认重试 \n \n <color=#FF0000>原因{message}</color>", MessageShowType.TwoButton,
+                LoadStyle.StyleEnum.Style_Retry
+                , () => { Retry(procedureOwner); }, 
+                GameModule.QuitApplication);
         }
 
         private void Retry(ProcedureOwner procedureOwner)

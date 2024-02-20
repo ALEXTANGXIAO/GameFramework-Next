@@ -1,6 +1,7 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
 using GameFramework;
+using UnityEngine;
 using UnityGameFramework.Runtime;
 using YooAsset;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
@@ -10,8 +11,22 @@ namespace GameMain
     public class ProcedureDownloadFile:ProcedureBase
     {
         public override bool UseNativeDialog { get; }
-
+        
         private ProcedureOwner _procedureOwner;
+
+        private float _lastUpdateDownloadedSize;
+        private float CurrentSpeed
+        {
+            get
+            {
+                float interval = Time.deltaTime;
+                var sizeDiff = GameModule.Resource.Downloader.CurrentDownloadBytes - _lastUpdateDownloadedSize;
+                _lastUpdateDownloadedSize = GameModule.Resource.Downloader.CurrentDownloadBytes;
+                var speed = (float)Math.Floor(sizeDiff / interval);
+                return speed;
+            }
+        }
+        
         protected override void OnEnter(ProcedureOwner procedureOwner)
         {
             _procedureOwner = procedureOwner;
@@ -58,19 +73,19 @@ namespace GameMain
                 Utility.File.GetByteLengthString(currentDownloadBytes), 
                 Utility.File.GetByteLengthString(totalDownloadBytes), 
                 GameModule.Resource.Downloader.Progress, 
-                Utility.File.GetByteLengthString((int)GameModule.Resource.Downloader.CurrentSpeed));
-            LoadUpdateLogic.Instance.DownProgressAction?.Invoke(GameModule.Resource.Downloader.Progress);
+                Utility.File.GetLengthString((int)CurrentSpeed));
+            GameEvent.Send(StringId.StringToHash("DownProgress"), GameModule.Resource.Downloader.Progress);
             UILoadMgr.Show(UIDefine.UILoadUpdate,descriptionText);
 
             int needTime = 0;
-            if (GameModule.Resource.Downloader.CurrentSpeed > 0)
+            if (CurrentSpeed > 0)
             {
-                needTime = (int)((totalDownloadBytes - currentDownloadBytes) / GameModule.Resource.Downloader.CurrentSpeed);
+                needTime = (int)((totalDownloadBytes - currentDownloadBytes) / CurrentSpeed);
             }
             
             TimeSpan ts = new TimeSpan(0, 0, needTime);
             string timeStr = ts.ToString(@"mm\:ss");
-            string updateProgress = Utility.Text.Format("剩余时间 {0}({1}/s)", timeStr, Utility.File.GetLengthString((int)GameModule.Resource.Downloader.CurrentSpeed));
+            string updateProgress = Utility.Text.Format("剩余时间 {0}({1}/s)", timeStr, Utility.File.GetLengthString((int)CurrentSpeed));
             Log.Info(updateProgress);
         }
     }

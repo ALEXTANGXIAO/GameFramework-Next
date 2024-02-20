@@ -22,7 +22,7 @@ namespace GameMain
 
         private async UniTaskVoid StartGame()
         {
-            await UniTask.Delay(TimeSpan.FromSeconds(2f));
+            await UniTask.Delay(TimeSpan.FromSeconds(1f));
             UILoadMgr.HideAll();
         }
     }

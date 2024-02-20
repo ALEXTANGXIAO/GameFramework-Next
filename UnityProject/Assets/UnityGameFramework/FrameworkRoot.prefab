@@ -91,12 +91,20 @@ MonoBehaviour:
   m_MinUnloadUnusedAssetsInterval: 60
   m_MaxUnloadUnusedAssetsInterval: 300
   PackageName: DefaultPackage
-  PlayMode: 0
+  playMode: 0
   VerifyLevel: 1
   m_ReadWritePathType: 0
   Milliseconds: 30
-  m_DownloadingMaxNum: 1
-  m_FailedTryAgain: 1
+  m_DownloadingMaxNum: 10
+  m_FailedTryAgain: 3
+  m_AssetAutoReleaseInterval: 60
+  m_AssetCapacity: 64
+  m_AssetExpireTime: 60
+  m_AssetPriority: 0
+  m_ResourceAutoReleaseInterval: 60
+  m_ResourceCapacity: 16
+  m_ResourceExpireTime: 60
+  m_ResourcePriority: 0
 --- !u!1 &109252
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,8 +633,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AvailableProcedureTypeNames:
-  - GameMain.ProcedureEmpty
-  m_EntranceProcedureTypeName: GameMain.ProcedureEmpty
+  - GameMain.ProcedureClearCache
+  - GameMain.ProcedureCreateDownloader
+  - GameMain.ProcedureDownloadFile
+  - GameMain.ProcedureDownloadOver
+  - GameMain.ProcedureInitPackage
+  - GameMain.ProcedureInitResources
+  - GameMain.ProcedureLaunch
+  - GameMain.ProcedureLoadAssembly
+  - GameMain.ProcedurePreload
+  - GameMain.ProcedureSplash
+  - GameMain.ProcedureStartGame
+  - GameMain.ProcedureUpdateManifest
+  - GameMain.ProcedureUpdateVersion
+  m_EntranceProcedureTypeName: GameMain.ProcedureLaunch
 --- !u!1 &140694
 GameObject:
   m_ObjectHideFlags: 0

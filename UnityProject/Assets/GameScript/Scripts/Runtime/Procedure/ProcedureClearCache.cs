@@ -1,8 +1,12 @@
-﻿using UnityGameFramework.Runtime;
+﻿using Cysharp.Threading.Tasks;
+using UnityGameFramework.Runtime;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
 
 namespace GameMain
 {
+    /// <summary>
+    /// 流程 => 清理缓存。
+    /// </summary>
     public class ProcedureClearCache:ProcedureBase
     {
         public override bool UseNativeDialog { get; }
@@ -25,7 +29,7 @@ namespace GameMain
         {
             UILoadMgr.Show(UIDefine.UILoadUpdate,$"清理完成 即将进入游戏...");
             
-            ChangeState<ProcedureStartGame>(_procedureOwner);
+            ChangeState<ProcedureLoadAssembly>(_procedureOwner);
         }
     }
 }

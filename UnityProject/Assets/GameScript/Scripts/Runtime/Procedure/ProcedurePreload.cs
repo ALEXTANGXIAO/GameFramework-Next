@@ -1,10 +1,7 @@
 ﻿using GameFramework.Event;
 using System.Collections.Generic;
-using System.Xml;
 using GameFramework;
-using GameFramework.Resource;
 using UGFExtensions.Await;
-using UnityEngine;
 using UnityGameFramework.Runtime;
 using YooAsset;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
@@ -18,10 +15,7 @@ namespace GameMain
     {
         private Dictionary<string, bool> m_LoadedFlag = new Dictionary<string, bool>();
 
-        public override bool UseNativeDialog
-        {
-            get { return true; }
-        }
+        public override bool UseNativeDialog => true;
 
         private bool m_needProLoadConfig = false;
 
