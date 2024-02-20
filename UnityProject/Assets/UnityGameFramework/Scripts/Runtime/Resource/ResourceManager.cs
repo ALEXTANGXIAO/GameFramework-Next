@@ -173,7 +173,7 @@ namespace GameFramework.Resource
 
         #endregion
 
-        public async UniTask<bool> InitPackage(string packageName)
+        public async UniTask<InitializationOperation> InitPackage(string packageName)
         {
 #if UNITY_EDITOR
             //编辑器模式使用。
@@ -187,7 +187,7 @@ namespace GameFramework.Resource
             if (PackageMap.ContainsKey(packageName))
             {
                 Log.Error($"ResourceSystem has already init package : {packageName}");
-                return false;
+                return null;
             }
 
             // 创建资源包裹类
@@ -247,17 +247,7 @@ namespace GameFramework.Resource
 
             Log.Info($"Init resource package version : {initializationOperation?.PackageVersion}");
 
-            if (initializationOperation?.Status != EOperationStatus.Succeed)
-            {
-                Log.Error($"{initializationOperation?.Error}");
-                // TODO: 发送初始化失败事件
-                // this.SendEvent(new InitPackageEvent { IsSuccess = false });
-                return false;
-            }
-            // TODO: 发送初始化成功事件
-            // this.SendEvent(new InitPackageEvent { IsSuccess = true });
-
-            return initializationOperation is { Status: EOperationStatus.Succeed };
+            return initializationOperation;
         }
 
         internal override void Update(float elapseSeconds, float realElapseSeconds)

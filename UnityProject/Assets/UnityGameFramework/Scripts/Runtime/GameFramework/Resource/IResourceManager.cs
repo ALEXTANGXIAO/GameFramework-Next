@@ -72,7 +72,7 @@ namespace GameFramework.Resource
         /// 初始化操作。
         /// </summary>
         /// <param name="packageName">资源包名称。</param>
-        UniTask<bool> InitPackage(string packageName);
+        UniTask<InitializationOperation> InitPackage(string packageName);
 
         /// <summary>
         /// 默认资源包名称。
