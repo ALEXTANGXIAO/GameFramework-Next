@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using GameFramework.ObjectPool;
-using UnityEngine;
-using YooAsset;
+﻿using GameFramework.ObjectPool;
 
 namespace GameFramework.Resource
 {
@@ -14,14 +11,8 @@ namespace GameFramework.Resource
         /// </summary>
         public float AssetAutoReleaseInterval
         {
-            get
-            {
-                return m_AssetPool.AutoReleaseInterval;
-            }
-            set
-            {
-                m_AssetPool.AutoReleaseInterval = value;
-            }
+            get => m_AssetPool.AutoReleaseInterval;
+            set => m_AssetPool.AutoReleaseInterval = value;
         }
 
         /// <summary>
@@ -29,14 +20,8 @@ namespace GameFramework.Resource
         /// </summary>
         public int AssetCapacity
         {
-            get
-            {
-                return m_AssetPool.Capacity;
-            }
-            set
-            {
-                m_AssetPool.Capacity = value;
-            }
+            get => m_AssetPool.Capacity;
+            set => m_AssetPool.Capacity = value;
         }
 
         /// <summary>
@@ -44,14 +29,8 @@ namespace GameFramework.Resource
         /// </summary>
         public float AssetExpireTime
         {
-            get
-            {
-                return m_AssetPool.ExpireTime;
-            }
-            set
-            {
-                m_AssetPool.ExpireTime = value;
-            }
+            get => m_AssetPool.ExpireTime;
+            set => m_AssetPool.ExpireTime = value;
         }
 
         /// <summary>
@@ -59,14 +38,8 @@ namespace GameFramework.Resource
         /// </summary>
         public int AssetPriority
         {
-            get
-            {
-                return m_AssetPool.Priority;
-            }
-            set
-            {
-                m_AssetPool.Priority = value;
-            }
+            get => m_AssetPool.Priority;
+            set => m_AssetPool.Priority = value;
         }
         
         /// <summary>
@@ -74,14 +47,8 @@ namespace GameFramework.Resource
         /// </summary>
         public float ResourceAutoReleaseInterval
         {
-            get
-            {
-                return m_AssetPool.AutoReleaseInterval;
-            }
-            set
-            {
-                m_AssetPool.AutoReleaseInterval = value;
-            }
+            get => m_AssetPool.AutoReleaseInterval;
+            set => m_AssetPool.AutoReleaseInterval = value;
         }
 
         /// <summary>
@@ -89,14 +56,8 @@ namespace GameFramework.Resource
         /// </summary>
         public int ResourceCapacity
         {
-            get
-            {
-                return m_AssetPool.Capacity;
-            }
-            set
-            {
-                m_AssetPool.Capacity = value;
-            }
+            get => m_AssetPool.Capacity;
+            set => m_AssetPool.Capacity = value;
         }
 
         /// <summary>
@@ -104,14 +65,8 @@ namespace GameFramework.Resource
         /// </summary>
         public float ResourceExpireTime
         {
-            get
-            {
-                return m_AssetPool.ExpireTime;
-            }
-            set
-            {
-                m_AssetPool.ExpireTime = value;
-            }
+            get => m_AssetPool.ExpireTime;
+            set => m_AssetPool.ExpireTime = value;
         }
 
         /// <summary>
@@ -119,14 +74,8 @@ namespace GameFramework.Resource
         /// </summary>
         public int ResourcePriority
         {
-            get
-            {
-                return m_AssetPool.Priority;
-            }
-            set
-            {
-                m_AssetPool.Priority = value;
-            }
+            get => m_AssetPool.Priority;
+            set => m_AssetPool.Priority = value;
         }
         
         /// <summary>

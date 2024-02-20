@@ -548,7 +548,7 @@ namespace GameFramework.Resource
         /// <param name="callback">回调函数。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
         /// <typeparam name="T">要加载资源的类型。</typeparam>
-        public void LoadAsset<T>(string location, Action<T> callback = null, string packageName = "") where T : UnityEngine.Object
+        public void LoadAsset<T>(string location, Action<T> callback, string packageName = "") where T : UnityEngine.Object
         {
             if (string.IsNullOrEmpty(location))
             {
