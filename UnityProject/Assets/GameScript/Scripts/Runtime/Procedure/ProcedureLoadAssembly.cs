@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using GameFramework;
-using GameFramework.Fsm;
-using GameFramework.Procedure;
-using GameFramework.Resource;
-
+using System.Linq;
 #if ENABLE_HYBRIDCLR
 using HybridCLR;
 #endif
 using UnityEngine;
-using UnityGameFramework.Runtime;
 using System.Reflection;
+using GameFramework;
+using GameFramework.Fsm;
+using GameFramework.Procedure;
+using UnityGameFramework.Runtime;
 using YooAsset;
 
 namespace GameMain
@@ -24,13 +23,10 @@ namespace GameMain
         /// <summary>
         /// 是否需要加载热更新DLL
         /// </summary>
-        public bool NeedLoadDll => GameModule.Resource.PlayMode == EPlayMode.HostPlayMode || GameModule.Resource.PlayMode == EPlayMode.OfflinePlayMode;
+        public bool NeedLoadDll => (int)GameModule.Resource.PlayMode > (int)EPlayMode.EditorSimulateMode;
 
         private bool m_enableAddressable = true;
-
         public override bool UseNativeDialog => true;
-        private LoadAssetCallbacks m_LoadAssetCallbacks;
-        private LoadAssetCallbacks m_LoadMetadataAssetCallbacks;
         private int m_LoadAssetCount;
         private int m_LoadMetadataAssetCount;
         private int m_FailureAssetCount;
@@ -39,8 +35,8 @@ namespace GameMain
         private bool m_LoadMetadataAssemblyComplete;
         private bool m_LoadAssemblyWait;
         private bool m_LoadMetadataAssemblyWait;
-        private System.Reflection.Assembly m_MainLogicAssembly;
-        private List<System.Reflection.Assembly> m_HotfixAssemblys;
+        private Assembly m_MainLogicAssembly;
+        private List<Assembly> m_HotfixAssemblys;
         private IFsm<IProcedureManager> m_procedureOwner;
 
         protected override void OnEnter(IFsm<IProcedureManager> procedureOwner)
@@ -51,40 +47,7 @@ namespace GameMain
             m_LoadAssemblyComplete = false;
             m_HotfixAssemblys = new List<Assembly>();
 
-            if (!NeedLoadDll || GameModule.Resource.PlayMode == EPlayMode.EditorSimulateMode)
-            {
-                m_MainLogicAssembly = GetMainLogicAssembly();
-            }
-            else
-            {
-                if (SettingsUtils.HybridCLRCustomGlobalSettings.Enable)
-                {
-                    m_LoadAssetCallbacks ??= new LoadAssetCallbacks(LoadAssetSuccess, LoadAssetFailure);
-                    foreach (var hotUpdateDllName in SettingsUtils.HybridCLRCustomGlobalSettings.HotUpdateAssemblies)
-                    {
-                        var assetLocation = hotUpdateDllName;
-                        if (!m_enableAddressable)
-                        {
-                            assetLocation = Utility.Path.GetRegularPath(
-                                Path.Combine(
-                                    "Assets",
-                                    SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetPath,
-                                    $"{hotUpdateDllName}{SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetExtension}"));
-                        }
-                           
-                        Log.Debug($"LoadAsset: [ {assetLocation} ]");
-                        m_LoadAssetCount++;
-                        GameModule.Resource.LoadAssetAsync(assetLocation,typeof(UnityEngine.TextAsset), m_LoadAssetCallbacks, hotUpdateDllName);
-                    }
-
-                    m_LoadAssemblyWait = true;
-                }
-                else
-                {
-                    m_MainLogicAssembly = GetMainLogicAssembly();
-                }
-            }
-
+            //AOT Assembly加载原始metadata
             if (SettingsUtils.HybridCLRCustomGlobalSettings.Enable)
             {
 #if !UNITY_EDITOR
@@ -99,12 +62,45 @@ namespace GameMain
                 m_LoadMetadataAssemblyComplete = true;
             }
 
+            if (!NeedLoadDll || GameModule.Resource.PlayMode == EPlayMode.EditorSimulateMode)
+            {
+                m_MainLogicAssembly = GetMainLogicAssembly();
+            }
+            else
+            {
+                if (SettingsUtils.HybridCLRCustomGlobalSettings.Enable)
+                {
+                    foreach (string hotUpdateDllName in SettingsUtils.HybridCLRCustomGlobalSettings.HotUpdateAssemblies)
+                    {
+                        var assetLocation = hotUpdateDllName;
+                        if (!m_enableAddressable)
+                        {
+                            assetLocation = Utility.Path.GetRegularPath(
+                                Path.Combine(
+                                    "Assets",
+                                    SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetPath,
+                                    $"{hotUpdateDllName}{SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetExtension}"));
+                        }
+
+                        Log.Debug($"LoadAsset: [ {assetLocation} ]");
+                        m_LoadAssetCount++;
+                        GameModule.Resource.LoadAsset<TextAsset>(assetLocation, LoadAssetSuccess);
+                    }
+
+                    m_LoadAssemblyWait = true;
+                }
+                else
+                {
+                    m_MainLogicAssembly = GetMainLogicAssembly();
+                }
+            }
+
             if (m_LoadAssetCount == 0)
             {
                 m_LoadAssemblyComplete = true;
             }
         }
-        
+
         protected override void OnUpdate(IFsm<IProcedureManager> procedureOwner, float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(procedureOwner, elapseSeconds, realElapseSeconds);
@@ -112,15 +108,18 @@ namespace GameMain
             {
                 return;
             }
+
             if (!m_LoadMetadataAssemblyComplete)
             {
                 return;
             }
+
             AllAssemblyLoadComplete();
         }
-        
+
         private void AllAssemblyLoadComplete()
         {
+            ChangeState<ProcedureStartGame>(m_procedureOwner);
 #if UNITY_EDITOR
             m_MainLogicAssembly = GetMainLogicAssembly();
 #endif
@@ -129,23 +128,25 @@ namespace GameMain
                 Log.Fatal($"Main logic assembly missing.");
                 return;
             }
+
             var appType = m_MainLogicAssembly.GetType("GameApp");
             if (appType == null)
             {
                 Log.Fatal($"Main logic type 'GameMain' missing.");
                 return;
             }
+
             var entryMethod = appType.GetMethod("Entrance");
             if (entryMethod == null)
             {
                 Log.Fatal($"Main logic entry method 'Entrance' missing.");
                 return;
             }
+
             object[] objects = new object[] { new object[] { m_HotfixAssemblys } };
             entryMethod.Invoke(appType, objects);
-            ChangeState<ProcedureStartGame>(m_procedureOwner);
         }
- 
+
         private Assembly GetMainLogicAssembly()
         {
             Assembly mainLogicAssembly = null;
@@ -159,7 +160,7 @@ namespace GameMain
 
                 foreach (var hotUpdateDllName in SettingsUtils.HybridCLRCustomGlobalSettings.HotUpdateAssemblies)
                 {
-                    if (hotUpdateDllName == $"{assembly.GetName().Name}.dll" && string.IsNullOrEmpty(assembly.Location))
+                    if (hotUpdateDllName == $"{assembly.GetName().Name}.dll")
                     {
                         m_HotfixAssemblys.Add(assembly);
                     }
@@ -177,28 +178,28 @@ namespace GameMain
         /// <summary>
         /// 加载代码资源成功回调。
         /// </summary>
-        /// <param name="assetName">资源名称。</param>
-        /// <param name="asset">资源实例。</param>
-        /// <param name="duration">加载耗时。</param>
-        /// <param name="userData">用户数据。</param>
-        private void LoadAssetSuccess(string assetName, object asset, float duration, object userData)
+        /// <param name="textAsset">资源操作句柄。</param>
+        private void LoadAssetSuccess(TextAsset textAsset)
         {
             m_LoadAssetCount--;
-            Log.Debug($"LoadAssetSuccess, assetName: [ {assetName} ], duration: [ {duration} ], userData: [ {userData} ]");
-            var textAsset = asset as TextAsset;
+
             if (textAsset == null)
             {
-                Log.Warning($"Load text asset [ {assetName} ] failed.");
+                Log.Warning($"Load Assembly failed.");
                 return;
             }
+
+            var assetName = textAsset.name;
+            Log.Debug($"LoadAssetSuccess, assetName: [ {assetName} ]");
 
             try
             {
                 var assembly = Assembly.Load(textAsset.bytes);
-                if (string.Compare(SettingsUtils.HybridCLRCustomGlobalSettings.LogicMainDllName, userData as string, StringComparison.Ordinal) == 0)
+                if (string.Compare(SettingsUtils.HybridCLRCustomGlobalSettings.LogicMainDllName, assetName, StringComparison.Ordinal) == 0)
                 {
                     m_MainLogicAssembly = assembly;
                 }
+
                 m_HotfixAssemblys.Add(assembly);
                 Log.Debug($"Assembly [ {assembly.GetName().Name} ] loaded");
             }
@@ -215,20 +216,6 @@ namespace GameMain
         }
 
         /// <summary>
-        /// 加载代码资源失败回调。
-        /// </summary>
-        /// <param name="assetName">资源名称。</param>
-        /// <param name="status">加载状态。</param>
-        /// <param name="errorMessage">错误信息。</param>
-        /// <param name="userData">自定义数据。</param>
-        private void LoadAssetFailure(string assetName, LoadResourceStatus status, string errorMessage, object userData)
-        {
-            Log.Fatal($"LoadAssetFailure, assetName: [ {assetName} ], status: [ {status} ], errorMessage: [ {errorMessage} ], userData: [ {userData} ]");
-            m_LoadAssetCount--;
-            m_FailureAssetCount++;
-        }
-        
-        /// <summary>
         /// 为Aot Assembly加载原始metadata， 这个代码放Aot或者热更新都行。
         /// 一旦加载后，如果AOT泛型函数对应native实现不存在，则自动替换为解释模式执行。
         /// </summary>
@@ -244,8 +231,8 @@ namespace GameMain
                 m_LoadMetadataAssemblyComplete = true;
                 return;
             }
-            m_LoadMetadataAssetCallbacks ??= new LoadAssetCallbacks(LoadMetadataAssetSuccess, LoadMetadataAssetFailure);
-            foreach (var aotDllName in SettingsUtils.HybridCLRCustomGlobalSettings.AOTMetaAssemblies)
+
+            foreach (string aotDllName in SettingsUtils.HybridCLRCustomGlobalSettings.AOTMetaAssemblies)
             {
                 var assetLocation = aotDllName;
                 if (!m_enableAddressable)
@@ -256,30 +243,32 @@ namespace GameMain
                             SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetPath,
                             $"{aotDllName}{SettingsUtils.HybridCLRCustomGlobalSettings.AssemblyTextAssetExtension}"));
                 }
+
+
                 Log.Debug($"LoadMetadataAsset: [ {assetLocation} ]");
                 m_LoadMetadataAssetCount++;
-                GameModule.Resource.LoadAssetAsync(assetLocation,typeof(UnityEngine.TextAsset), m_LoadMetadataAssetCallbacks, aotDllName);
+                GameModule.Resource.LoadAsset<TextAsset>(assetLocation, LoadMetadataAssetSuccess);
             }
+
             m_LoadMetadataAssemblyWait = true;
         }
-        
+
         /// <summary>
         /// 加载元数据资源成功回调。
         /// </summary>
-        /// <param name="assetName">资源名称。</param>
-        /// <param name="asset">资源实例。</param>
-        /// <param name="duration">加载耗时。</param>
-        /// <param name="userData">用户数据。</param>
-        private unsafe void LoadMetadataAssetSuccess(string assetName, object asset, float duration, object userData)
+        /// <param name="textAsset">资源操作句柄。</param>
+        private unsafe void LoadMetadataAssetSuccess(TextAsset textAsset)
         {
             m_LoadMetadataAssetCount--;
-            Log.Debug($"LoadMetadataAssetSuccess, assetName: [ {assetName} ], duration: [ {duration} ], userData: [ {userData} ]");
-            var textAsset = asset as TextAsset;
+
             if (null == textAsset)
             {
-                Log.Debug($"LoadMetadataAssetSuccess:Load text asset [ {assetName} ] failed.");
+                Log.Debug($"LoadMetadataAssetSuccess:Load Metadata failed.");
                 return;
             }
+
+            string assetName = textAsset.name;
+            Log.Debug($"LoadMetadataAssetSuccess, assetName: [ {assetName} ]");
 
             try
             {
@@ -290,7 +279,7 @@ namespace GameMain
                     // 加载assembly对应的dll，会自动为它hook。一旦Aot泛型函数的native函数不存在，用解释器版本代码
                     HomologousImageMode mode = HomologousImageMode.SuperSet;
                     LoadImageErrorCode err = (LoadImageErrorCode)HybridCLR.RuntimeApi.LoadMetadataForAOTAssembly(dllBytes,mode); 
-                    Log.Warning($"LoadMetadataForAOTAssembly:{userData as string}. mode:{mode} ret:{err}");
+                    Log.Warning($"LoadMetadataForAOTAssembly:{assetName}. mode:{mode} ret:{err}");
 #endif
                 }
             }
@@ -304,20 +293,6 @@ namespace GameMain
             {
                 m_LoadMetadataAssemblyComplete = m_LoadMetadataAssemblyWait && 0 == m_LoadMetadataAssetCount;
             }
-        }
-        
-        /// <summary>
-        /// 加载元数据资源失败回调。
-        /// </summary>
-        /// <param name="assetName">资源名称。</param>
-        /// <param name="status">加载状态。</param>
-        /// <param name="errorMessage">错误信息。</param>
-        /// <param name="userData">自定义数据。</param>
-        private void LoadMetadataAssetFailure(string assetName, LoadResourceStatus status, string errorMessage, object userData)
-        {
-            Log.Warning($"LoadAssetFailure, assetName: [ {assetName} ], status: [ {status} ], errorMessage: [ {errorMessage} ], userData: [ {userData} ]");
-            m_LoadMetadataAssetCount--;
-            m_FailureMetadataAssetCount++;
         }
     }
 }
