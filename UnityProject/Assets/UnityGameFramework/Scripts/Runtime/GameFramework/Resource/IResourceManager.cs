@@ -212,21 +212,28 @@ namespace GameFramework.Resource
         /// 同步加载资源。
         /// </summary>
         /// <param name="location">资源的定位地址。</param>
-        /// <param name="needCache">是否需要缓存。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
         /// <typeparam name="T">要加载资源的类型。</typeparam>
         /// <returns>资源实例。</returns>
-        T LoadAsset<T>(string location, bool needCache = false, string packageName = "") where T : UnityEngine.Object;
+        T LoadAsset<T>(string location, string packageName = "") where T : UnityEngine.Object;
 
         /// <summary>
         /// 同步加载游戏物体并实例化。
         /// </summary>
         /// <param name="location">资源的定位地址。</param>
-        /// <param name="needCache">是否需要缓存。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
         /// <param name="parent">资源实例父节点。</param>
         /// <returns>资源实例。</returns>
-        GameObject LoadGameObject(string location, bool needCache = false, string packageName = "", Transform parent = null);
+        GameObject LoadGameObject(string location, string packageName = "", Transform parent = null);
+
+        /// <summary>
+        /// 异步加载资源。
+        /// </summary>
+        /// <param name="location">资源的定位地址。</param>
+        /// <param name="callback">回调函数。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <typeparam name="T">要加载资源的类型。</typeparam>
+        void LoadAsset<T>(string location, Action<T> callback = null, string packageName = "") where T : UnityEngine.Object;
 
         /// <summary>
         /// 同步加载子资源对象。
@@ -249,24 +256,20 @@ namespace GameFramework.Resource
         /// </summary>
         /// <param name="location">资源定位地址。</param>
         /// <param name="cancellationToken">取消操作Token。</param>
-        /// <param name="needCache">是否需要缓存。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
         /// <typeparam name="T">要加载资源的类型。</typeparam>
         /// <returns>异步资源实例。</returns>
-        UniTask<T> LoadAssetAsync<T>(string location, CancellationToken cancellationToken = default,
-            bool needCache = false, string packageName = "") where T : UnityEngine.Object;
+        UniTask<T> LoadAssetAsync<T>(string location, CancellationToken cancellationToken = default, string packageName = "") where T : UnityEngine.Object;
 
         /// <summary>
         /// 异步加载游戏物体并实例化。
         /// </summary>
         /// <param name="location">资源定位地址。</param>
         /// <param name="cancellationToken">取消操作Token。</param>
-        /// <param name="needCache">是否需要缓存。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
         /// <param name="parent">资源实例父节点。</param>
         /// <returns>异步游戏物体实例。</returns>
-        UniTask<GameObject> LoadGameObjectAsync(string location, CancellationToken cancellationToken = default,
-            bool needCache = false, string packageName = "", Transform parent = null);
+        UniTask<GameObject> LoadGameObjectAsync(string location, CancellationToken cancellationToken = default, string packageName = "", Transform parent = null);
 
         /// <summary>
         /// 异步加载场景。

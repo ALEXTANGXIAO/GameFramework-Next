@@ -394,11 +394,10 @@ namespace UnityGameFramework.Runtime
         /// 同步加载资源。
         /// </summary>
         /// <param name="location">资源的定位地址。</param>
-        /// <param name="needCache">是否需要缓存。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包。</param>
         /// <typeparam name="T">要加载资源的类型。</typeparam>
         /// <returns>资源实例。</returns>
-        public T LoadAsset<T>(string location, bool needCache = false, string packageName = "") where T : UnityEngine.Object
+        public T LoadAsset<T>(string location, string packageName = "") where T : UnityEngine.Object
         {
             if (string.IsNullOrEmpty(location))
             {
@@ -406,18 +405,17 @@ namespace UnityGameFramework.Runtime
                 return null;
             }
 
-            return m_ResourceManager.LoadAsset<T>(location, needCache, packageName);
+            return m_ResourceManager.LoadAsset<T>(location, packageName);
         }
 
         /// <summary>
         /// 同步加载游戏物体并实例化。
         /// </summary>
         /// <param name="location">资源的定位地址。</param>
-        /// <param name="needCache">是否需要缓存。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包。</param>
         /// <param name="parent">资源实例父节点。</param>
         /// <returns>资源实例。</returns>
-        public GameObject LoadGameObject(string location, bool needCache = false, string packageName = "", Transform parent = null)
+        public GameObject LoadGameObject(string location, string packageName = "", Transform parent = null)
         {
             if (string.IsNullOrEmpty(location))
             {
@@ -425,7 +423,25 @@ namespace UnityGameFramework.Runtime
                 return null;
             }
 
-            return m_ResourceManager.LoadGameObject(location, needCache, packageName, parent);
+            return m_ResourceManager.LoadGameObject(location, packageName, parent);
+        }
+        
+        /// <summary>
+        /// 异步加载资源。
+        /// </summary>
+        /// <param name="location">资源的定位地址。</param>
+        /// <param name="callback">回调函数。</param>
+        /// <param name="customPackageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <typeparam name="T">要加载资源的类型。</typeparam>
+        public void LoadAsset<T>(string location, Action<T> callback = null, string customPackageName = "") where T : UnityEngine.Object
+        {
+            if (string.IsNullOrEmpty(location))
+            {
+                Log.Error("Asset name is invalid.");
+                return;
+            }
+            
+            m_ResourceManager.LoadAsset<T>(location, callback, packageName: customPackageName);
         }
 
         /// <summary>
@@ -433,11 +449,10 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         /// <param name="location">资源定位地址。</param>
         /// <param name="cancellationToken">取消操作Token。</param>
-        /// <param name="needCache">是否需要缓存。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包。</param>
         /// <typeparam name="T">要加载资源的类型。</typeparam>
         /// <returns>异步资源实例。</returns>
-        public async UniTask<T> LoadAssetAsync<T>(string location, CancellationToken cancellationToken = default, bool needCache = false,
+        public async UniTask<T> LoadAssetAsync<T>(string location, CancellationToken cancellationToken = default,
             string packageName = "") where T : UnityEngine.Object
         {
             if (string.IsNullOrEmpty(location))
@@ -446,7 +461,7 @@ namespace UnityGameFramework.Runtime
                 return null;
             }
 
-            return await m_ResourceManager.LoadAssetAsync<T>(location, cancellationToken, needCache, packageName);
+            return await m_ResourceManager.LoadAssetAsync<T>(location, cancellationToken, packageName);
         }
 
         /// <summary>
@@ -454,11 +469,10 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         /// <param name="location">资源定位地址。</param>
         /// <param name="cancellationToken">取消操作Token。</param>
-        /// <param name="needCache">是否需要缓存。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包。</param>
         /// <param name="parent">资源实例父节点。</param>
         /// <returns>异步游戏物体实例。</returns>
-        public async UniTask<GameObject> LoadGameObjectAsync(string location, CancellationToken cancellationToken = default, bool needCache = false,
+        public async UniTask<GameObject> LoadGameObjectAsync(string location, CancellationToken cancellationToken = default,
             string packageName = "",
             Transform parent = null)
         {
@@ -468,7 +482,7 @@ namespace UnityGameFramework.Runtime
                 return null;
             }
 
-            return await m_ResourceManager.LoadGameObjectAsync(location, cancellationToken, needCache, packageName, parent);
+            return await m_ResourceManager.LoadGameObjectAsync(location, cancellationToken, packageName, parent);
         }
 
         #endregion

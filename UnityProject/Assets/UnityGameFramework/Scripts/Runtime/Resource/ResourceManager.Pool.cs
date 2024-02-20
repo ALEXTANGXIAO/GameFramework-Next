@@ -9,10 +9,6 @@ namespace GameFramework.Resource
     {
         private IObjectPool<AssetObject> m_AssetPool;
         
-        // private readonly Dictionary<UnityEngine.Object,AssetHandle> m_AssetHandleMap = new Dictionary<Object, AssetHandle>();
-        
-        private readonly Dictionary<string, AssetHandle> m_AssetHandlesCacheMap = new Dictionary<string, AssetHandle>();
-        
         /// <summary>
         /// 获取或设置资源对象池自动释放可释放对象的间隔秒数。
         /// </summary>

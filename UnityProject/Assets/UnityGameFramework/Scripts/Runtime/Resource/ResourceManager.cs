@@ -441,146 +441,150 @@ namespace GameFramework.Resource
         /// 获取同步资源句柄。
         /// </summary>
         /// <param name="location">资源定位地址。</param>
-        /// <param name="needCache">是否需要缓存。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
         /// <typeparam name="T">资源类型。</typeparam>
         /// <returns>资源句柄。</returns>
-        private AssetHandle GetHandleSync<T>(string location, bool needCache = false, string packageName = "") where T : UnityEngine.Object
+        private AssetHandle GetHandleSync<T>(string location, string packageName = "") where T : UnityEngine.Object
         {
-            return GetHandleSync(location,typeof(T), needCache, packageName);
+            return GetHandleSync(location,typeof(T), packageName);
         }
         
-        private AssetHandle GetHandleSync(string location, Type assetType, bool needCache = false, string packageName = "")
+        private AssetHandle GetHandleSync(string location, Type assetType, string packageName = "")
         {
-            if (!needCache)
-            {
-                if (string.IsNullOrEmpty(packageName))
-                {
-                    return YooAssets.LoadAssetSync(location, assetType);
-                }
-
-                var package = YooAssets.GetPackage(packageName);
-                return package.LoadAssetSync(location, assetType);
-            }
-            
-            // 缓存key
-            var cacheKey = string.IsNullOrEmpty(packageName) || packageName.Equals(DefaultPackageName)
-                ? location
-                : $"{packageName}/{location}";
-                
-            if (m_AssetHandlesCacheMap.TryGetValue(cacheKey,out AssetHandle handle) && handle is { IsValid: true })
-            {
-                return handle;
-            }
-            
             if (string.IsNullOrEmpty(packageName))
             {
-                handle = YooAssets.LoadAssetSync(cacheKey, assetType);
+                return YooAssets.LoadAssetSync(location, assetType);
             }
-            else
+
+            var package = YooAssets.GetPackage(packageName);
+            return package.LoadAssetSync(location, assetType);
+        }
+
+        private string GetCacheKey(string location, string packageName = "")
+        {
+            if (string.IsNullOrEmpty(packageName) || packageName.Equals(DefaultPackageName))
             {
-                var package = YooAssets.GetPackage(packageName);
-                handle = package.LoadAssetSync(cacheKey, assetType);
+                return location;
             }
-            m_AssetHandlesCacheMap[cacheKey] = handle;
-            
-            return handle;
+            return $"{packageName}/{location}";
         }
 
         /// <summary>
         /// 获取异步资源句柄。
         /// </summary>
         /// <param name="location">资源定位地址。</param>
-        /// <param name="needCache">是否需要缓存。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
         /// <typeparam name="T">资源类型。</typeparam>
         /// <returns>资源句柄。</returns>
-        private AssetHandle GetHandleAsync<T>(string location, bool needCache = false, string packageName = "") where T : UnityEngine.Object
+        private AssetHandle GetHandleAsync<T>(string location, string packageName = "") where T : UnityEngine.Object
         {
-            return GetHandleAsync(location, typeof(T), needCache, packageName);
+            return GetHandleAsync(location, typeof(T), packageName);
         }
         
-        private AssetHandle GetHandleAsync(string location, Type assetType, bool needCache = false, string packageName = "")
+        private AssetHandle GetHandleAsync(string location, Type assetType, string packageName = "")
         {
-            if (!needCache)
-            {
-                if (string.IsNullOrEmpty(packageName))
-                {
-                    return YooAssets.LoadAssetAsync(location, assetType);
-                }
-
-                var package = YooAssets.GetPackage(packageName);
-                return package.LoadAssetAsync(location, assetType);
-            }
-            
-            // 缓存key
-            var cacheKey = string.IsNullOrEmpty(packageName) || packageName.Equals(DefaultPackageName)
-                ? location
-                : $"{packageName}/{location}";
-            
-            if (m_AssetHandlesCacheMap.TryGetValue(cacheKey,out AssetHandle handle) && handle is { IsValid: true })
-            {
-                return handle;
-            }
             if (string.IsNullOrEmpty(packageName))
             {
-                handle = YooAssets.LoadAssetAsync(cacheKey, assetType);
+                return YooAssets.LoadAssetAsync(location, assetType);
             }
-            else
-            {
-                var package = YooAssets.GetPackage(packageName);
-                handle = package.LoadAssetAsync(cacheKey, assetType);
-            }
-            m_AssetHandlesCacheMap[cacheKey] = handle;
-            
-            return handle;
+
+            var package = YooAssets.GetPackage(packageName);
+            return package.LoadAssetAsync(location, assetType);
         }
         #endregion
         
-        public T LoadAsset<T>(string location, bool needCache = false, string packageName = "") where T : UnityEngine.Object
+        public T LoadAsset<T>(string location, string packageName = "") where T : UnityEngine.Object
         {
             if (string.IsNullOrEmpty(location))
             {
                 throw new GameFrameworkException("Asset name is invalid.");
             }
-            
-            AssetObject assetObject = m_AssetPool.Spawn(location);
+
+            string assetObjectKey = GetCacheKey(location, packageName);
+            AssetObject assetObject = m_AssetPool.Spawn(assetObjectKey);
             if (assetObject != null)
             {
                 return assetObject.Target as T;
             }
             
-            AssetHandle handle = GetHandleSync<T>(location, needCache, packageName: packageName);
+            AssetHandle handle = GetHandleSync<T>(location, packageName: packageName);
 
             T ret = handle.AssetObject as T;
                 
-            assetObject = AssetObject.Create(location, handle.AssetObject, handle,this);
+            assetObject = AssetObject.Create(assetObjectKey, handle.AssetObject, handle,this);
             m_AssetPool.Register(assetObject, true);
 
             return ret;
         }
 
-        public GameObject LoadGameObject(string location, bool needCache = false, string packageName = "", Transform parent = null)
+        public GameObject LoadGameObject(string location, string packageName = "", Transform parent = null)
         {
             if (string.IsNullOrEmpty(location))
             {
                 throw new GameFrameworkException("Asset name is invalid.");
             }
             
-            AssetObject assetObject = m_AssetPool.Spawn(location);
+            string assetObjectKey = GetCacheKey(location, packageName);
+            AssetObject assetObject = m_AssetPool.Spawn(assetObjectKey);
             if (assetObject != null)
             {
                 return assetObject.Target as GameObject;
             }
             
-            AssetHandle handle = GetHandleSync<GameObject>(location, needCache, packageName: packageName);
+            AssetHandle handle = GetHandleSync<GameObject>(location, packageName: packageName);
 
             GameObject gameObject = handle.InstantiateSync(parent);
 
-            assetObject = AssetObject.Create(location, handle.AssetObject, handle,this);
+            assetObject = AssetObject.Create(assetObjectKey, handle.AssetObject, handle,this);
             m_AssetPool.Register(assetObject, true);
             
             return gameObject;
+        }
+        
+        /// <summary>
+        /// 异步加载资源。
+        /// </summary>
+        /// <param name="location">资源的定位地址。</param>
+        /// <param name="callback">回调函数。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <typeparam name="T">要加载资源的类型。</typeparam>
+        public void LoadAsset<T>(string location, Action<T> callback = null, string packageName = "") where T : UnityEngine.Object
+        {
+            if (string.IsNullOrEmpty(location))
+            {
+                Log.Error("Asset name is invalid.");
+                return;
+            }
+            
+            if (string.IsNullOrEmpty(location))
+            {
+                throw new GameFrameworkException("Asset name is invalid.");
+            }
+            
+            string assetObjectKey = GetCacheKey(location, packageName);
+            AssetObject assetObject = m_AssetPool.Spawn(assetObjectKey);
+            if (assetObject != null)
+            {
+                callback?.Invoke(assetObject.Target as T);
+                return;
+            }
+            
+            AssetHandle handle = GetHandleAsync<T>(location, packageName: packageName);
+
+            handle.Completed += assetHandle =>
+            {
+                if (assetHandle.AssetObject != null)
+                {
+                    assetObject = AssetObject.Create(assetObjectKey, handle.AssetObject, handle,this);
+                    m_AssetPool.Register(assetObject, true);
+            
+                    callback?.Invoke(assetObject.Target as T);
+                }
+                else
+                {
+                    callback?.Invoke(null);
+                }
+            };
         }
 
         public TObject[] LoadSubAssetsSync<TObject>(string location, string packageName = "") where TObject : UnityEngine.Object
@@ -601,20 +605,21 @@ namespace GameFramework.Resource
             throw new NotImplementedException();
         }
 
-        public  async UniTask<T> LoadAssetAsync<T>(string location, CancellationToken cancellationToken = default, bool needCache = false, string packageName = "") where T : UnityEngine.Object
+        public  async UniTask<T> LoadAssetAsync<T>(string location, CancellationToken cancellationToken = default, string packageName = "") where T : UnityEngine.Object
         {
             if (string.IsNullOrEmpty(location))
             {
                 throw new GameFrameworkException("Asset name is invalid.");
             }
             
-            AssetObject assetObject = m_AssetPool.Spawn(location);
+            string assetObjectKey = GetCacheKey(location, packageName);
+            AssetObject assetObject = m_AssetPool.Spawn(assetObjectKey);
             if (assetObject != null)
             {
                 return assetObject.Target as T;
             }
  
-            AssetHandle handle = GetHandleAsync<T>(location, needCache, packageName: packageName);
+            AssetHandle handle = GetHandleAsync<T>(location, packageName: packageName);
 
             bool cancelOrFailed = await handle.ToUniTask().AttachExternalCancellation(cancellationToken).SuppressCancellationThrow();
 
@@ -623,13 +628,13 @@ namespace GameFramework.Resource
                 return null;
             }
             
-            assetObject = AssetObject.Create(location, handle.AssetObject, handle,this);
+            assetObject = AssetObject.Create(assetObjectKey, handle.AssetObject, handle,this);
             m_AssetPool.Register(assetObject, true);
             
             return handle.AssetObject as T;
         }
 
-        public async UniTask<GameObject> LoadGameObjectAsync(string location, CancellationToken cancellationToken = default, bool needCache = false, string packageName = "",
+        public async UniTask<GameObject> LoadGameObjectAsync(string location, CancellationToken cancellationToken = default, string packageName = "",
             Transform parent = null)
         {
             if (string.IsNullOrEmpty(location))
@@ -637,13 +642,14 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Asset name is invalid.");
             }
             
-            AssetObject assetObject = m_AssetPool.Spawn(location);
+            string assetObjectKey = GetCacheKey(location, packageName);
+            AssetObject assetObject = m_AssetPool.Spawn(assetObjectKey);
             if (assetObject != null)
             {
                 return assetObject.Target as GameObject;
             }
             
-            AssetHandle handle = GetHandleAsync<GameObject>(location, needCache, packageName: packageName);
+            AssetHandle handle = GetHandleAsync<GameObject>(location, packageName: packageName);
 
             bool cancelOrFailed = await handle.ToUniTask().AttachExternalCancellation(cancellationToken).SuppressCancellationThrow();
 
@@ -654,7 +660,7 @@ namespace GameFramework.Resource
 
             GameObject gameObject = handle.InstantiateSync(parent);
             
-            assetObject = AssetObject.Create(location, handle.AssetObject, handle,this);
+            assetObject = AssetObject.Create(assetObjectKey, handle.AssetObject, handle,this);
             m_AssetPool.Register(assetObject, true);
 
             return gameObject;
@@ -683,7 +689,8 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Load asset callbacks is invalid.");
             }
             
-            AssetObject assetObject = m_AssetPool.Spawn(location);
+            string assetObjectKey = GetCacheKey(location, packageName);
+            AssetObject assetObject = m_AssetPool.Spawn(assetObjectKey);
             if (assetObject != null)
             {
                 loadAssetCallbacks.LoadAssetSuccessCallback(location, assetObject.Target, 0, userData);
@@ -706,7 +713,7 @@ namespace GameFramework.Resource
             
             float duration = Time.time;
 
-            AssetHandle handle = GetHandleAsync(location, assetType, needCache:assetInfo.AssetType == typeof(GameObject), packageName: packageName);
+            AssetHandle handle = GetHandleAsync(location, assetType, packageName: packageName);
 
             await handle.ToUniTask();
 
@@ -723,7 +730,7 @@ namespace GameFramework.Resource
             }
             else
             {
-                assetObject = AssetObject.Create(location, handle.AssetObject, handle,this);
+                assetObject = AssetObject.Create(assetObjectKey, handle.AssetObject, handle,this);
                 m_AssetPool.Register(assetObject, true);
                 
                 if (loadAssetCallbacks.LoadAssetSuccessCallback != null)
@@ -755,7 +762,8 @@ namespace GameFramework.Resource
                 throw new GameFrameworkException("Load asset callbacks is invalid.");
             }
             
-            AssetObject assetObject = m_AssetPool.Spawn(location);
+            string assetObjectKey = GetCacheKey(location, packageName);
+            AssetObject assetObject = m_AssetPool.Spawn(assetObjectKey);
             if (assetObject != null)
             {
                 loadAssetCallbacks.LoadAssetSuccessCallback(location, assetObject.Target, 0, userData);
@@ -778,7 +786,7 @@ namespace GameFramework.Resource
             
             float duration = Time.time;
 
-            AssetHandle handle = GetHandleAsync(location, assetInfo.AssetType, needCache:assetInfo.AssetType == typeof(GameObject), packageName: packageName);
+            AssetHandle handle = GetHandleAsync(location, assetInfo.AssetType, packageName: packageName);
 
             await handle.ToUniTask();
 
@@ -795,7 +803,7 @@ namespace GameFramework.Resource
             }
             else
             {
-                assetObject = AssetObject.Create(location, handle.AssetObject, handle,this);
+                assetObject = AssetObject.Create(assetObjectKey, handle.AssetObject, handle,this);
                 m_AssetPool.Register(assetObject, true);
 
                 if (loadAssetCallbacks.LoadAssetSuccessCallback != null)
@@ -828,7 +836,6 @@ namespace GameFramework.Resource
             Log.Warning($"WebGL not support invoke {nameof(ForceUnloadAllAssets)}");
 			return;
 #else
-            m_AssetHandlesCacheMap.Clear();
             
             foreach (var package in PackageMap.Values)
             {
