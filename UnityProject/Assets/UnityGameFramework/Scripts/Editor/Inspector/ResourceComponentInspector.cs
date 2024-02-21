@@ -65,7 +65,7 @@ namespace UnityGameFramework.Editor
                     if (selectedIndex != m_ResourceModeIndex)
                     {
                         m_ResourceModeIndex = selectedIndex;
-                        m_PlayMode.enumValueIndex = selectedIndex + 1;
+                        m_PlayMode.enumValueIndex = selectedIndex;
                     }
 
                     int selectedVerifyIndex = EditorGUILayout.Popup("VerifyLevel", m_VerifyIndex, _verifyLevelNames);
@@ -302,7 +302,7 @@ namespace UnityGameFramework.Editor
 
         private void RefreshModes()
         {
-            m_ResourceModeIndex = m_PlayMode.enumValueIndex > 0 ? m_PlayMode.enumValueIndex - 1 : 0;
+            m_ResourceModeIndex = m_PlayMode.enumValueIndex > 0 ? m_PlayMode.enumValueIndex : 0;
             m_VerifyIndex = m_VerifyLevel.enumValueIndex > 0 ? m_VerifyLevel.enumValueIndex : 0;
         }
 
