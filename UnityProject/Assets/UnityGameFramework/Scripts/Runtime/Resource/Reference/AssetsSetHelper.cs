@@ -149,7 +149,7 @@ namespace GameFramework.Resource
             }
         }
 
-        public static void SetMaterial(this MeshRenderer meshRenderer, string location, bool isAsync = false, string packageName = "")
+        public static void SetMaterial(this MeshRenderer meshRenderer, string location, bool needInstance = true, bool isAsync = false, string packageName = "")
         {
             if (meshRenderer == null)
             {
@@ -161,7 +161,7 @@ namespace GameFramework.Resource
             if (!isAsync)
             {
                 Material material = _resourceManager.LoadAsset<Material>(location, packageName);
-                meshRenderer.material = material;
+                meshRenderer.material = needInstance ? Object.Instantiate(material) : material;
                 AssetsReference.Ref(material, meshRenderer.gameObject);
             }
             else
@@ -175,7 +175,7 @@ namespace GameFramework.Resource
                         return;
                     }
 
-                    meshRenderer.material = material;
+                    meshRenderer.material = needInstance ? Object.Instantiate(material) : material;
                     AssetsReference.Ref(material, meshRenderer.gameObject);
                 }, packageName);
             }
