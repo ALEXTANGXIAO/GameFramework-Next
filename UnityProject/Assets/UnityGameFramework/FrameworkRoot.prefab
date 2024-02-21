@@ -646,7 +646,8 @@ MonoBehaviour:
   - GameMain.ProcedureStartGame
   - GameMain.ProcedureUpdateManifest
   - GameMain.ProcedureUpdateVersion
-  m_EntranceProcedureTypeName: GameMain.ProcedureLaunch
+  - ProcedureEmpty
+  m_EntranceProcedureTypeName: ProcedureEmpty
 --- !u!1 &140694
 GameObject:
   m_ObjectHideFlags: 0
