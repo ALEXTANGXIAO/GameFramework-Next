@@ -39,6 +39,14 @@ namespace GameMain
                 m_InitConfigXml = true;
             }
 
+#if UNITY_EDITOR
+            if (GameModule.Resource.PlayMode == EPlayMode.EditorSimulateMode)
+            {
+                PreloadResources();
+                return;
+            }
+#endif
+
             UILoadMgr.Show(UIDefine.UILoadUpdate, Utility.Text.Format(LoadText.Instance.Label_Load_Load_Progress, 0));
 
             PreloadResources();
