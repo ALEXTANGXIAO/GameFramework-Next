@@ -18,7 +18,7 @@ namespace UGFExtensions.Texture
             return item;
         }
 
-        protected override void Release(bool isShutdown)
+        protected internal override void Release(bool isShutdown)
         {
             UnityEngine.Texture texture = (UnityEngine.Texture)Target;
             if (texture == null)
