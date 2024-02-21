@@ -20,12 +20,12 @@ MonoBehaviour:
     m_ResourcesArea:
       m_ResAdminType: Default
       m_ResAdminCode: 0
-      m_ServerType: 2
+      m_ServerType: 1
       m_CleanCommitPathRes: 1
       m_InnerResourceSourceUrl: http://127.0.0.1:8088
-      m_ExtraResourceSourceUrl: http://120.48.40.228:8088
+      m_ExtraResourceSourceUrl: http://127.0.0.1:8088
       m_FormalResourceSourceUrl: http://127.0.0.1:8088
-    m_AtlasFolder: Assets/GameMain/AssetsHotfix/UI/UIArt/Atlas
+    m_AtlasFolder: Assets/AssetRaw/Atlas
     m_ResourceVersionFileName: ResourceVersion.txt
     CheckVersionUrl: http://127.0.0.1/Resources/{0}Version.txt
     WindowsAppUrl: http://127.0.0.1
@@ -34,21 +34,22 @@ MonoBehaviour:
     AndroidAppUrl: http://127.0.0.1
     m_CurUseServerChannel: 
     m_ServerChannelInfos: []
-    m_IsReadLocalConfigInEditor: 1
-    m_ConfigFolderName: Assets/AssetRaw/Configs/
-  m_BybridCLRCustomGlobalSettings:
-    m_Enable: 1
+  m_HybridCLRCustomGlobalSettings:
+    m_Enable: 0
     m_Gitee: 1
     HotUpdateAssemblies:
     - GameBase.dll
     - GameProto.dll
-    - BattleCore.Runtime.dll
     - GameLogic.dll
     AOTMetaAssemblies:
     - mscorlib.dll
     - System.dll
     - System.Core.dll
-    LogicMainDllName: GameLogic.dll
+    - UnityEngine.CoreModule.dll
+    - YooAsset.dll
+    - UniTask.dll
+    - UnityGameFramework.Runtime.dll
+    LogicMainDllName: GameMain.dll
     AssemblyTextAssetExtension: .bytes
     AssemblyTextAssetPath: AssetRaw/DLL
     HybridCLRGlobalSettings: Settings/HybridCLRGlobalSettings
