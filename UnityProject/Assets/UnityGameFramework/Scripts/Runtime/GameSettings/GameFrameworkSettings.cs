@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "GameFrameworkGlobalSettings", menuName = "Game Framework/GameFrameworkSettings")]
 public class GameFrameworkSettings : ScriptableObject
@@ -10,10 +11,7 @@ public class GameFrameworkSettings : ScriptableObject
         get { return m_FrameworkGlobalSettings; }
     }
 
-    [Header("HybridCLR")] [SerializeField] private HybridCLRCustomGlobalSettings m_BybridCLRCustomGlobalSettings;
+    [Header("HybridCLR")] [SerializeField] private HybridCLRCustomGlobalSettings m_HybridCLRCustomGlobalSettings;
 
-    public HybridCLRCustomGlobalSettings BybridCLRCustomGlobalSettings
-    {
-        get { return m_BybridCLRCustomGlobalSettings; }
-    }
+    public HybridCLRCustomGlobalSettings HybridClrCustomGlobalSettings => m_HybridCLRCustomGlobalSettings;
 }

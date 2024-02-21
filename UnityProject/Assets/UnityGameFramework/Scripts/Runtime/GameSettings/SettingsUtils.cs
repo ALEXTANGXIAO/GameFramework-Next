@@ -30,7 +30,7 @@ public static class SettingsUtils
 
     public static HybridCLRCustomGlobalSettings HybridCLRCustomGlobalSettings
     {
-        get { return GlobalSettings.BybridCLRCustomGlobalSettings; }
+        get { return GlobalSettings.HybridClrCustomGlobalSettings; }
     }
 
     public static ResourcesArea ResourcesArea
@@ -40,12 +40,14 @@ public static class SettingsUtils
 
     public static void SetHybridCLRHotUpdateAssemblies(List<string> hotUpdateAssemblies)
     {
-        HybridCLRCustomGlobalSettings.HotUpdateAssemblies = hotUpdateAssemblies;
+        HybridCLRCustomGlobalSettings.HotUpdateAssemblies.Clear();
+        HybridCLRCustomGlobalSettings.HotUpdateAssemblies.AddRange(hotUpdateAssemblies);
     }
 
     public static void SetHybridCLRAOTMetaAssemblies(List<string> aOTMetaAssemblies)
     {
-        HybridCLRCustomGlobalSettings.AOTMetaAssemblies = aOTMetaAssemblies;
+        HybridCLRCustomGlobalSettings.AOTMetaAssemblies.Clear();
+        HybridCLRCustomGlobalSettings.AOTMetaAssemblies.AddRange(aOTMetaAssemblies);
     }
 
 
@@ -196,14 +198,14 @@ public static class SettingsUtils
 #endif
     }
     
-    public static string GetConfigAsset(string assetName)
-    {
-        return GlobalSettings.FrameworkGlobalSettings.ConfigFolderName + assetName;
-    }
-    
     public static string GetDictionaryAsset(string assetName, bool fromBytes)
     {
         return Utility.Text.Format("Assets/GameMain/Localization/{0}/Dictionaries/{1}.{2}",
             GameSystem.GetComponent<LocalizationComponent>().Language.ToString(), assetName, fromBytes ? "bytes" : "xml");
+    }
+
+    public static string GetAtlasFolder()
+    {
+        return FrameworkGlobalSettings.AtlasFolder;
     }
 }

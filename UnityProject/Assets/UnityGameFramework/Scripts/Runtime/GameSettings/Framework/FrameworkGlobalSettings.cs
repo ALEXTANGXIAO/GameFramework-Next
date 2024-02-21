@@ -5,8 +5,10 @@ using UnityEngine;
 public enum UpdateType
 {
     None = 0,
+
     //底包更新
-    PackageUpdate = 1, 
+    PackageUpdate = 1,
+
     //资源更新
     ResourceUpdate = 2,
 }
@@ -14,17 +16,17 @@ public enum UpdateType
 public enum UpdateStyle
 {
     None = 0,
-    Froce = 1,   //强制
-    Optional = 2,//非强制
+    Froce = 1, //强制
+    Optional = 2, //非强制
 }
 
 public enum UpdateNotice
 {
     None = 0,
-    Notice = 1,   //提示
-    NoNotice = 2,//非提示
+    Notice = 1, //提示
+    NoNotice = 2, //非提示
 }
-    
+
 public enum GameStatus
 {
     First = 0,
@@ -127,18 +129,6 @@ public class FrameworkGlobalSettings
     {
         get { return m_AppStage; }
     }
-    
-    // // 资源更新类型
-    // public UpdateType UpdateType = UpdateType.PackageUpdate;
-    //     
-    // // 更新是否强制
-    // public UpdateStyle UpdateStyle = UpdateStyle.Froce;
-    //     
-    // // 更新提示类型
-    // public UpdateNotice UpdateNotice = UpdateNotice.Notice;
-
-    [Header("Font")] [SerializeField] private string m_DefaultFont = "Arial";
-    public string DefaultFont => m_DefaultFont;
 
     [Header("Resources")] [Tooltip("资源存放地")] [SerializeField]
     private ResourcesArea m_ResourcesArea;
@@ -156,15 +146,6 @@ public class FrameworkGlobalSettings
         get { return m_AtlasFolder; }
     }
 
-    [Header("Hotfix")] [SerializeField] 
-    private string m_ResourceVersionFileName = "ResourceVersion.txt";
-
-    public string ResourceVersionFileName
-    {
-        get { return m_ResourceVersionFileName; }
-    }
-
-    public string CheckVersionUrl = "http://127.0.0.1/Resources/{0}Version.txt";
     public string WindowsAppUrl = "http://127.0.0.1";
     public string MacOSAppUrl = "http://127.0.0.1";
     public string IOSAppUrl = "http://127.0.0.1";
@@ -181,20 +162,5 @@ public class FrameworkGlobalSettings
     public List<ServerChannelInfo> ServerChannelInfos
     {
         get => m_ServerChannelInfos;
-    }
-
-    [Header("Config")] [Tooltip("是否读取本地表 UnityEditor 下起作用")] [SerializeField]
-    private bool m_IsReadLocalConfigInEditor = true;
-
-    public bool ReadLocalConfigInEditor
-    {
-        get { return m_IsReadLocalConfigInEditor; }
-    }
-
-    [SerializeField] private string m_ConfigFolderName = "Assets/AssetRaw/Configs/";
-
-    public string ConfigFolderName
-    {
-        get { return m_ConfigFolderName; }
     }
 }

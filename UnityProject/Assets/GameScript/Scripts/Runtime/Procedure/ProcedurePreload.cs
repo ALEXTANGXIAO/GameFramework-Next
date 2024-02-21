@@ -123,13 +123,6 @@ namespace GameMain
             }
         }
 
-        private void LoadConfig(string configName)
-        {
-            string configAssetName = SettingsUtils.GetConfigAsset(configName);
-            m_LoadedFlag.Add(configAssetName, false);
-            GameModule.Config.ReadData(configAssetName, this);
-        }
-
         private void LoadDictionary(string dictionaryName)
         {
             string dictionaryAssetName = SettingsUtils.GetDictionaryAsset(dictionaryName, false);
