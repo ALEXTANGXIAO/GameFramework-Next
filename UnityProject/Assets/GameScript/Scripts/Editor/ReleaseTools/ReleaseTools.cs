@@ -131,7 +131,7 @@ namespace UnityGameFramework.Editor
         public static void AutomationBuild()
         {
             BuildTarget target = EditorUserBuildSettings.activeBuildTarget;
-            // BuildDLLCommand.BuildAndCopyDlls(target);
+            BuildDLLCommand.BuildAndCopyDlls(target);
             AssetDatabase.Refresh();
             BuildInternal(target, Application.dataPath + "/../Builds/Windows", packageVersion: GetBuildPackageVersion());
             AssetDatabase.Refresh();
@@ -149,7 +149,7 @@ namespace UnityGameFramework.Editor
         public static void AutomationBuildAndroid()
         {
             BuildTarget target = EditorUserBuildSettings.activeBuildTarget;
-            // BuildDLLCommand.BuildAndCopyDlls(target);
+            BuildDLLCommand.BuildAndCopyDlls(target);
             AssetDatabase.Refresh();
             BuildInternal(target, outputRoot: Application.dataPath + "/../Bundles", packageVersion: GetBuildPackageVersion());
             AssetDatabase.Refresh();
@@ -161,7 +161,7 @@ namespace UnityGameFramework.Editor
         public static void AutomationBuildIOS()
         {
             BuildTarget target = EditorUserBuildSettings.activeBuildTarget;
-            // BuildDLLCommand.BuildAndCopyDlls(target);
+            BuildDLLCommand.BuildAndCopyDlls(target);
             AssetDatabase.Refresh();
             BuildInternal(target, outputRoot: Application.dataPath + "/../Bundles", packageVersion: GetBuildPackageVersion());
             AssetDatabase.Refresh();
