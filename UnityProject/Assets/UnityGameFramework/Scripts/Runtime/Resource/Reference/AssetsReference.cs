@@ -1,37 +1,57 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace GameFramework.Resource
 {
+    [Serializable]
+    public struct AssetsRefInfo
+    {
+        public int instanceId;
+
+        public Object refAsset;
+
+        public AssetsRefInfo(Object refAsset)
+        {
+            this.refAsset = refAsset;
+            instanceId = this.refAsset.GetInstanceID();
+        }
+    }
+
     public sealed class AssetsReference : MonoBehaviour
     {
-        private GameObject _sourceGameObject;
-        private List<Object> _refAssetList;
+        [SerializeField] private GameObject _sourceGameObject;
+
+        [SerializeField] private List<AssetsRefInfo> _refAssetInfoList;
+
         private IResourceManager _resourceManager;
 
         private void OnDestroy()
         {
+            if (_resourceManager == null)
+            {
+                _resourceManager = GameFrameworkEntry.GetModule<IResourceManager>();
+            }
+
+            if (_resourceManager == null)
+            {
+                throw new GameFrameworkException($"ResourceManager is null.");
+            }
+
             if (_sourceGameObject != null)
             {
-                if (_resourceManager == null)
+                _resourceManager.UnloadAsset(_sourceGameObject);
+            }
+
+            if (_refAssetInfoList != null)
+            {
+                foreach (var refInfo in _refAssetInfoList)
                 {
-                    _resourceManager = GameFrameworkEntry.GetModule<IResourceManager>();
+                    _resourceManager.UnloadAsset(refInfo.refAsset);
                 }
 
-                if (_resourceManager != null)
-                {
-                    _resourceManager.UnloadAsset(_sourceGameObject);
-
-                    if (_refAssetList != null)
-                    {
-                        foreach (var refAsset in _refAssetList)
-                        {
-                            _resourceManager.UnloadAsset(refAsset);
-                        }
-                        _refAssetList.Clear();
-                    }
-                }
+                _refAssetInfoList.Clear();
             }
         }
 
@@ -60,8 +80,8 @@ namespace GameFramework.Resource
             }
 
             _resourceManager = resourceManager;
-            _refAssetList = new List<Object>();
-            _refAssetList.Add(source);
+            _refAssetInfoList = new List<AssetsRefInfo>();
+            _refAssetInfoList.Add(new AssetsRefInfo(source));
             return this;
         }
 
