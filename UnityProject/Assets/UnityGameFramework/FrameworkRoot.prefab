@@ -91,7 +91,7 @@ MonoBehaviour:
   m_MinUnloadUnusedAssetsInterval: 60
   m_MaxUnloadUnusedAssetsInterval: 300
   PackageName: DefaultPackage
-  playMode: 0
+  playMode: 1
   VerifyLevel: 1
   m_ReadWritePathType: 0
   Milliseconds: 30
@@ -101,10 +101,6 @@ MonoBehaviour:
   m_AssetCapacity: 64
   m_AssetExpireTime: 60
   m_AssetPriority: 0
-  m_ResourceAutoReleaseInterval: 60
-  m_ResourceCapacity: 16
-  m_ResourceExpireTime: 60
-  m_ResourcePriority: 0
 --- !u!1 &109252
 GameObject:
   m_ObjectHideFlags: 0
@@ -646,8 +642,7 @@ MonoBehaviour:
   - GameMain.ProcedureStartGame
   - GameMain.ProcedureUpdateManifest
   - GameMain.ProcedureUpdateVersion
-  - ProcedureEmpty
-  m_EntranceProcedureTypeName: ProcedureEmpty
+  m_EntranceProcedureTypeName: GameMain.ProcedureLaunch
 --- !u!1 &140694
 GameObject:
   m_ObjectHideFlags: 0
