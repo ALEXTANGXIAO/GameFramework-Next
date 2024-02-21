@@ -84,7 +84,10 @@ namespace GameFramework.Resource
         /// <param name="asset">要卸载的资源。</param>
         public void UnloadAsset(object asset)
         {
-            m_AssetPool.Unspawn(asset);
+            if (m_AssetPool != null)
+            {
+                m_AssetPool.Unspawn(asset);
+            }
         }
         
         /// <summary>
