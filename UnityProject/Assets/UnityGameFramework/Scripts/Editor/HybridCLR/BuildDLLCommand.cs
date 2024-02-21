@@ -6,9 +6,19 @@ using UnityGameFramework.Editor;
 using UnityEditor;
 using UnityEngine;
 
-public static class BuildAssetsCommand
+[InitializeOnLoad]
+public static class BuildDLLCommand
 {
     private const string EnableHybridClrScriptingDefineSymbol = "ENABLE_HYBRIDCLR";
+
+    static BuildDLLCommand()
+    {
+#if ENABLE_HYBRIDCLR
+        HybridCLR.Editor.SettingsUtil.Enable = true;
+#else
+        HybridCLR.Editor.SettingsUtil.Enable = false;
+#endif
+    }
     
     /// <summary>
     /// 禁用HybridCLR宏定义。
@@ -17,6 +27,7 @@ public static class BuildAssetsCommand
     public static void Disable()
     {
         ScriptingDefineSymbols.RemoveScriptingDefineSymbol(EnableHybridClrScriptingDefineSymbol);
+        HybridCLR.Editor.SettingsUtil.Enable = false;
     }
 
     /// <summary>
@@ -27,6 +38,7 @@ public static class BuildAssetsCommand
     {
         ScriptingDefineSymbols.RemoveScriptingDefineSymbol(EnableHybridClrScriptingDefineSymbol);
         ScriptingDefineSymbols.AddScriptingDefineSymbol(EnableHybridClrScriptingDefineSymbol);
+        HybridCLR.Editor.SettingsUtil.Enable = true;
     }
     
     [MenuItem("HybridCLR/Build/BuildAssets And CopyTo AssemblyTextAssetPath")]
@@ -34,6 +46,14 @@ public static class BuildAssetsCommand
     {
 #if ENABLE_HYBRIDCLR
         BuildTarget target = EditorUserBuildSettings.activeBuildTarget;
+        CompileDllCommand.CompileDll(target);
+        CopyAOTHotUpdateDlls(target);
+#endif
+    }
+    
+    public static void BuildAndCopyDlls(BuildTarget target)
+    {
+#if ENABLE_HYBRIDCLR
         CompileDllCommand.CompileDll(target);
         CopyAOTHotUpdateDlls(target);
 #endif

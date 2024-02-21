@@ -23,7 +23,7 @@ namespace GameMain
         /// <summary>
         /// 是否需要加载热更新DLL
         /// </summary>
-        public bool NeedLoadDll => (int)GameModule.Resource.PlayMode > (int)EPlayMode.EditorSimulateMode;
+        public bool NeedLoadDll => (int)GameModule.Resource.PlayMode > (int)EPlayMode.OfflinePlayMode;
 
         private bool m_enableAddressable = true;
         public override bool UseNativeDialog => true;

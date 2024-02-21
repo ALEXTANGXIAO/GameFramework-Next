@@ -23,8 +23,8 @@ namespace UnityGameFramework.Editor
             }
 
             BuildTarget target = GetBuildTarget(platform);
-            // TODO
-            // BuildDLLCommand.BuildAndCopyDlls(target);
+            
+            BuildDLLCommand.BuildAndCopyDlls(target);
         }
 
         public static void BuildAssetBundle()
