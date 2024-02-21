@@ -68,21 +68,21 @@ public class ResourcesArea
         get { return m_CleanCommitPathRes; }
     }
 
-    [Tooltip("内网地址")] [SerializeField] private string m_InnerResourceSourceUrl = "http://127.0.0.1:8088";
+    [Tooltip("内网地址")] [SerializeField] private string m_InnerResourceSourceUrl = "http://127.0.0.1:8081";
 
     public string InnerResourceSourceUrl
     {
         get { return m_InnerResourceSourceUrl; }
     }
 
-    [Tooltip("外网地址")] [SerializeField] private string m_ExtraResourceSourceUrl = "http://127.0.0.1:8088";
+    [Tooltip("外网地址")] [SerializeField] private string m_ExtraResourceSourceUrl = "http://127.0.0.1:8081";
 
     public string ExtraResourceSourceUrl
     {
         get { return m_ExtraResourceSourceUrl; }
     }
 
-    [Tooltip("正式地址")] [SerializeField] private string m_FormalResourceSourceUrl = "http://127.0.0.1:8088";
+    [Tooltip("正式地址")] [SerializeField] private string m_FormalResourceSourceUrl = "http://127.0.0.1:8081";
 
     public string FormalResourceSourceUrl
     {
