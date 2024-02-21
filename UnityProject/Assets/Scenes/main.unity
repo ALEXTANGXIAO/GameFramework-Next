@@ -178,14 +178,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11405216, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
-      propertyPath: m_EntranceProcedureTypeName
-      value: GameMain.ProcedureLaunch
-      objectReference: {fileID: 0}
-    - target: {fileID: 11405216, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
-      propertyPath: m_AvailableProcedureTypeNames.Array.size
-      value: 13
-      objectReference: {fileID: 0}
     - target: {fileID: 11454530, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_UICamera
       value: 
@@ -198,10 +190,6 @@ PrefabInstance:
       propertyPath: m_InstanceRoot
       value: 
       objectReference: {fileID: 561292262}
-    - target: {fileID: 4861881215341461167, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
-      propertyPath: playMode
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
 --- !u!4 &194006812 stripped
