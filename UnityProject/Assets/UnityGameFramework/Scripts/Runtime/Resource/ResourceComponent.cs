@@ -168,18 +168,6 @@ namespace UnityGameFramework.Runtime
 
         [SerializeField]
         private int m_AssetPriority = 0;
-
-        [SerializeField]
-        private float m_ResourceAutoReleaseInterval = 60f;
-
-        [SerializeField]
-        private int m_ResourceCapacity = 16;
-
-        [SerializeField]
-        private float m_ResourceExpireTime = 60f;
-
-        [SerializeField]
-        private int m_ResourcePriority = 0;
         
         /// <summary>
         /// 获取或设置资源对象池自动释放可释放对象的间隔秒数。
@@ -240,66 +228,6 @@ namespace UnityGameFramework.Runtime
                 m_ResourceManager.AssetPriority = m_AssetPriority = value;
             }
         }
-
-        /// <summary>
-        /// 获取或设置资源对象池自动释放可释放对象的间隔秒数。
-        /// </summary>
-        public float ResourceAutoReleaseInterval
-        {
-            get
-            {
-                return m_ResourceManager.ResourceAutoReleaseInterval;
-            }
-            set
-            {
-                m_ResourceManager.ResourceAutoReleaseInterval = m_ResourceAutoReleaseInterval = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置资源对象池的容量。
-        /// </summary>
-        public int ResourceCapacity
-        {
-            get
-            {
-                return m_ResourceManager.ResourceCapacity;
-            }
-            set
-            {
-                m_ResourceManager.ResourceCapacity = m_ResourceCapacity = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置资源对象池对象过期秒数。
-        /// </summary>
-        public float ResourceExpireTime
-        {
-            get
-            {
-                return m_ResourceManager.ResourceExpireTime;
-            }
-            set
-            {
-                m_ResourceManager.ResourceExpireTime = m_ResourceExpireTime = value;
-            }
-        }
-
-        /// <summary>
-        /// 获取或设置资源对象池的优先级。
-        /// </summary>
-        public int ResourcePriority
-        {
-            get
-            {
-                return m_ResourceManager.ResourcePriority;
-            }
-            set
-            {
-                m_ResourceManager.ResourcePriority = m_ResourcePriority = value;
-            }
-        }
         #endregion
 
         private void Start()
@@ -352,10 +280,6 @@ namespace UnityGameFramework.Runtime
             m_ResourceManager.AssetCapacity = m_AssetCapacity;
             m_ResourceManager.AssetExpireTime = m_AssetExpireTime;
             m_ResourceManager.AssetPriority = m_AssetPriority;
-            m_ResourceManager.ResourceAutoReleaseInterval = m_ResourceAutoReleaseInterval;
-            m_ResourceManager.ResourceCapacity = m_ResourceCapacity;
-            m_ResourceManager.ResourceExpireTime = m_ResourceExpireTime;
-            m_ResourceManager.ResourcePriority = m_ResourcePriority;
             Log.Info($"ResourceComponent Run Mode：{PlayMode}");
         }
 

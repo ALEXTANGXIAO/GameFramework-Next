@@ -43,42 +43,6 @@ namespace GameFramework.Resource
         }
         
         /// <summary>
-        /// 获取或设置资源对象池自动释放可释放对象的间隔秒数。
-        /// </summary>
-        public float ResourceAutoReleaseInterval
-        {
-            get => m_AssetPool.AutoReleaseInterval;
-            set => m_AssetPool.AutoReleaseInterval = value;
-        }
-
-        /// <summary>
-        /// 获取或设置资源对象池的容量。
-        /// </summary>
-        public int ResourceCapacity
-        {
-            get => m_AssetPool.Capacity;
-            set => m_AssetPool.Capacity = value;
-        }
-
-        /// <summary>
-        /// 获取或设置资源对象池对象过期秒数。
-        /// </summary>
-        public float ResourceExpireTime
-        {
-            get => m_AssetPool.ExpireTime;
-            set => m_AssetPool.ExpireTime = value;
-        }
-
-        /// <summary>
-        /// 获取或设置资源对象池的优先级。
-        /// </summary>
-        public int ResourcePriority
-        {
-            get => m_AssetPool.Priority;
-            set => m_AssetPool.Priority = value;
-        }
-        
-        /// <summary>
         /// 卸载资源。
         /// </summary>
         /// <param name="asset">要卸载的资源。</param>

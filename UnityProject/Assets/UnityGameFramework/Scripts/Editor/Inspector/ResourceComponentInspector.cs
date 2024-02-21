@@ -33,10 +33,6 @@ namespace UnityGameFramework.Editor
         private SerializedProperty m_AssetCapacity = null;
         private SerializedProperty m_AssetExpireTime = null;
         private SerializedProperty m_AssetPriority = null;
-        private SerializedProperty m_ResourceAutoReleaseInterval = null;
-        private SerializedProperty m_ResourceCapacity = null;
-        private SerializedProperty m_ResourceExpireTime = null;
-        private SerializedProperty m_ResourcePriority = null;
         private SerializedProperty m_DownloadingMaxNum = null;
         private SerializedProperty m_FailedTryAgain = null;
 
@@ -200,59 +196,6 @@ namespace UnityGameFramework.Editor
                         m_AssetPriority.intValue = assetPriority;
                     }
                 }
-
-                float resourceAutoReleaseInterval =
-                    EditorGUILayout.DelayedFloatField("Resource Auto Release Interval", m_ResourceAutoReleaseInterval.floatValue);
-                if (Math.Abs(resourceAutoReleaseInterval - m_ResourceAutoReleaseInterval.floatValue) > 0.01f)
-                {
-                    if (EditorApplication.isPlaying)
-                    {
-                        t.ResourceAutoReleaseInterval = resourceAutoReleaseInterval;
-                    }
-                    else
-                    {
-                        m_ResourceAutoReleaseInterval.floatValue = resourceAutoReleaseInterval;
-                    }
-                }
-
-                int resourceCapacity = EditorGUILayout.DelayedIntField("Resource Capacity", m_ResourceCapacity.intValue);
-                if (resourceCapacity != m_ResourceCapacity.intValue)
-                {
-                    if (EditorApplication.isPlaying)
-                    {
-                        t.ResourceCapacity = resourceCapacity;
-                    }
-                    else
-                    {
-                        m_ResourceCapacity.intValue = resourceCapacity;
-                    }
-                }
-
-                float resourceExpireTime = EditorGUILayout.DelayedFloatField("Resource Expire Time", m_ResourceExpireTime.floatValue);
-                if (Math.Abs(resourceExpireTime - m_ResourceExpireTime.floatValue) > 0.01f)
-                {
-                    if (EditorApplication.isPlaying)
-                    {
-                        t.ResourceExpireTime = resourceExpireTime;
-                    }
-                    else
-                    {
-                        m_ResourceExpireTime.floatValue = resourceExpireTime;
-                    }
-                }
-
-                int resourcePriority = EditorGUILayout.DelayedIntField("Resource Priority", m_ResourcePriority.intValue);
-                if (resourcePriority != m_ResourcePriority.intValue)
-                {
-                    if (EditorApplication.isPlaying)
-                    {
-                        t.ResourcePriority = resourcePriority;
-                    }
-                    else
-                    {
-                        m_ResourcePriority.intValue = resourcePriority;
-                    }
-                }
             }
             EditorGUI.EndDisabledGroup();
 
@@ -289,10 +232,6 @@ namespace UnityGameFramework.Editor
             m_AssetCapacity = serializedObject.FindProperty("m_AssetCapacity");
             m_AssetExpireTime = serializedObject.FindProperty("m_AssetExpireTime");
             m_AssetPriority = serializedObject.FindProperty("m_AssetPriority");
-            m_ResourceAutoReleaseInterval = serializedObject.FindProperty("m_ResourceAutoReleaseInterval");
-            m_ResourceCapacity = serializedObject.FindProperty("m_ResourceCapacity");
-            m_ResourceExpireTime = serializedObject.FindProperty("m_ResourceExpireTime");
-            m_ResourcePriority = serializedObject.FindProperty("m_ResourcePriority");
             m_DownloadingMaxNum = serializedObject.FindProperty("m_DownloadingMaxNum");
             m_FailedTryAgain = serializedObject.FindProperty("m_FailedTryAgain");
 
