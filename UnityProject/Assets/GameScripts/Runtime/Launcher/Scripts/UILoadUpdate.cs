@@ -16,7 +16,7 @@ namespace GameMain
 
         public virtual void Start()
         {
-            EventTriggerListener.Get(_btn_clear.gameObject).OnClick = OnClear;
+            _btn_clear.onClick.AddListener(OnClear);
             _btn_clear.gameObject.SetActive(true);
         }
 
@@ -56,8 +56,7 @@ namespace GameMain
         /// <summary>
         /// 清空本地缓存
         /// </summary>
-        /// <param name="obj"></param>
-        public virtual void OnClear(GameObject obj)
+        public virtual void OnClear()
         {
             OnStop(null);
             UILoadTip.ShowMessageBox(LoadText.Instance.Label_Clear_Comfirm, MessageShowType.TwoButton,
