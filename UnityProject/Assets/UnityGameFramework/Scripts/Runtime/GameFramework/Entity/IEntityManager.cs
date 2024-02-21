@@ -2,6 +2,7 @@
 using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 
 namespace GameFramework.Entity
 {
@@ -223,6 +224,24 @@ namespace GameFramework.Entity
         /// <param name="userData">用户自定义数据。</param>
         void ShowEntity(int entityId, string entityAssetName, string entityGroupName, int priority, object userData);
 
+        /// <summary>
+        /// 同步显示实体。
+        /// </summary>
+        /// <param name="entityId">实体编号。</param>
+        /// <param name="entityAssetName">实体资源名称。</param>
+        /// <param name="entityGroupName">实体组名称。</param>
+        /// <param name="userData">用户自定义数据。</param>
+        IEntity ShowEntitySync(int entityId, string entityAssetName, string entityGroupName, object userData = null);
+
+        /// <summary>
+        /// 异步显示实体。
+        /// </summary>
+        /// <param name="entityId">实体编号。</param>
+        /// <param name="entityAssetName">实体资源名称。</param>
+        /// <param name="entityGroupName">实体组名称。</param>
+        /// <param name="userData">用户自定义数据。</param>
+        UniTask<IEntity> ShowEntityAsync(int entityId, string entityAssetName, string entityGroupName, object userData = null);
+        
         /// <summary>
         /// 隐藏实体。
         /// </summary>

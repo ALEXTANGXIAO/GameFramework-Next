@@ -4,6 +4,7 @@ using GameFramework.ObjectPool;
 using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace UnityGameFramework.Runtime
@@ -478,6 +479,42 @@ namespace UnityGameFramework.Runtime
             }
 
             m_EntityManager.ShowEntity(entityId, entityAssetName, entityGroupName, priority, ShowEntityInfo.Create(entityLogicType, userData));
+        }
+
+        /// <summary>
+        /// 同步显示实体。
+        /// </summary>
+        /// <param name="entityId">实体编号。</param>
+        /// <param name="entityAssetName">实体资源名称。</param>
+        /// <param name="entityGroupName">实体组名称。</param>
+        /// <param name="userData">用户自定义数据。</param>
+        public T ShowEntitySync<T>(int entityId, string entityAssetName, string entityGroupName, object userData = null) where T : class
+        {
+            Entity entity = (Entity)m_EntityManager.ShowEntitySync(entityId, entityAssetName, entityGroupName, ShowEntityInfo.Create(typeof(T), userData));
+            if (entity == null)
+            {
+                throw new GameFrameworkException($"Show Entity Failed.");
+            }
+
+            return entity.Logic as T;
+        }
+
+        /// <summary>
+        /// 异步显示实体。
+        /// </summary>
+        /// <param name="entityId">实体编号。</param>
+        /// <param name="entityAssetName">实体资源名称。</param>
+        /// <param name="entityGroupName">实体组名称。</param>
+        /// <param name="userData">用户自定义数据。</param>
+        public async UniTask<T> ShowEntityAsync<T>(int entityId, string entityAssetName, string entityGroupName, object userData = null) where T : class
+        {
+            Entity entity = (Entity) await m_EntityManager.ShowEntityAsync(entityId, entityAssetName, entityGroupName, ShowEntityInfo.Create(typeof(T), userData));
+            if (entity == null)
+            {
+                throw new GameFrameworkException($"Show Entity Failed.");
+            }
+
+            return entity.Logic as T;
         }
 
         /// <summary>
