@@ -96,7 +96,7 @@ namespace GameFramework.Resource
             return instance.GetOrAddComponent<AssetsReference>().Ref(source, resourceManager);
         }
 
-        public static AssetsReference Ref<T>(T source, GameObject instance, IResourceManager resourceManager) where T : UnityEngine.Object
+        public static AssetsReference Ref<T>(T source, GameObject instance, IResourceManager resourceManager = null) where T : UnityEngine.Object
         {
             if (source == null)
             {
