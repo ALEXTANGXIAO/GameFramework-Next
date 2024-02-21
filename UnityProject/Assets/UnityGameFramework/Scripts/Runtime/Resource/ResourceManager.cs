@@ -460,15 +460,6 @@ namespace GameFramework.Resource
             return package.LoadAssetSync(location, assetType);
         }
 
-        private string GetCacheKey(string location, string packageName = "")
-        {
-            if (string.IsNullOrEmpty(packageName) || packageName.Equals(DefaultPackageName))
-            {
-                return location;
-            }
-            return $"{packageName}/{location}";
-        }
-
         /// <summary>
         /// 获取异步资源句柄。
         /// </summary>
@@ -492,6 +483,21 @@ namespace GameFramework.Resource
             return package.LoadAssetAsync(location, assetType);
         }
         #endregion
+        
+        /// <summary>
+        /// 获取资源定位地址的缓存Key。
+        /// </summary>
+        /// <param name="location">资源定位地址。</param>
+        /// <param name="packageName">资源包名称。</param>
+        /// <returns>资源定位地址的缓存Key。</returns>
+        private string GetCacheKey(string location, string packageName = "")
+        {
+            if (string.IsNullOrEmpty(packageName) || packageName.Equals(DefaultPackageName))
+            {
+                return location;
+            }
+            return $"{packageName}/{location}";
+        }
         
         public T LoadAsset<T>(string location, string packageName = "") where T : UnityEngine.Object
         {
@@ -528,12 +534,12 @@ namespace GameFramework.Resource
             AssetObject assetObject = m_AssetPool.Spawn(assetObjectKey);
             if (assetObject != null)
             {
-                return assetObject.Target as GameObject;
+                return AssetsReference.Instantiate(assetObject.Target as GameObject, parent, this).gameObject;
             }
             
             AssetHandle handle = GetHandleSync<GameObject>(location, packageName: packageName);
 
-            GameObject gameObject = handle.InstantiateSync(parent);
+            GameObject gameObject = AssetsReference.Instantiate(handle.AssetObject as GameObject, parent, this).gameObject;
 
             assetObject = AssetObject.Create(assetObjectKey, handle.AssetObject, handle,this);
             m_AssetPool.Register(assetObject, true);
@@ -646,7 +652,7 @@ namespace GameFramework.Resource
             AssetObject assetObject = m_AssetPool.Spawn(assetObjectKey);
             if (assetObject != null)
             {
-                return assetObject.Target as GameObject;
+                return AssetsReference.Instantiate(assetObject.Target as GameObject, parent, this).gameObject;
             }
             
             AssetHandle handle = GetHandleAsync<GameObject>(location, packageName: packageName);
@@ -658,7 +664,7 @@ namespace GameFramework.Resource
                 return null;
             }
 
-            GameObject gameObject = handle.InstantiateSync(parent);
+            GameObject gameObject = AssetsReference.Instantiate(handle.AssetObject as GameObject, parent, this).gameObject;
             
             assetObject = AssetObject.Create(assetObjectKey, handle.AssetObject, handle,this);
             m_AssetPool.Register(assetObject, true);
