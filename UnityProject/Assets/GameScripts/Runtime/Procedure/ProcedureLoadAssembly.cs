@@ -20,12 +20,7 @@ namespace GameMain
     /// </summary>
     public class ProcedureLoadAssembly : ProcedureBase
     {
-        /// <summary>
-        /// 是否需要加载热更新DLL
-        /// </summary>
-        public bool NeedLoadDll => (int)GameModule.Resource.PlayMode > (int)EPlayMode.OfflinePlayMode;
-
-        private bool m_enableAddressable = true;
+        private readonly bool m_EnableAddressable = true;
         public override bool UseNativeDialog => true;
         private int m_LoadAssetCount;
         private int m_LoadMetadataAssetCount;
@@ -37,13 +32,13 @@ namespace GameMain
         private bool m_LoadMetadataAssemblyWait;
         private Assembly m_MainLogicAssembly;
         private List<Assembly> m_HotfixAssemblys;
-        private IFsm<IProcedureManager> m_procedureOwner;
+        private IFsm<IProcedureManager> m_ProcedureOwner;
 
         protected override void OnEnter(IFsm<IProcedureManager> procedureOwner)
         {
             base.OnEnter(procedureOwner);
             Log.Debug("HyBridCLR ProcedureLoadAssembly OnEnter");
-            m_procedureOwner = procedureOwner;
+            m_ProcedureOwner = procedureOwner;
             m_LoadAssemblyComplete = false;
             m_HotfixAssemblys = new List<Assembly>();
 
@@ -62,7 +57,7 @@ namespace GameMain
                 m_LoadMetadataAssemblyComplete = true;
             }
 
-            if (!NeedLoadDll || GameModule.Resource.PlayMode == EPlayMode.EditorSimulateMode)
+            if (!SettingsUtils.HybridCLRCustomGlobalSettings.Enable || GameModule.Resource.PlayMode == EPlayMode.EditorSimulateMode)
             {
                 m_MainLogicAssembly = GetMainLogicAssembly();
             }
@@ -73,7 +68,7 @@ namespace GameMain
                     foreach (string hotUpdateDllName in SettingsUtils.HybridCLRCustomGlobalSettings.HotUpdateAssemblies)
                     {
                         var assetLocation = hotUpdateDllName;
-                        if (!m_enableAddressable)
+                        if (!m_EnableAddressable)
                         {
                             assetLocation = Utility.Path.GetRegularPath(
                                 Path.Combine(
@@ -119,7 +114,7 @@ namespace GameMain
 
         private void AllAssemblyLoadComplete()
         {
-            ChangeState<ProcedureStartGame>(m_procedureOwner);
+            ChangeState<ProcedureStartGame>(m_ProcedureOwner);
 #if UNITY_EDITOR
             m_MainLogicAssembly = GetMainLogicAssembly();
 #endif
@@ -235,7 +230,7 @@ namespace GameMain
             foreach (string aotDllName in SettingsUtils.HybridCLRCustomGlobalSettings.AOTMetaAssemblies)
             {
                 var assetLocation = aotDllName;
-                if (!m_enableAddressable)
+                if (!m_EnableAddressable)
                 {
                     assetLocation = Utility.Path.GetRegularPath(
                         Path.Combine(

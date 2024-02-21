@@ -8,16 +8,15 @@ using UnityEngine;
 [Serializable]
 public class HybridCLRCustomGlobalSettings
 {
-    [Header("Auto sync with [HybridCLRGlobalSettings]")]
-    [SerializeField]
-    private bool m_Enable = false;
-
     public bool Enable
     {
-        get => m_Enable;
-        set
+        get
         {
-            m_Enable = value;
+#if ENABLE_HYBRIDCLR
+            return true;
+#else
+            return false;
+#endif
         }
     }
 
