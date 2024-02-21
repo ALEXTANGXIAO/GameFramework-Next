@@ -12,10 +12,9 @@ namespace GameFramework.Resource
         /// </summary>
         private sealed class AssetObject : ObjectBase
         {
-            private object m_AssetHandle;
+            private AssetHandle m_AssetHandle;
             private ResourceManager m_ResourceManager;
 
-            public object AssetHandle => m_AssetHandle;
 
             public AssetObject()
             {
@@ -36,7 +35,7 @@ namespace GameFramework.Resource
 
                 AssetObject assetObject = ReferencePool.Acquire<AssetObject>();
                 assetObject.Initialize(name, target);
-                assetObject.m_AssetHandle = assetHandle;
+                assetObject.m_AssetHandle = (AssetHandle)assetHandle;
                 assetObject.m_ResourceManager = resourceManager;
                 return assetObject;
             }
@@ -50,19 +49,18 @@ namespace GameFramework.Resource
             protected internal override void OnUnspawn()
             {
                 base.OnUnspawn();
-                Log.Warning($"OnUnspawn: {Target} {AssetHandle}");
             }
 
             protected internal override void Release(bool isShutdown)
             {
                 if (!isShutdown)
                 {
-                    AssetHandle handle = AssetHandle as AssetHandle;
-                    Log.Warning($"Release Handle:" + handle);
-                    if (handle != null)
+                    AssetHandle handle = m_AssetHandle;
+                    if (handle is { IsValid: true })
                     {
                         handle.Dispose();
                     }
+                    handle = null;
                 }
             }
         }

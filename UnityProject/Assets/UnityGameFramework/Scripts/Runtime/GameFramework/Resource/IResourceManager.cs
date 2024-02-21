@@ -224,6 +224,7 @@ namespace GameFramework.Resource
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
         /// <param name="parent">资源实例父节点。</param>
         /// <returns>资源实例。</returns>
+        /// <remarks>会实例化资源到场景，无需主动UnloadAsset，Destroy时自动UnloadAsset。</remarks>
         GameObject LoadGameObject(string location, string packageName = "", Transform parent = null);
 
         /// <summary>
@@ -269,6 +270,7 @@ namespace GameFramework.Resource
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
         /// <param name="parent">资源实例父节点。</param>
         /// <returns>异步游戏物体实例。</returns>
+        /// <remarks>会实例化资源到场景，无需主动UnloadAsset，Destroy时自动UnloadAsset。</remarks>
         UniTask<GameObject> LoadGameObjectAsync(string location, CancellationToken cancellationToken = default, string packageName = "", Transform parent = null);
 
         /// <summary>
