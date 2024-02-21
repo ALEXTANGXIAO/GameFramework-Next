@@ -46,16 +46,16 @@ namespace GameProto
         private ByteBuf LoadByteBuf(string file)
         {
             TextAsset textAsset = GameModule.Resource.LoadAsset<TextAsset>(file);
-
+            
             if (textAsset == null || textAsset.bytes == null)
             {
                 throw new GameFrameworkException($"LoadByteBuf failed: {file}");
             }
-
+            
             byte[] bytes = textAsset.bytes;
-
+            
             GameModule.Resource.UnloadAsset(textAsset);
-
+            
             return new ByteBuf(bytes);
         }
     }

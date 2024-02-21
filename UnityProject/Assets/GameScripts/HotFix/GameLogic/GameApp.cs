@@ -1,4 +1,5 @@
 using GameFramework;
+using GameProto;
 using UnityGameFramework.Runtime;
 
 public partial class GameApp:Singleton<GameApp>
