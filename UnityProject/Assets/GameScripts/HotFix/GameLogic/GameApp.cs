@@ -28,16 +28,7 @@ public partial class GameApp:Singleton<GameApp>
     /// </summary>
     private void StartGameLogic()
     {
-        GameModule.Entity.AddEntityGroup("Actor",60,64,300,0);
-        // GameModule.Entity.ShowEntity<GameLogic.ActorEntity>(1001,"ActorEntity","Actor");
-        // var actorEntity = GameModule.Entity.ShowEntitySync<GameLogic.ActorEntity>(1001,"ActorEntity","Actor");
-        Test();
-    }
-
-    private async void Test()
-    {
         
-        var actorEntity = await GameModule.Entity.ShowEntityAsync<GameLogic.ActorEntity>(1001,"ActorEntity","Actor");
     }
 
     /// <summary>
