@@ -1,6 +1,8 @@
 ﻿using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 namespace GameFramework.Scene
 {
@@ -110,44 +112,32 @@ namespace GameFramework.Scene
         bool HasScene(string sceneAssetName);
 
         /// <summary>
-        /// 加载场景。
+        /// 异步加载场景。
         /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
-        void LoadScene(string sceneAssetName);
-
-        /// <summary>
-        /// 加载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
+        /// <param name="sceneAssetName">要加载场景资源的名称。</param>
+        /// <param name="sceneMode">场景加载模式</param>
+        /// <param name="suspendLoad">加载完毕时是否主动挂起</param>
         /// <param name="priority">加载场景资源的优先级。</param>
-        void LoadScene(string sceneAssetName, int priority);
-
-        /// <summary>
-        /// 加载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
+        /// <param name="loadSceneCallbacks">加载场景回调函数集。</param>
+        /// <param name="gcCollect">加载场景是否回收垃圾。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
         /// <param name="userData">用户自定义数据。</param>
-        void LoadScene(string sceneAssetName, object userData);
-
-        /// <summary>
-        /// 加载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
-        /// <param name="priority">加载场景资源的优先级。</param>
-        /// <param name="userData">用户自定义数据。</param>
-        void LoadScene(string sceneAssetName, int priority, object userData);
+        UniTaskVoid LoadScene(string sceneAssetName, LoadSceneCallbacks loadSceneCallbacks = null, LoadSceneMode sceneMode = LoadSceneMode.Single,
+            bool suspendLoad = false, int priority = 100, bool gcCollect = false, string packageName = "", object userData = null);
 
         /// <summary>
         /// 卸载场景。
         /// </summary>
         /// <param name="sceneAssetName">场景资源名称。</param>
-        void UnloadScene(string sceneAssetName);
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        void UnloadScene(string sceneAssetName, string packageName = "");
 
         /// <summary>
         /// 卸载场景。
         /// </summary>
         /// <param name="sceneAssetName">场景资源名称。</param>
         /// <param name="userData">用户自定义数据。</param>
-        void UnloadScene(string sceneAssetName, object userData);
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        void UnloadScene(string sceneAssetName, object userData , string packageName = "");
     }
 }

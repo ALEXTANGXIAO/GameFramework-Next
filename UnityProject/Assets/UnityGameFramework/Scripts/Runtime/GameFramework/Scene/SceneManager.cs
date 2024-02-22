@@ -1,6 +1,11 @@
 ﻿using GameFramework.Resource;
 using System;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityGameFramework.Runtime;
+using YooAsset;
 
 namespace GameFramework.Scene
 {
@@ -315,78 +320,13 @@ namespace GameFramework.Scene
         }
 
         /// <summary>
-        /// 加载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
-        public void LoadScene(string sceneAssetName)
-        {
-            LoadScene(sceneAssetName, Constant.DefaultPriority, null);
-        }
-
-        /// <summary>
-        /// 加载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
-        /// <param name="priority">加载场景资源的优先级。</param>
-        public void LoadScene(string sceneAssetName, int priority)
-        {
-            LoadScene(sceneAssetName, priority, null);
-        }
-
-        /// <summary>
-        /// 加载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
-        /// <param name="userData">用户自定义数据。</param>
-        public void LoadScene(string sceneAssetName, object userData)
-        {
-            LoadScene(sceneAssetName, Constant.DefaultPriority, userData);
-        }
-
-        /// <summary>
-        /// 加载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
-        /// <param name="priority">加载场景资源的优先级。</param>
-        /// <param name="userData">用户自定义数据。</param>
-        public void LoadScene(string sceneAssetName, int priority, object userData)
-        {
-            if (string.IsNullOrEmpty(sceneAssetName))
-            {
-                throw new GameFrameworkException("Scene asset name is invalid.");
-            }
-
-            if (m_ResourceManager == null)
-            {
-                throw new GameFrameworkException("You must set resource manager first.");
-            }
-
-            if (SceneIsUnloading(sceneAssetName))
-            {
-                throw new GameFrameworkException(Utility.Text.Format("Scene asset '{0}' is being unloaded.", sceneAssetName));
-            }
-
-            if (SceneIsLoading(sceneAssetName))
-            {
-                throw new GameFrameworkException(Utility.Text.Format("Scene asset '{0}' is being loaded.", sceneAssetName));
-            }
-
-            if (SceneIsLoaded(sceneAssetName))
-            {
-                throw new GameFrameworkException(Utility.Text.Format("Scene asset '{0}' is already loaded.", sceneAssetName));
-            }
-
-            m_LoadingSceneAssetNames.Add(sceneAssetName);
-            m_ResourceManager.LoadScene(sceneAssetName, priority, m_LoadSceneCallbacks, userData);
-        }
-
-        /// <summary>
         /// 卸载场景。
         /// </summary>
         /// <param name="sceneAssetName">场景资源名称。</param>
-        public void UnloadScene(string sceneAssetName)
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        public void UnloadScene(string sceneAssetName, string packageName = "")
         {
-            UnloadScene(sceneAssetName, null);
+            UnloadScene(sceneAssetName, userData: null, packageName);
         }
 
         /// <summary>
@@ -394,7 +334,8 @@ namespace GameFramework.Scene
         /// </summary>
         /// <param name="sceneAssetName">场景资源名称。</param>
         /// <param name="userData">用户自定义数据。</param>
-        public void UnloadScene(string sceneAssetName, object userData)
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        public void UnloadScene(string sceneAssetName, object userData, string packageName = "")
         {
             if (string.IsNullOrEmpty(sceneAssetName))
             {
@@ -422,7 +363,7 @@ namespace GameFramework.Scene
             }
 
             m_UnloadingSceneAssetNames.Add(sceneAssetName);
-            m_ResourceManager.UnloadScene(sceneAssetName, m_UnloadSceneCallbacks, userData);
+            UnloadScene(sceneAssetName, m_UnloadSceneCallbacks, userData);
         }
 
         private void LoadSceneSuccessCallback(string sceneAssetName,UnityEngine.SceneManagement.Scene scene, float duration, object userData)
@@ -497,5 +438,275 @@ namespace GameFramework.Scene
 
             throw new GameFrameworkException(Utility.Text.Format("Unload scene failure, scene asset name '{0}'.", sceneAssetName));
         }
+
+        #region LoadScene
+        private string _currentMainSceneName = string.Empty;
+        
+        private SceneHandle _currentMainScene;
+        
+        private readonly Dictionary<string,SceneHandle> _subScenes = new Dictionary<string, SceneHandle>();
+
+        /// <summary>
+        /// 当前主场景名称。
+        /// </summary>
+        public string CurrentMainSceneName => _currentMainSceneName; 
+        
+        /// <summary>
+        /// 获取资源定位地址的缓存Key。
+        /// </summary>
+        /// <param name="location">资源定位地址。</param>
+        /// <param name="packageName">资源包名称。</param>
+        /// <returns>资源定位地址的缓存Key。</returns>
+        private string GetCacheKey(string location, string packageName = "")
+        {
+            if (string.IsNullOrEmpty(packageName) || packageName.Equals("DefaultPackage"))
+            {
+                return location;
+            }
+            return $"{packageName}/{location}";
+        }
+        
+        private SceneHandle GetSceneHandle(string sceneAssetName, LoadSceneMode sceneMode = LoadSceneMode.Single, bool suspendLoad = false, int priority = 100, string packageName = "")
+        {
+            if (string.IsNullOrEmpty(packageName))
+            {
+                return YooAssets.LoadSceneAsync(sceneAssetName, sceneMode, suspendLoad, (uint)priority);
+            }
+
+            var package = YooAssets.GetPackage(packageName);
+            return package.LoadSceneAsync(sceneAssetName, sceneMode, suspendLoad, (uint)priority);
+        }
+        
+        /// <summary>
+        /// 异步加载场景。
+        /// </summary>
+        /// <param name="sceneAssetName">要加载场景资源的名称。</param>
+        /// <param name="sceneMode">场景加载模式</param>
+        /// <param name="suspendLoad">加载完毕时是否主动挂起</param>
+        /// <param name="priority">加载场景资源的优先级。</param>
+        /// <param name="loadSceneCallbacks">加载场景回调函数集。</param>
+        /// <param name="gcCollect">加载场景是否回收垃圾。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <param name="userData">用户自定义数据。</param>
+        public async UniTaskVoid LoadScene(string sceneAssetName, LoadSceneCallbacks loadSceneCallbacks = null, LoadSceneMode sceneMode = LoadSceneMode.Single, 
+            bool suspendLoad = false, int priority = 100, bool gcCollect = false, string packageName = "", object userData = null)
+        {
+            if (string.IsNullOrEmpty(sceneAssetName))
+            {
+                throw new GameFrameworkException("Scene asset name is invalid.");
+            }
+
+            if (m_ResourceManager == null)
+            {
+                throw new GameFrameworkException("You must set resource manager first.");
+            }
+
+            if (SceneIsUnloading(sceneAssetName))
+            {
+                throw new GameFrameworkException(Utility.Text.Format("Scene asset '{0}' is being unloaded.", sceneAssetName));
+            }
+
+            if (SceneIsLoading(sceneAssetName))
+            {
+                throw new GameFrameworkException(Utility.Text.Format("Scene asset '{0}' is being loaded.", sceneAssetName));
+            }
+
+            if (SceneIsLoaded(sceneAssetName))
+            {
+                throw new GameFrameworkException(Utility.Text.Format("Scene asset '{0}' is already loaded.", sceneAssetName));
+            }
+            
+            float duration = Time.time;
+
+            SceneHandle sceneHandle = null;
+            
+            if (sceneMode == LoadSceneMode.Additive)
+            {
+                if (_subScenes.TryGetValue(sceneAssetName, out sceneHandle))
+                {
+                    Log.Warning($"Could not load subScene while already loaded. Scene: {sceneAssetName}");
+                    return;
+                }
+                sceneHandle = GetSceneHandle(sceneAssetName, sceneMode, suspendLoad, priority, packageName);
+
+                _subScenes.Add(sceneAssetName, sceneHandle);
+            }
+            else if (sceneMode == LoadSceneMode.Single)
+            {
+                if (_currentMainScene is { IsDone: false })
+                {
+                    Log.Warning($"Could not load MainScene while loading. CurrentMainScene: {_currentMainSceneName}.");
+                    return;
+                }
+                sceneHandle = GetSceneHandle(sceneAssetName, sceneMode, suspendLoad, priority, packageName);
+
+                _currentMainSceneName = sceneAssetName;
+                
+                _currentMainScene = sceneHandle;
+                
+                GameModule.Resource.ForceUnloadUnusedAssets(gcCollect);
+            }
+            
+            m_LoadingSceneAssetNames.Add(sceneAssetName);
+            
+            if (sceneHandle is { IsValid: true } && loadSceneCallbacks != null)
+            {
+                if (loadSceneCallbacks.LoadSceneSuccessCallback != null)
+                {
+                    sceneHandle.Completed += _ =>
+                    {
+                        duration = Time.time - duration;
+
+                        loadSceneCallbacks.LoadSceneSuccessCallback(sceneAssetName, sceneHandle.SceneObject, duration, userData);
+                    };   
+                }
+                
+                if (loadSceneCallbacks.LoadSceneUpdateCallback != null)
+                {
+                    while (!sceneHandle.IsDone)
+                    {
+                        await UniTask.Yield();
+                
+                        loadSceneCallbacks.LoadSceneUpdateCallback?.Invoke(sceneAssetName, sceneHandle.Progress, userData);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 异步卸载场景。
+        /// </summary>
+        /// <param name="sceneAssetName">要卸载场景资源的名称</param>
+        /// <param name="unloadSceneCallbacks">卸载场景回调函数集。</param>
+        /// <param name="userData">用户自定义数据。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <exception cref="GameFrameworkException">游戏框架异常。</exception>
+        private void UnloadScene(string sceneAssetName, UnloadSceneCallbacks unloadSceneCallbacks, object userData = null, string packageName = "")
+        {
+            if (string.IsNullOrEmpty(sceneAssetName))
+            {
+                throw new GameFrameworkException("Scene asset name is invalid.");
+            }
+            
+            _subScenes.TryGetValue(sceneAssetName, out SceneHandle subScene);
+            
+            if (subScene != null)
+            {
+                if (subScene.SceneObject == default)
+                {
+                    Log.Error($"Could not unload Scene while not loaded. Scene: {sceneAssetName}");
+                    
+                    if (unloadSceneCallbacks is { UnloadSceneFailureCallback: not null })
+                    {
+                        unloadSceneCallbacks.UnloadSceneFailureCallback(sceneAssetName, userData);
+                    }
+                    
+                    return;
+                }
+                _subScenes.Remove(sceneAssetName);
+                
+                UnloadSceneOperation unloadSceneOperation = subScene.UnloadAsync();
+                
+                unloadSceneOperation.Completed += operation =>
+                {
+                    if (operation.Status == EOperationStatus.Failed)
+                    {
+                        if (unloadSceneCallbacks is { UnloadSceneFailureCallback: not null })
+                        {
+                            unloadSceneCallbacks.UnloadSceneFailureCallback(sceneAssetName, userData);
+                        }
+                    }
+                    else
+                    {
+                        if (unloadSceneCallbacks is { UnloadSceneSuccessCallback: not null })
+                        {
+                            unloadSceneCallbacks.UnloadSceneSuccessCallback(sceneAssetName, userData);
+                        }
+                    }
+                };
+            }
+            
+            if (unloadSceneCallbacks is { UnloadSceneFailureCallback: not null })
+            {
+                unloadSceneCallbacks.UnloadSceneFailureCallback(sceneAssetName, userData);
+            }
+            
+            Log.Error($"Unload Scene Failed sceneAssetName:{sceneAssetName}");
+        }
+        #endregion
+
+        #region 操作场景
+        /// <summary>
+        /// 激活场景（当同时存在多个场景时用于切换激活场景）。
+        /// </summary>
+        /// <param name="sceneAssetName">场景资源定位地址。</param>
+        /// <returns>是否操作成功。</returns>
+        public bool ActivateScene(string sceneAssetName)
+        {
+            if (_currentMainSceneName.Equals(sceneAssetName))
+            {
+                if (_currentMainScene != null)
+                {
+                    return _currentMainScene.ActivateScene();
+                }
+                return false;
+            }
+            _subScenes.TryGetValue(sceneAssetName, out SceneHandle subScene);
+            if (subScene != null)
+            {
+                return subScene.ActivateScene();
+            }
+            Log.Warning($"IsMainScene invalid location:{sceneAssetName}");
+            return false;
+        }
+
+        /// <summary>
+        /// 解除场景加载挂起操作。
+        /// </summary>
+        /// <param name="sceneAssetName">场景资源定位地址。</param>
+        /// <returns>是否操作成功。</returns>
+        public bool UnSuspend(string sceneAssetName)
+        {
+            if (_currentMainSceneName.Equals(sceneAssetName))
+            {
+                if (_currentMainScene != null)
+                {
+                    return _currentMainScene.UnSuspend();
+                }
+                return false;
+            }
+            _subScenes.TryGetValue(sceneAssetName, out SceneHandle subScene);
+            if (subScene != null)
+            {
+                return subScene.UnSuspend();
+            }
+            Log.Warning($"IsMainScene invalid location:{sceneAssetName}");
+            return false;
+        }
+        
+        /// <summary>
+        /// 是否为主场景。
+        /// </summary>
+        /// <param name="sceneAssetName">场景资源定位地址。</param>
+        /// <returns>是否主场景。</returns>
+        public bool IsMainScene(string sceneAssetName)
+        {
+            if (_currentMainSceneName.Equals(sceneAssetName))
+            {
+                if (_currentMainScene != null)
+                {
+                    return _currentMainScene.IsMainScene();
+                }
+                return true;
+            }
+            _subScenes.TryGetValue(sceneAssetName, out SceneHandle subScene);
+            if (subScene != null)
+            {
+                return subScene.IsMainScene();
+            }
+            Log.Warning($"IsMainScene invalid location:{sceneAssetName}");
+            return false;
+        }
+        #endregion
     }
 }

@@ -234,41 +234,45 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
-        /// 加载场景。
+        /// 异步加载场景。
         /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
-        public void LoadScene(string sceneAssetName)
-        {
-            LoadScene(sceneAssetName, DefaultPriority, null);
-        }
-
-        /// <summary>
-        /// 加载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
+        /// <param name="sceneAssetName">要加载场景资源的名称。</param>
+        /// <param name="sceneMode">场景加载模式</param>
+        /// <param name="suspendLoad">加载完毕时是否主动挂起</param>
         /// <param name="priority">加载场景资源的优先级。</param>
-        public void LoadScene(string sceneAssetName, int priority)
+        /// <param name="loadSceneCallbacks">加载场景回调函数集。</param>
+        /// <param name="gcCollect">加载场景是否回收垃圾。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <param name="userData">用户自定义数据。</param>
+        public async void LoadScene(string sceneAssetName, LoadSceneCallbacks loadSceneCallbacks = null, LoadSceneMode sceneMode = LoadSceneMode.Single, 
+            bool suspendLoad = false, int priority = 100, bool gcCollect = false, string packageName = "", object userData = null)
         {
-            LoadScene(sceneAssetName, priority, null);
+            if (string.IsNullOrEmpty(sceneAssetName))
+            {
+                Log.Error("Scene asset name is invalid.");
+                return;
+            }
+
+            m_SceneManager.LoadScene(sceneAssetName, loadSceneCallbacks, sceneMode, suspendLoad, priority, gcCollect, packageName, userData);
         }
 
         /// <summary>
-        /// 加载场景。
+        /// 卸载场景。
+        /// </summary>
+        /// <param name="sceneAssetName">场景资源名称。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        public void UnloadScene(string sceneAssetName, string packageName = "")
+        {
+            UnloadScene(sceneAssetName, null, packageName);
+        }
+
+        /// <summary>
+        /// 卸载场景。
         /// </summary>
         /// <param name="sceneAssetName">场景资源名称。</param>
         /// <param name="userData">用户自定义数据。</param>
-        public void LoadScene(string sceneAssetName, object userData)
-        {
-            LoadScene(sceneAssetName, DefaultPriority, userData);
-        }
-
-        /// <summary>
-        /// 加载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
-        /// <param name="priority">加载场景资源的优先级。</param>
-        /// <param name="userData">用户自定义数据。</param>
-        public void LoadScene(string sceneAssetName, int priority, object userData)
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        public void UnloadScene(string sceneAssetName, object userData, string packageName = "")
         {
             if (string.IsNullOrEmpty(sceneAssetName))
             {
@@ -282,38 +286,7 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            m_SceneManager.LoadScene(sceneAssetName, priority, userData);
-        }
-
-        /// <summary>
-        /// 卸载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
-        public void UnloadScene(string sceneAssetName)
-        {
-            UnloadScene(sceneAssetName, null);
-        }
-
-        /// <summary>
-        /// 卸载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">场景资源名称。</param>
-        /// <param name="userData">用户自定义数据。</param>
-        public void UnloadScene(string sceneAssetName, object userData)
-        {
-            if (string.IsNullOrEmpty(sceneAssetName))
-            {
-                Log.Error("Scene asset name is invalid.");
-                return;
-            }
-
-            if (!sceneAssetName.StartsWith("Assets/", StringComparison.Ordinal) || !sceneAssetName.EndsWith(".unity", StringComparison.Ordinal))
-            {
-                Log.Error("Scene asset name '{0}' is invalid.", sceneAssetName);
-                return;
-            }
-
-            m_SceneManager.UnloadScene(sceneAssetName, userData);
+            m_SceneManager.UnloadScene(sceneAssetName, userData, packageName);
             m_SceneOrder.Remove(sceneAssetName);
         }
 

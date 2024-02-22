@@ -2,6 +2,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using YooAsset;
 
 namespace GameFramework.Resource
@@ -236,22 +237,5 @@ namespace GameFramework.Resource
         /// <returns>异步游戏物体实例。</returns>
         /// <remarks>会实例化资源到场景，无需主动UnloadAsset，Destroy时自动UnloadAsset。</remarks>
         UniTask<GameObject> LoadGameObjectAsync(string location, CancellationToken cancellationToken = default, string packageName = "", Transform parent = null);
-
-        /// <summary>
-        /// 异步加载场景。
-        /// </summary>
-        /// <param name="scenelocation">要加载场景资源的名称。</param>
-        /// <param name="priority">加载场景资源的优先级。</param>
-        /// <param name="loadSceneCallbacks">加载场景回调函数集。</param>
-        /// <param name="userData">用户自定义数据。</param>
-        void LoadScene(string scenelocation, int priority, LoadSceneCallbacks loadSceneCallbacks, object userData = null);
-
-        /// <summary>
-        /// 异步卸载场景。
-        /// </summary>
-        /// <param name="scenelocation">要卸载场景资源的名称。</param>
-        /// <param name="unloadSceneCallbacks">卸载场景回调函数集。</param>
-        /// <param name="userData">用户自定义数据。</param>
-        void UnloadScene(string scenelocation, UnloadSceneCallbacks unloadSceneCallbacks, object userData = null);
     }
 }

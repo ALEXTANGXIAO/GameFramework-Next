@@ -5,7 +5,6 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using GameFramework.ObjectPool;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityGameFramework.Runtime;
 using YooAsset;
 
@@ -852,125 +851,6 @@ namespace GameFramework.Resource
             }
 #endif
         }
-
-        // TODO 临时写法
-        // public void UnloadAsset(object asset)
-        // {
-        //     if (asset == null)
-        //     {
-        //         throw new GameFrameworkException("Asset is invalid.");
-        //     }
-        //     
-        //     if (asset is UnityEngine.Object unityObject)
-        //     {
-        //         if (m_AssetHandleMap.TryGetValue(unityObject, out AssetHandle handle))
-        //         {
-        //             AssetInfo assetInfo = handle.GetAssetInfo();
-        //             
-        //             if (m_AssetHandlesCacheMap.TryGetValue(assetInfo.Address,out AssetHandle cacheHandle))
-        //             {
-        //                 if (cacheHandle is { IsValid: true })
-        //                 {
-        //                     cacheHandle.Dispose();
-        //                 }
-        //                 m_AssetHandlesCacheMap.Remove(assetInfo.Address);
-        //             }
-        //             
-        //             if (handle is { IsValid: true })
-        //             {
-        //                 handle.Dispose();
-        //             }
-        //             
-        //             m_AssetHandleMap.Remove(unityObject);
-        //         }
-        //         unityObject = null;
-        //     }
-        //     else
-        //     {
-        //         asset = null;
-        //     }
-        // }
         #endregion
-
-        /// <summary>
-        /// 异步加载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">要加载场景资源的名称。</param>
-        /// <param name="priority">加载场景资源的优先级。</param>
-        /// <param name="loadSceneCallbacks">加载场景回调函数集。</param>
-        /// <param name="userData">用户自定义数据。</param>
-        public async void LoadScene(string sceneAssetName, int priority, LoadSceneCallbacks loadSceneCallbacks, object userData = null)
-        {
-            if (string.IsNullOrEmpty(sceneAssetName))
-            {
-                throw new GameFrameworkException("Scene asset name is invalid.");
-            }
-
-            if (loadSceneCallbacks == null)
-            {
-                throw new GameFrameworkException("Load scene callbacks is invalid.");
-            }
-
-            float duration = Time.time;
-
-            SceneHandle handle = YooAssets.LoadSceneAsync(sceneAssetName, LoadSceneMode.Single, suspendLoad: false, priority: (uint)priority);
-
-            await handle.ToUniTask();
-
-            if (loadSceneCallbacks.LoadSceneSuccessCallback != null)
-            {
-                duration = Time.time - duration;
-
-                loadSceneCallbacks.LoadSceneSuccessCallback(sceneAssetName, handle.SceneObject, duration, userData);
-            }
-        }
-
-        /// <summary>
-        /// 异步卸载场景。
-        /// </summary>
-        /// <param name="sceneAssetName">要卸载场景资源的名称</param>
-        /// <param name="unloadSceneCallbacks">卸载场景回调函数集。</param>
-        /// <param name="userData">用户自定义数据。</param>
-        /// <exception cref="GameFrameworkException">游戏框架异常。</exception>
-        public void UnloadScene(string sceneAssetName, UnloadSceneCallbacks unloadSceneCallbacks, object userData = null)
-        {
-            if (string.IsNullOrEmpty(sceneAssetName))
-            {
-                throw new GameFrameworkException("Scene asset name is invalid.");
-            }
-
-            if (unloadSceneCallbacks == null)
-            {
-                throw new GameFrameworkException("Unload scene callbacks is invalid.");
-            }
-
-            Utility.Unity.StartCoroutine(UnloadSceneCo(sceneAssetName, unloadSceneCallbacks, userData));
-        }
-
-        private IEnumerator UnloadSceneCo(string sceneAssetName, UnloadSceneCallbacks unloadSceneCallbacks, object userData)
-        {
-            AsyncOperation asyncOperation = UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(SceneComponent.GetSceneName(sceneAssetName));
-            if (asyncOperation == null)
-            {
-                yield break;
-            }
-
-            yield return asyncOperation;
-
-            if (asyncOperation.allowSceneActivation)
-            {
-                if (unloadSceneCallbacks.UnloadSceneSuccessCallback != null)
-                {
-                    unloadSceneCallbacks.UnloadSceneSuccessCallback(sceneAssetName, userData);
-                }
-            }
-            else
-            {
-                if (unloadSceneCallbacks.UnloadSceneFailureCallback != null)
-                {
-                    unloadSceneCallbacks.UnloadSceneFailureCallback(sceneAssetName, userData);
-                }
-            }
-        }
     }
 }
