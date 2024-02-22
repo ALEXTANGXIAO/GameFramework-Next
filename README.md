@@ -23,7 +23,7 @@ PS:main分支正在完善中 android、ios、webgl热更已跑通，旧版GameFr
 
 ``` json
 //程序集划分设计
-Assets/GameMain/Scripts
+Assets/GameScripts
 ├── Editor              // 编辑器程序集
 ├── HotFix              // 游戏热更程序集目录 [Folder]
 |   ├── GameBase        // 游戏基础框架程序集 [Dll]
