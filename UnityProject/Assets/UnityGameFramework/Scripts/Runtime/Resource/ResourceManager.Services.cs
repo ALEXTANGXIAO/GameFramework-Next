@@ -162,7 +162,7 @@ namespace GameFramework.Resource
             {
                 if (GameQueryServices.CompareFileCRC)
                 {
-                    string crc32 = YooAssets.GetFileCRC32(filePath);
+                    string crc32 = YooAsset.HashUtility.FileCRC32(filePath);
                     return crc32 == fileCRC;
                 }
                 else
@@ -280,7 +280,7 @@ public sealed class StreamingAssetsHelper
 
                 BuildinFileManifest.Element element = new BuildinFileManifest.Element();
                 element.PackageName = fileInfo.Directory.Name;
-                element.FileCRC32 = YooAssets.GetFileCRC32(fileInfo.FullName);
+                element.FileCRC32 = YooAsset.HashUtility.FileCRC32(fileInfo.FullName);
                 element.FileName = fileInfo.Name;
                 manifest.BuildinFiles.Add(element);
             }
