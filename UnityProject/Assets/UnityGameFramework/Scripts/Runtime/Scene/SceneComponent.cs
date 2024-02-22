@@ -244,7 +244,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="gcCollect">加载场景是否回收垃圾。</param>
         /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
         /// <param name="userData">用户自定义数据。</param>
-        public async void LoadScene(string sceneAssetName, LoadSceneCallbacks loadSceneCallbacks = null, LoadSceneMode sceneMode = LoadSceneMode.Single, 
+        public void LoadScene(string sceneAssetName, LoadSceneCallbacks loadSceneCallbacks = null, LoadSceneMode sceneMode = LoadSceneMode.Single, 
             bool suspendLoad = false, int priority = 100, bool gcCollect = false, string packageName = "", object userData = null)
         {
             if (string.IsNullOrEmpty(sceneAssetName))
