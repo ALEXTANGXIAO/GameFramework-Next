@@ -280,12 +280,6 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            if (!sceneAssetName.StartsWith("Assets/", StringComparison.Ordinal) || !sceneAssetName.EndsWith(".unity", StringComparison.Ordinal))
-            {
-                Log.Error("Scene asset name '{0}' is invalid.", sceneAssetName);
-                return;
-            }
-
             m_SceneManager.UnloadScene(sceneAssetName, userData, packageName);
             m_SceneOrder.Remove(sceneAssetName);
         }

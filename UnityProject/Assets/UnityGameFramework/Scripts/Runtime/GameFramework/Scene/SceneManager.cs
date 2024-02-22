@@ -549,26 +549,43 @@ namespace GameFramework.Scene
             
             m_LoadingSceneAssetNames.Add(sceneAssetName);
             
-            if (sceneHandle is { IsValid: true } && loadSceneCallbacks != null)
+            if (sceneHandle is { IsValid: true })
             {
-                if (loadSceneCallbacks.LoadSceneSuccessCallback != null)
+                if (loadSceneCallbacks != null)
                 {
-                    sceneHandle.Completed += _ =>
+                    if (loadSceneCallbacks.LoadSceneSuccessCallback != null)
                     {
-                        duration = Time.time - duration;
+                        sceneHandle.Completed += _ =>
+                        {
+                            duration = Time.time - duration;
 
-                        loadSceneCallbacks.LoadSceneSuccessCallback(sceneAssetName, sceneHandle.SceneObject, duration, userData);
-                    };   
+                            loadSceneCallbacks.LoadSceneSuccessCallback(sceneAssetName, sceneHandle.SceneObject, duration, userData);
+                        };   
+                    }
+                
+                    if (loadSceneCallbacks.LoadSceneUpdateCallback != null)
+                    {
+                        while (!sceneHandle.IsDone)
+                        {
+                            await UniTask.Yield();
+                
+                            loadSceneCallbacks.LoadSceneUpdateCallback?.Invoke(sceneAssetName, sceneHandle.Progress, userData);
+                        }
+                    }
                 }
                 
-                if (loadSceneCallbacks.LoadSceneUpdateCallback != null)
+                sceneHandle.Completed += _ =>
                 {
-                    while (!sceneHandle.IsDone)
-                    {
-                        await UniTask.Yield();
+                    duration = Time.time - duration;
+
+                    m_LoadSceneCallbacks.LoadSceneSuccessCallback(sceneAssetName, sceneHandle.SceneObject, duration, userData);
+                };
                 
-                        loadSceneCallbacks.LoadSceneUpdateCallback?.Invoke(sceneAssetName, sceneHandle.Progress, userData);
-                    }
+                while (!sceneHandle.IsDone)
+                {
+                    await UniTask.Yield();
+                
+                    m_LoadSceneCallbacks.LoadSceneUpdateCallback?.Invoke(sceneAssetName, sceneHandle.Progress, userData);
                 }
             }
         }
@@ -624,6 +641,7 @@ namespace GameFramework.Scene
                         }
                     }
                 };
+                return;
             }
             
             if (unloadSceneCallbacks is { UnloadSceneFailureCallback: not null })
