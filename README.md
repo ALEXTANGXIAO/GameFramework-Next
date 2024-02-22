@@ -16,9 +16,10 @@ luban
 
 hybridclr
 
-PS:main分支正在开发中，旧版GameFramework-at-YooAsset请挪步去classic分支
+PS:main分支正在完善中 android、ios、webgl热更已跑通，旧版GameFramework-at-YooAsset请挪步去classic分支
 
-实现初衷：YooAsset确实十分好用，但是市面上较大的开源框架只有ET接入较多。且GameFramework的资源模块存在一定的设计过度问题。故在此首次把YooAsset接入GF并实现热更新。（HybridCLR热更新流程已经实现）
+实现初衷：作为一个商业级成熟的资源框架 YooAsset对资源包的设计和划分会稍微更成熟一些。包括对DLC的支持 以及webgl的支持，资源定位地址的支持等。不管是上steam还是小游戏都更自洽。且GameFramework的资源模块存在一定的设计过度问题。故在此首次把YooAsset接入GF并实现热更新。（HybridCLR热更新流程已经实现）
+
 
 ``` json
 //程序集划分设计
