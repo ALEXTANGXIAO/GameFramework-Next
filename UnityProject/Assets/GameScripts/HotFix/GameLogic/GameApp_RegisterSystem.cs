@@ -6,11 +6,11 @@ using UnityGameFramework.Runtime;
 
 public partial class GameApp
 {
-    private List<ILogicSys> _listLogicMgr;
+    private List<ILogicSys> m_ListLogicMgr;
 
     private void InitSystem()
     {
-        _listLogicMgr = new List<ILogicSys>();
+        m_ListLogicMgr = new List<ILogicSys>();
         CodeTypes.Instance.Init(s_HotfixAssembly.ToArray());
         EventInterfaceHelper.Init();
         RegisterAllSystem();
@@ -39,7 +39,7 @@ public partial class GameApp
     /// <returns></returns>
     public bool AddLogicSys(ILogicSys logicSys)
     {
-        if (_listLogicMgr.Contains(logicSys))
+        if (m_ListLogicMgr.Contains(logicSys))
         {
             Log.Fatal("Repeat add logic system: {0}", logicSys.GetType().Name);
             return false;
@@ -51,7 +51,7 @@ public partial class GameApp
             return false;
         }
 
-        _listLogicMgr.Add(logicSys);
+        m_ListLogicMgr.Add(logicSys);
 
         return true;
     }

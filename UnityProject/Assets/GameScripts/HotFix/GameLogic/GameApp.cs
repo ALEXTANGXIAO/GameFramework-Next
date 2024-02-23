@@ -70,7 +70,7 @@ public partial class GameApp: Singleton<GameApp>
 
     private void Start()
     {
-        var listLogic = _listLogicMgr;
+        var listLogic = m_ListLogicMgr;
         var logicCnt = listLogic.Count;
         for (int i = 0; i < logicCnt; i++)
         {
@@ -82,7 +82,7 @@ public partial class GameApp: Singleton<GameApp>
     private void Update()
     {
         TProfiler.BeginFirstSample("Update");
-        var listLogic = _listLogicMgr;
+        var listLogic = m_ListLogicMgr;
         var logicCnt = listLogic.Count;
         for (int i = 0; i < logicCnt; i++)
         {
@@ -97,7 +97,7 @@ public partial class GameApp: Singleton<GameApp>
     private void FixedUpdate()
     {
         TProfiler.BeginFirstSample("FixedUpdate");
-        var listLogic = _listLogicMgr;
+        var listLogic = m_ListLogicMgr;
         var logicCnt = listLogic.Count;
         for (int i = 0; i < logicCnt; i++)
         {
@@ -112,7 +112,7 @@ public partial class GameApp: Singleton<GameApp>
     private void LateUpdate()
     {
         TProfiler.BeginFirstSample("LateUpdate");
-        var listLogic = _listLogicMgr;
+        var listLogic = m_ListLogicMgr;
         var logicCnt = listLogic.Count;
         for (int i = 0; i < logicCnt; i++)
         {
@@ -126,7 +126,7 @@ public partial class GameApp: Singleton<GameApp>
 
     private void OnDestroy()
     {
-        var listLogic = _listLogicMgr;
+        var listLogic = m_ListLogicMgr;
         var logicCnt = listLogic.Count;
         for (int i = 0; i < logicCnt; i++)
         {
@@ -138,7 +138,7 @@ public partial class GameApp: Singleton<GameApp>
     private void OnDrawGizmos()
     {
 #if UNITY_EDITOR
-        var listLogic = _listLogicMgr;
+        var listLogic = m_ListLogicMgr;
         var logicCnt = listLogic.Count;
         for (int i = 0; i < logicCnt; i++)
         {
@@ -150,7 +150,7 @@ public partial class GameApp: Singleton<GameApp>
 
     private void OnApplicationPause(bool isPause)
     {
-        var listLogic = _listLogicMgr;
+        var listLogic = m_ListLogicMgr;
         var logicCnt = listLogic.Count;
         for (int i = 0; i < logicCnt; i++)
         {
