@@ -2,226 +2,589 @@
 
 namespace UnityGameFramework.Runtime
 {
-    public class GameEvent
+    /// <summary>
+    /// 游戏全局事件类。
+    /// </summary>
+    public static class GameEvent
     {
-        private static DEventMgr m_mgr = new DEventMgr();
+        /// <summary>
+        /// 全局事件管理器。
+        /// </summary>
+        private static readonly EventMgr s_EventMgr = new EventMgr();
 
-        public static void Init()
-        {
-            
-        }
+        public static EventMgr EventMgr => s_EventMgr;
 
         #region 细分的注册接口
 
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件Handler。</param>
+        /// <returns>是否监听成功。</returns>
         public static bool AddEventListener(int eventType, Action handler)
         {
-            return m_mgr.GetDispatcher().AddEventListener(eventType, handler);
+            return s_EventMgr.Dispatcher.AddEventListener(eventType, handler);
         }
 
-        public static bool AddEventListener<T>(int eventType, Action<T> handler)
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <returns></returns>
+        public static bool AddEventListener<TArg1>(int eventType, Action<TArg1> handler)
         {
-            return m_mgr.GetDispatcher().AddEventListener(eventType, handler);
+            return s_EventMgr.Dispatcher.AddEventListener(eventType, handler);
         }
 
-        public static bool AddEventListener<T, U>(int eventType, Action<T, U> handler)
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <returns></returns>
+        public static bool AddEventListener<TArg1, TArg2>(int eventType, Action<TArg1, TArg2> handler)
         {
-            return m_mgr.GetDispatcher().AddEventListener(eventType, handler);
+            return s_EventMgr.Dispatcher.AddEventListener(eventType, handler);
         }
 
-        public static bool AddEventListener<T, U, V>(int eventType, Action<T, U, V> handler)
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <returns></returns>
+        public static bool AddEventListener<TArg1, TArg2, TArg3>(int eventType, Action<TArg1, TArg2, TArg3> handler)
         {
-            return m_mgr.GetDispatcher().AddEventListener(eventType, handler);
+            return s_EventMgr.Dispatcher.AddEventListener(eventType, handler);
         }
 
-        public static bool AddEventListener<T, U, V, W>(int eventType, Action<T, U, V, W> handler)
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        /// <returns></returns>
+        public static bool AddEventListener<TArg1, TArg2, TArg3, TArg4>(int eventType, Action<TArg1, TArg2, TArg3, TArg4> handler)
         {
-            return m_mgr.GetDispatcher().AddEventListener(eventType, handler);
+            return s_EventMgr.Dispatcher.AddEventListener(eventType, handler);
         }
 
-        public static bool AddEventListener<T, U, V, W, X>(int eventType, Action<T, U, V, W, X> handler)
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        /// <typeparam name="TArg5">事件参数5类型。</typeparam>
+        /// <returns></returns>
+        public static bool AddEventListener<TArg1, TArg2, TArg3, TArg4, TArg5>(int eventType, Action<TArg1, TArg2, TArg3, TArg4, TArg5> handler)
         {
-            return m_mgr.GetDispatcher().AddEventListener(eventType, handler);
+            return s_EventMgr.Dispatcher.AddEventListener(eventType, handler);
+        }
+        
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        /// <typeparam name="TArg5">事件参数5类型。</typeparam>
+        /// <typeparam name="TArg6">事件参数6类型。</typeparam>
+        /// <returns></returns>
+        public static bool AddEventListener<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(int eventType, Action<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6> handler)
+        {
+            return s_EventMgr.Dispatcher.AddEventListener(eventType, handler);
         }
 
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
         public static void RemoveEventListener(int eventType, Action handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(eventType, handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(eventType, handler);
         }
 
-        public static void RemoveEventListener<T>(int eventType, Action<T> handler)
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        public static void RemoveEventListener<TArg1>(int eventType, Action<TArg1> handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(eventType, handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(eventType, handler);
         }
 
-        public static void RemoveEventListener<T, U>(int eventType, Action<T, U> handler)
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        public static void RemoveEventListener<TArg1, TArg2>(int eventType, Action<TArg1, TArg2> handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(eventType, handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(eventType, handler);
         }
 
-        public static void RemoveEventListener<T, U, V>(int eventType, Action<T, U, V> handler)
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        public static void RemoveEventListener<TArg1, TArg2, TArg3>(int eventType, Action<TArg1, TArg2, TArg3> handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(eventType, handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(eventType, handler);
         }
 
-        public static void RemoveEventListener<T, U, V, W>(int eventType, Action<T, U, V, W> handler)
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        public static void RemoveEventListener<TArg1, TArg2, TArg3, TArg4>(int eventType, Action<TArg1, TArg2, TArg3, TArg4> handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(eventType, handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(eventType, handler);
         }
 
-        public static void RemoveEventListener<T, U, V, W, X>(int eventType, Action<T, U, V, W, X> handler)
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        /// <typeparam name="TArg5">事件参数5类型。</typeparam>
+        public static void RemoveEventListener<TArg1, TArg2, TArg3, TArg4, TArg5>(int eventType, Action<TArg1, TArg2, TArg3, TArg4, TArg5> handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(eventType, handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(eventType, handler);
         }
 
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
         public static void RemoveEventListener(int eventType, Delegate handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(eventType, handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(eventType, handler);
         }
 
         //----------------------------string Event----------------------------//
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <returns></returns>
         public static bool AddEventListener(string eventType, Action handler)
         {
-            return m_mgr.GetDispatcher().AddEventListener(StringId.StringToHash(eventType), handler);
+            return s_EventMgr.Dispatcher.AddEventListener(StringId.StringToHash(eventType), handler);
         }
 
-        public static bool AddEventListener<T>(string eventType, Action<T> handler)
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <returns></returns>
+        public static bool AddEventListener<TArg1>(string eventType, Action<TArg1> handler)
         {
-            return m_mgr.GetDispatcher().AddEventListener(StringId.StringToHash(eventType), handler);
+            return s_EventMgr.Dispatcher.AddEventListener(StringId.StringToHash(eventType), handler);
         }
 
-        public static bool AddEventListener<T, U>(string eventType, Action<T, U> handler)
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <returns></returns>
+        public static bool AddEventListener<TArg1, TArg2>(string eventType, Action<TArg1, TArg2> handler)
         {
-            return m_mgr.GetDispatcher().AddEventListener(StringId.StringToHash(eventType), handler);
+            return s_EventMgr.Dispatcher.AddEventListener(StringId.StringToHash(eventType), handler);
         }
 
-        public static bool AddEventListener<T, U, V>(string eventType, Action<T, U, V> handler)
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <returns></returns>
+        public static bool AddEventListener<TArg1, TArg2, TArg3>(string eventType, Action<TArg1, TArg2, TArg3> handler)
         {
-            return m_mgr.GetDispatcher().AddEventListener(StringId.StringToHash(eventType), handler);
+            return s_EventMgr.Dispatcher.AddEventListener(StringId.StringToHash(eventType), handler);
         }
 
-        public static bool AddEventListener<T, U, V, W>(string eventType, Action<T, U, V, W> handler)
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        /// <returns></returns>
+        public static bool AddEventListener<TArg1, TArg2, TArg3, TArg4>(string eventType, Action<TArg1, TArg2, TArg3, TArg4> handler)
         {
-            return m_mgr.GetDispatcher().AddEventListener(StringId.StringToHash(eventType), handler);
+            return s_EventMgr.Dispatcher.AddEventListener(StringId.StringToHash(eventType), handler);
         }
 
-        public static bool AddEventListener<T, U, V, W, X>(string eventType, Action<T, U, V, W, X> handler)
+        /// <summary>
+        /// 增加事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        /// <typeparam name="TArg5">事件参数5类型。</typeparam>
+        /// <returns></returns>
+        public static bool AddEventListener<TArg1, TArg2, TArg3, TArg4, TArg5>(string eventType, Action<TArg1, TArg2, TArg3, TArg4, TArg5> handler)
         {
-            return m_mgr.GetDispatcher().AddEventListener(StringId.StringToHash(eventType), handler);
+            return s_EventMgr.Dispatcher.AddEventListener(StringId.StringToHash(eventType), handler);
         }
 
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
         public static void RemoveEventListener(string eventType, Action handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(StringId.StringToHash(eventType), handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(StringId.StringToHash(eventType), handler);
         }
 
-        public static void RemoveEventListener<T>(string eventType, Action<T> handler)
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        public static void RemoveEventListener<TArg1>(string eventType, Action<TArg1> handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(StringId.StringToHash(eventType), handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(StringId.StringToHash(eventType), handler);
         }
 
-        public static void RemoveEventListener<T, U>(string eventType, Action<T, U> handler)
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        public static void RemoveEventListener<TArg1, TArg2>(string eventType, Action<TArg1, TArg2> handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(StringId.StringToHash(eventType), handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(StringId.StringToHash(eventType), handler);
         }
 
-        public static void RemoveEventListener<T, U, V>(string eventType, Action<T, U, V> handler)
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        public static void RemoveEventListener<TArg1, TArg2, TArg3>(string eventType, Action<TArg1, TArg2, TArg3> handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(StringId.StringToHash(eventType), handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(StringId.StringToHash(eventType), handler);
         }
 
-        public static void RemoveEventListener<T, U, V, W>(string eventType, Action<T, U, V, W> handler)
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        public static void RemoveEventListener<TArg1, TArg2, TArg3, TArg4>(string eventType, Action<TArg1, TArg2, TArg3, TArg4> handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(StringId.StringToHash(eventType), handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(StringId.StringToHash(eventType), handler);
         }
 
-        public static void RemoveEventListener<T, U, V, W, X>(string eventType, Action<T, U, V, W, X> handler)
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        /// <typeparam name="TArg5">事件参数5类型。</typeparam>
+        public static void RemoveEventListener<TArg1, TArg2, TArg3, TArg4, TArg5>(string eventType, Action<TArg1, TArg2, TArg3, TArg4, TArg5> handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(StringId.StringToHash(eventType), handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(StringId.StringToHash(eventType), handler);
         }
 
+        /// <summary>
+        /// 移除事件监听。
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
         public static void RemoveEventListener(string eventType, Delegate handler)
         {
-            m_mgr.GetDispatcher().RemoveEventListener(StringId.StringToHash(eventType), handler);
+            s_EventMgr.Dispatcher.RemoveEventListener(StringId.StringToHash(eventType), handler);
         }
+
         #endregion
 
         #region 分发消息接口
 
-        public static T Get<T>()
+        public static TArg1 Get<TArg1>()
         {
-            return m_mgr.GetInterface<T>();
+            return s_EventMgr.GetInterface<TArg1>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
         public static void Send(int eventType)
         {
-            m_mgr.GetDispatcher().Send(eventType);
+            s_EventMgr.Dispatcher.Send(eventType);
         }
 
-        public static void Send<T>(int eventType, T arg1)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="arg1">事件参数1。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        public static void Send<TArg1>(int eventType, TArg1 arg1)
         {
-            m_mgr.GetDispatcher().Send(eventType, arg1);
+            s_EventMgr.Dispatcher.Send(eventType, arg1);
         }
 
-        public static void Send<T, U>(int eventType, T arg1, U arg2)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="arg1">事件参数1。</param>
+        /// <param name="arg2">事件参数2。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        public static void Send<TArg1, TArg2>(int eventType, TArg1 arg1, TArg2 arg2)
         {
-            m_mgr.GetDispatcher().Send(eventType, arg1, arg2);
+            s_EventMgr.Dispatcher.Send(eventType, arg1, arg2);
         }
 
-        public static void Send<T, U, V>(int eventType, T arg1, U arg2, V arg3)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="arg1">事件参数1。</param>
+        /// <param name="arg2">事件参数2。</param>
+        /// <param name="arg3">事件参数3。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        public static void Send<TArg1, TArg2, TArg3>(int eventType, TArg1 arg1, TArg2 arg2, TArg3 arg3)
         {
-            m_mgr.GetDispatcher().Send(eventType, arg1, arg2, arg3);
+            s_EventMgr.Dispatcher.Send(eventType, arg1, arg2, arg3);
         }
 
-        public static void Send<T, U, V, W>(int eventType, T arg1, U arg2, V arg3, W arg4)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="arg1">事件参数1。</param>
+        /// <param name="arg2">事件参数2。</param>
+        /// <param name="arg3">事件参数3。</param>
+        /// <param name="arg4">事件参数4。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        public static void Send<TArg1, TArg2, TArg3, TArg4>(int eventType, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
         {
-            m_mgr.GetDispatcher().Send(eventType, arg1, arg2, arg3);
+            s_EventMgr.Dispatcher.Send(eventType, arg1, arg2, arg3, arg4);
         }
 
-        public static void Send<T, U, V, W, X>(int eventType, T arg1, U arg2, V arg3, W arg4, X arg5)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="arg1">事件参数1。</param>
+        /// <param name="arg2">事件参数2。</param>
+        /// <param name="arg3">事件参数3。</param>
+        /// <param name="arg4">事件参数4。</param>
+        /// <param name="arg5">事件参数5。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        /// <typeparam name="TArg5">事件参数5类型。</typeparam>
+        public static void Send<TArg1, TArg2, TArg3, TArg4, TArg5>(int eventType, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
         {
-            m_mgr.GetDispatcher().Send(eventType, arg1, arg2, arg3, arg4, arg5);
+            s_EventMgr.Dispatcher.Send(eventType, arg1, arg2, arg3, arg4, arg5);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
         public static void Send(int eventType, Delegate handler)
         {
-            m_mgr.GetDispatcher().Send(eventType, handler);
+            s_EventMgr.Dispatcher.Send(eventType, handler);
         }
 
         //-------------------------------string Send-------------------------------//
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
         public static void Send(string eventType)
         {
-            m_mgr.GetDispatcher().Send(StringId.StringToHash(eventType));
+            s_EventMgr.Dispatcher.Send(StringId.StringToHash(eventType));
         }
 
-        public static void Send<T>(string eventType, T arg1)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="arg1">事件参数1。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        public static void Send<TArg1>(string eventType, TArg1 arg1)
         {
-            m_mgr.GetDispatcher().Send(StringId.StringToHash(eventType), arg1);
+            s_EventMgr.Dispatcher.Send(StringId.StringToHash(eventType), arg1);
         }
 
-        public static void Send<T, U>(string eventType, T arg1, U arg2)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="arg1">事件参数1。</param>
+        /// <param name="arg2">事件参数2。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        public static void Send<TArg1, TArg2>(string eventType, TArg1 arg1, TArg2 arg2)
         {
-            m_mgr.GetDispatcher().Send(StringId.StringToHash(eventType), arg1, arg2);
+            s_EventMgr.Dispatcher.Send(StringId.StringToHash(eventType), arg1, arg2);
         }
 
-        public static void Send<T, U, V>(string eventType, T arg1, U arg2, V arg3)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="arg1">事件参数1。</param>
+        /// <param name="arg2">事件参数2。</param>
+        /// <param name="arg3">事件参数3。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        public static void Send<TArg1, TArg2, TArg3>(string eventType, TArg1 arg1, TArg2 arg2, TArg3 arg3)
         {
-            m_mgr.GetDispatcher().Send(StringId.StringToHash(eventType), arg1, arg2, arg3);
+            s_EventMgr.Dispatcher.Send(StringId.StringToHash(eventType), arg1, arg2, arg3);
         }
 
-        public static void Send<T, U, V, W>(string eventType, T arg1, U arg2, V arg3, W arg4)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="arg1">事件参数1。</param>
+        /// <param name="arg2">事件参数2。</param>
+        /// <param name="arg3">事件参数3。</param>
+        /// <param name="arg4">事件参数4。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        public static void Send<TArg1, TArg2, TArg3, TArg4>(string eventType, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
         {
-            m_mgr.GetDispatcher().Send(StringId.StringToHash(eventType), arg1, arg2, arg3);
+            s_EventMgr.Dispatcher.Send(StringId.StringToHash(eventType), arg1, arg2, arg3);
         }
 
-        public static void Send<T, U, V, W, X>(string eventType, T arg1, U arg2, V arg3, W arg4, X arg5)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="arg1">事件参数1。</param>
+        /// <param name="arg2">事件参数2。</param>
+        /// <param name="arg3">事件参数3。</param>
+        /// <param name="arg4">事件参数4。</param>
+        /// <param name="arg5">事件参数5。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        /// <typeparam name="TArg5">事件参数5类型。</typeparam>
+        public static void Send<TArg1, TArg2, TArg3, TArg4, TArg5>(string eventType, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5)
         {
-            m_mgr.GetDispatcher().Send(StringId.StringToHash(eventType), arg1, arg2, arg3, arg4, arg5);
+            s_EventMgr.Dispatcher.Send(StringId.StringToHash(eventType), arg1, arg2, arg3, arg4, arg5);
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="arg1">事件参数1。</param>
+        /// <param name="arg2">事件参数2。</param>
+        /// <param name="arg3">事件参数3。</param>
+        /// <param name="arg4">事件参数4。</param>
+        /// <param name="arg5">事件参数5。</param>
+        /// <param name="arg6">事件参数6。</param>
+        /// <typeparam name="TArg1">事件参数1类型。</typeparam>
+        /// <typeparam name="TArg2">事件参数2类型。</typeparam>
+        /// <typeparam name="TArg3">事件参数3类型。</typeparam>
+        /// <typeparam name="TArg4">事件参数4类型。</typeparam>
+        /// <typeparam name="TArg5">事件参数5类型。</typeparam>
+        /// <typeparam name="TArg6">事件参数6类型。</typeparam>
+        public static void Send<TArg1, TArg2, TArg3, TArg4, TArg5, TArg6>(int eventType, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4, TArg5 arg5, TArg6 arg6)
+        {
+            s_EventMgr.Dispatcher.Send(eventType, arg1, arg2, arg3, arg4, arg5, arg6);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="eventType">事件类型。</param>
+        /// <param name="handler">事件处理回调。</param>
         public static void Send(string eventType, Delegate handler)
         {
-            m_mgr.GetDispatcher().Send(StringId.StringToHash(eventType), handler);
+            s_EventMgr.Dispatcher.Send(StringId.StringToHash(eventType), handler);
         }
+
         #endregion
     }
 }

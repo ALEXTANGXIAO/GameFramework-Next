@@ -1,15 +1,20 @@
+using System.Collections.Generic;
+using System.Reflection;
+using GameLogic;
 using GameFramework;
-using GameProto;
 using UnityGameFramework.Runtime;
 
-public partial class GameApp:Singleton<GameApp>
+public partial class GameApp: Singleton<GameApp>
 {
+    private static List<Assembly> s_HotfixAssembly;
+    
     /// <summary>
     /// 热更域App主入口。
     /// </summary>
     /// <param name="objects"></param>
     public static void Entrance(object[] objects)
     {
+        s_HotfixAssembly = (List<Assembly>)objects[0];
         Log.Warning("======= 看到此条日志代表你成功运行了热更新代码 =======");
         Log.Warning("======= Entrance GameApp =======");
         Instance.InitSystem();
@@ -38,7 +43,6 @@ public partial class GameApp:Singleton<GameApp>
     /// <param name="shutdownType">关闭游戏框架类型。</param>
     public static void Shutdown(ShutdownType shutdownType)
     {
-        
         if (shutdownType == ShutdownType.None)
         {
             return;

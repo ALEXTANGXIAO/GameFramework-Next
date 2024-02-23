@@ -1,89 +1,110 @@
 ﻿using System;
-using System.Collections.Generic;
 using GameFramework;
+using System.Collections.Generic;
 
 namespace UnityGameFramework.Runtime
 {
+    /// <summary>
+    /// 游戏事件管理器。
+    /// </summary>
     public class GameEventMgr : IReference
     {
-        private List<int> m_listEventTypes;
-        private List<Delegate> m_listHandles;
-        private bool m_isInit = false;
+        private readonly List<int> m_ListEventTypes;
+        private readonly List<Delegate> m_ListHandles;
+        private readonly bool m_IsInit = false;
 
+        /// <summary>
+        /// 游戏事件管理器构造函数。
+        /// </summary>
         public GameEventMgr()
         {
-            if (m_isInit)
+            if (m_IsInit)
             {
                 return;
             }
 
-            m_isInit = true;
-            m_listEventTypes = new List<int>();
-            m_listHandles = new List<Delegate>();
+            m_IsInit = true;
+            m_ListEventTypes = new List<int>();
+            m_ListHandles = new List<Delegate>();
         }
 
+        /// <summary>
+        /// 清理内存对象回收入池。
+        /// </summary>
         public void Clear()
         {
-            if (!m_isInit)
+            if (!m_IsInit)
             {
                 return;
             }
 
-            for (int i = 0; i < m_listEventTypes.Count; ++i)
+            for (int i = 0; i < m_ListEventTypes.Count; ++i)
             {
-                var eventType = m_listEventTypes[i];
-                var handle = m_listHandles[i];
+                var eventType = m_ListEventTypes[i];
+                var handle = m_ListHandles[i];
                 GameEvent.RemoveEventListener(eventType, handle);
             }
 
-            m_listEventTypes.Clear();
-            m_listHandles.Clear();
+            m_ListEventTypes.Clear();
+            m_ListHandles.Clear();
         }
 
-        private void AddEvent(int eventType, Delegate handler)
+        private void AddEventImp(int eventType, Delegate handler)
         {
-            m_listEventTypes.Add(eventType);
-            m_listHandles.Add(handler);
+            m_ListEventTypes.Add(eventType);
+            m_ListHandles.Add(handler);
         }
 
-        public void AddUIEvent(int eventType, Action handler)
-        {
-            if (GameEvent.AddEventListener(eventType, handler))
-            {
-                AddEvent(eventType, handler);
-            }
-        }
+        #region AddEvent
 
-        public void AddUIEvent<T>(int eventType, Action<T> handler)
+        public void AddEvent(int eventType, Action handler)
         {
             if (GameEvent.AddEventListener(eventType, handler))
             {
-                AddEvent(eventType, handler);
+                AddEventImp(eventType, handler);
             }
         }
 
-        public void AddUIEvent<T, U>(int eventType, Action<T, U> handler)
+        public void AddEvent<T>(int eventType, Action<T> handler)
         {
             if (GameEvent.AddEventListener(eventType, handler))
             {
-                AddEvent(eventType, handler);
+                AddEventImp(eventType, handler);
             }
         }
 
-        public void AddUIEvent<T, U, V>(int eventType, Action<T, U, V> handler)
+        public void AddEvent<T1, T2>(int eventType, Action<T1, T2> handler)
         {
             if (GameEvent.AddEventListener(eventType, handler))
             {
-                AddEvent(eventType, handler);
+                AddEventImp(eventType, handler);
             }
         }
 
-        public void AddUIEvent<T, U, V, W>(int eventType, Action<T, U, V, W> handler)
+        public void AddEvent<T1, T2, T3>(int eventType, Action<T1, T2, T3> handler)
         {
             if (GameEvent.AddEventListener(eventType, handler))
             {
-                AddEvent(eventType, handler);
+                AddEventImp(eventType, handler);
             }
         }
+
+        public void AddEvent<T1, T2, T3, T4>(int eventType, Action<T1, T2, T3, T4> handler)
+        {
+            if (GameEvent.AddEventListener(eventType, handler))
+            {
+                AddEventImp(eventType, handler);
+            }
+        }
+
+        public void AddEvent<T1, T2, T3, T4, T5>(int eventType, Action<T1, T2, T3, T4, T5> handler)
+        {
+            if (GameEvent.AddEventListener(eventType, handler))
+            {
+                AddEventImp(eventType, handler);
+            }
+        }
+
+        #endregion
     }
 }
