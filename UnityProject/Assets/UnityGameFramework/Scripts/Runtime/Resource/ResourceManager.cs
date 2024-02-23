@@ -255,6 +255,7 @@ namespace GameFramework.Resource
 
         internal override void Shutdown()
         {
+            m_AssetPool = null;
             YooAssets.Destroy();
         }
 
