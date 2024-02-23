@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UnityGameFramework.Runtime
@@ -9,6 +10,7 @@ namespace UnityGameFramework.Runtime
     public class DefaultUIGroupHelper : UIGroupHelperBase
     {
         public const int DepthFactor = 10000;
+
         private int m_Depth = 0;
         private Canvas m_CachedCanvas = null;
         
@@ -22,7 +24,7 @@ namespace UnityGameFramework.Runtime
             m_CachedCanvas.overrideSorting = true;
             m_CachedCanvas.sortingOrder = DepthFactor * depth;
         }
-        
+
         private void Awake()
         {
             m_CachedCanvas = gameObject.GetOrAddComponent<Canvas>();
@@ -32,8 +34,8 @@ namespace UnityGameFramework.Runtime
         private void Start()
         {
             m_CachedCanvas.overrideSorting = true;
-            m_CachedCanvas.sortingOrder = DepthFactor * m_Depth;
-
+            m_CachedCanvas.sortingOrder = DepthFactor + m_Depth;
+            this.transform.localPosition = Vector3.zero;
             RectTransform rectTransform = GetComponent<RectTransform>();
             rectTransform.anchorMin = Vector2.zero;
             rectTransform.anchorMax = Vector2.one;

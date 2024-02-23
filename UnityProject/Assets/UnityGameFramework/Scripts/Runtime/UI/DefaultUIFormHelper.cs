@@ -10,10 +10,6 @@ namespace UnityGameFramework.Runtime
     {
         private ResourceComponent m_ResourceComponent = null;
 
-        private Vector2 m_Half = new Vector2(0.5f,0.5f);
-
-        private int m_UILayer;
-
         /// <summary>
         /// 实例化界面。
         /// </summary>
@@ -33,24 +29,39 @@ namespace UnityGameFramework.Runtime
         /// <returns>界面。</returns>
         public override IUIForm CreateUIForm(object uiFormInstance, IUIGroup uiGroup, object userData)
         {
-            GameObject obj = uiFormInstance as GameObject;
-            if (obj == null)
+            GameObject formInstance = uiFormInstance as GameObject;
+            if (formInstance == null)
             {
                 Log.Error("UI form instance is invalid.");
                 return null;
             }
 
-            Transform trans = obj.transform;
-            trans.SetParent(((MonoBehaviour)uiGroup.Helper).transform);
-            trans.localScale = Vector3.one;
-            trans.localPosition = Vector3.zero;
-            obj.layer = m_UILayer;
+            RectTransform rectTransform = formInstance.transform as RectTransform;
+            Vector3 localPosition = rectTransform.localPosition;
+            Vector3 localScale = rectTransform.localScale;
+            Vector3 eulerAngles = rectTransform.localEulerAngles;
+            Vector3 sizeDelta = rectTransform.sizeDelta;
+            Vector3 anchorMin = rectTransform.anchorMin;
+            Vector3 anchorMax = rectTransform.anchorMax;
+            Vector3 anchoredPosition = rectTransform.anchoredPosition;
+            Vector3 offsetMin = rectTransform.offsetMin;
+            Vector3 offsetMax = rectTransform.offsetMax;
+            Vector3 pivot = rectTransform.pivot;
             
-            RectTransform rectTransform = obj.GetComponent<RectTransform>();
-            rectTransform.anchorMin = m_Half;
-            rectTransform.anchorMax = m_Half;
-            rectTransform.anchoredPosition = Vector2.zero;
-            return obj.GetOrAddComponent<UIForm>();
+            rectTransform.SetParent(((MonoBehaviour)uiGroup.Helper).transform);
+
+            rectTransform.localPosition = localPosition;
+            rectTransform.localScale = localScale;
+            rectTransform.eulerAngles = eulerAngles;
+            rectTransform.sizeDelta = sizeDelta;
+            rectTransform.anchorMin = anchorMin;
+            rectTransform.anchorMax = anchorMax;
+            rectTransform.anchoredPosition = anchoredPosition;
+            rectTransform.offsetMin = offsetMin;
+            rectTransform.offsetMax = offsetMax;
+            rectTransform.pivot = pivot;
+
+            return formInstance.GetOrAddComponent<UIForm>();
         }
 
         /// <summary>
@@ -66,7 +77,6 @@ namespace UnityGameFramework.Runtime
 
         private void Start()
         {
-            m_UILayer = LayerMask.NameToLayer("UI");
             m_ResourceComponent = GameSystem.GetComponent<ResourceComponent>();
             if (m_ResourceComponent == null)
             {
