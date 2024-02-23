@@ -37,7 +37,6 @@ namespace GameMain
         protected override void OnEnter(IFsm<IProcedureManager> procedureOwner)
         {
             base.OnEnter(procedureOwner);
-            Log.Debug("HyBridCLR ProcedureLoadAssembly OnEnter");
             m_ProcedureOwner = procedureOwner;
             m_LoadAssemblyComplete = false;
             m_HotfixAssemblys = new List<Assembly>();
