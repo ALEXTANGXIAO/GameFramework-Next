@@ -208,4 +208,19 @@ public static class SettingsUtils
     {
         return FrameworkGlobalSettings.AtlasFolder;
     }
+    
+    public static List<ScriptGenerateRuler> GetScriptGenerateRule()
+    {
+        return FrameworkGlobalSettings.ScriptGenerateRule;
+    }
+
+    public static string GetUINameSpace()
+    {
+        return FrameworkGlobalSettings.NameSpace;
+    }
+    
+    public static string GetUIWidgetName()
+    {
+        return FrameworkGlobalSettings.UIWidgetName;
+    }
 }

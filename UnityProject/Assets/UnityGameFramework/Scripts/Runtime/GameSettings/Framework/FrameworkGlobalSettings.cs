@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public enum UpdateType
 {
@@ -163,4 +166,74 @@ public class FrameworkGlobalSettings
     {
         get => m_ServerChannelInfos;
     }
+    
+    [SerializeField] private string @namespace = "GameLogic";
+
+    public string NameSpace => @namespace;
+
+    [SerializeField] private string @uiWidgetName = "m_item";
+
+    public string UIWidgetName => @uiWidgetName;
+    
+    [SerializeField] private List<ScriptGenerateRuler> scriptGenerateRule = new List<ScriptGenerateRuler>()
+    {
+        new ScriptGenerateRuler("m_go", "GameObject"),
+        new ScriptGenerateRuler("m_item", "GameObject"),
+        new ScriptGenerateRuler("m_tf", "Transform"),
+        new ScriptGenerateRuler("m_rect", "RectTransform"),
+        new ScriptGenerateRuler("m_text", "Text"),
+        new ScriptGenerateRuler("m_richText", "RichTextItem"),
+        new ScriptGenerateRuler("m_btn", "Button"),
+        new ScriptGenerateRuler("m_img", "Image"),
+        new ScriptGenerateRuler("m_rimg", "RawImage"),
+        new ScriptGenerateRuler("m_scrollBar", "Scrollbar"),
+        new ScriptGenerateRuler("m_scroll", "ScrollRect"),
+        new ScriptGenerateRuler("m_input", "InputField"),
+        new ScriptGenerateRuler("m_grid", "GridLayoutGroup"),
+        new ScriptGenerateRuler("m_hlay", "HorizontalLayoutGroup"),
+        new ScriptGenerateRuler("m_vlay", "VerticalLayoutGroup"),
+        new ScriptGenerateRuler("m_red", "RedNoteBehaviour"),
+        new ScriptGenerateRuler("m_slider", "Slider"),
+        new ScriptGenerateRuler("m_group", "ToggleGroup"),
+        new ScriptGenerateRuler("m_curve", "AnimationCurve"),
+        new ScriptGenerateRuler("m_canvasGroup", "CanvasGroup"),
+#if ENABLE_TEXTMESHPRO
+        new ScriptGenerateRuler("m_tmp","TextMeshProUGUI"),
+#endif
+    };
+
+    public List<ScriptGenerateRuler> ScriptGenerateRule => scriptGenerateRule;
 }
+
+[Serializable]
+public class ScriptGenerateRuler
+{
+    public string uiElementRegex;
+    public string componentName;
+
+    public ScriptGenerateRuler(string uiElementRegex, string componentName)
+    {
+        this.uiElementRegex = uiElementRegex;
+        this.componentName = componentName;
+    }
+}
+
+#if UNITY_EDITOR
+[CustomPropertyDrawer(typeof(ScriptGenerateRuler))]
+public class ScriptGenerateRulerDrawer : PropertyDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        EditorGUI.BeginProperty(position, label, property);
+        position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+        var indent = EditorGUI.indentLevel;
+        EditorGUI.indentLevel = 0;
+        var uiElementRegexRect = new Rect(position.x, position.y, 120, position.height);
+        var componentNameRect = new Rect(position.x + 125, position.y, 150, position.height);
+        EditorGUI.PropertyField(uiElementRegexRect, property.FindPropertyRelative("uiElementRegex"), GUIContent.none);
+        EditorGUI.PropertyField(componentNameRect, property.FindPropertyRelative("componentName"), GUIContent.none);
+        EditorGUI.indentLevel = indent;
+        EditorGUI.EndProperty();
+    }
+}
+#endif
