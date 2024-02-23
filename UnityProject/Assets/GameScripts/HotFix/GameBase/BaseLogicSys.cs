@@ -1,4 +1,4 @@
-﻿namespace TEngine
+﻿namespace GameBase
 {
     /// <summary>
     /// 基础LogicSys,生命周期由TEngine实现，推荐给系统实现，

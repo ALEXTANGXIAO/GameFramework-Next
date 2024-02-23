@@ -1,5 +1,4 @@
-﻿using TEngine;
-using UnityGameFramework.Runtime;
+﻿using UnityGameFramework.Runtime;
 
 namespace GameBase
 {
