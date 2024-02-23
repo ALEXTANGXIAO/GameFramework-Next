@@ -10,7 +10,6 @@ public partial class GameApp
     private void InitSystem()
     {
         _listLogicMgr = new List<ILogicSys>();
-        RegisterAllLogicSystem();
         RegisterAllSystem();
         InitSystemSetting();
     }
@@ -27,35 +26,7 @@ public partial class GameApp
     /// </summary>
     private void RegisterAllSystem()
     {
-    }
-
-    private void RegisterAllLogicSystem()
-    {
-        var targetType = typeof(ILogicSys);
-        List<ILogicSys> result = new List<ILogicSys>();
-        var allTypes = System.Reflection.Assembly.GetCallingAssembly().GetTypes();
-        foreach (var type in allTypes)
-        {
-            if (type.IsAbstract)
-            {
-                continue;
-            }
-
-            System.Type[] tfs = type.GetInterfaces();
-            foreach (var tf in tfs)
-            {
-                if (tf.FullName == targetType.FullName)
-                {
-                    ILogicSys a = System.Activator.CreateInstance(type) as ILogicSys;
-                    result.Add(a);
-                }
-            }
-        }
-
-        foreach (var uiController in result)
-        {
-            AddLogicSys(uiController);
-        }
+        
     }
 
     /// <summary>
@@ -63,7 +34,7 @@ public partial class GameApp
     /// </summary>
     /// <param name="logicSys">ILogicSys</param>
     /// <returns></returns>
-    protected bool AddLogicSys(ILogicSys logicSys)
+    public bool AddLogicSys(ILogicSys logicSys)
     {
         if (_listLogicMgr.Contains(logicSys))
         {
