@@ -1,7 +1,10 @@
-﻿using GameFramework.Event;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using GameFramework;
-using UGFExtensions.Await;
+using GameFramework.Resource;
+using UnityEngine;
 using UnityGameFramework.Runtime;
 using YooAsset;
 using ProcedureOwner = GameFramework.Fsm.IFsm<GameFramework.Procedure.IProcedureManager>;
@@ -13,66 +16,48 @@ namespace GameMain
     /// </summary>
     public class ProcedurePreload : ProcedureBase
     {
-        private Dictionary<string, bool> m_LoadedFlag = new Dictionary<string, bool>();
+        private float _progress = 0f;
+
+        private readonly Dictionary<string, bool> _loadedFlag = new Dictionary<string, bool>();
 
         public override bool UseNativeDialog => true;
 
-        private bool m_needProLoadConfig = false;
+        private readonly bool _needProLoad = true;
 
-        private bool m_InitConfigXml = false;
+        /// <summary>
+        /// 预加载回调。
+        /// </summary>
+        private LoadAssetCallbacks m_PreLoadAssetCallbacks;
+
+        protected override void OnInit(ProcedureOwner procedureOwner)
+        {
+            base.OnInit(procedureOwner);
+            m_PreLoadAssetCallbacks = new LoadAssetCallbacks(OnPreLoadAssetSuccess, OnPreLoadAssetFailure);
+        }
+
 
         protected override void OnEnter(ProcedureOwner procedureOwner)
         {
             base.OnEnter(procedureOwner);
 
-            GameModule.Event.Subscribe(LoadConfigSuccessEventArgs.EventId, OnLoadConfigSuccess);
-            GameModule.Event.Subscribe(LoadConfigFailureEventArgs.EventId, OnLoadConfigFailure);
-            GameModule.Event.Subscribe(LoadDataTableSuccessEventArgs.EventId, OnLoadDataTableSuccess);
-            GameModule.Event.Subscribe(LoadDataTableFailureEventArgs.EventId, OnLoadDataTableFailure);
-            GameModule.Event.Subscribe(LoadDictionarySuccessEventArgs.EventId, OnLoadDictionarySuccess);
-            GameModule.Event.Subscribe(LoadDictionaryFailureEventArgs.EventId, OnLoadDictionaryFailure);
-
-            m_LoadedFlag.Clear();
-
-            if (GameModule.Resource.PlayMode == EPlayMode.EditorSimulateMode)
-            {
-                m_InitConfigXml = true;
-            }
-
-#if UNITY_EDITOR
-            if (GameModule.Resource.PlayMode == EPlayMode.EditorSimulateMode)
-            {
-                PreloadResources();
-                return;
-            }
-#endif
+            _loadedFlag.Clear();
 
             UILoadMgr.Show(UIDefine.UILoadUpdate, Utility.Text.Format(LoadText.Instance.Label_Load_Load_Progress, 0));
 
+            GameEvent.Send("UILoadUpdate.RefreshVersion");
+
             PreloadResources();
-        }
-
-        protected override void OnLeave(ProcedureOwner procedureOwner, bool isShutdown)
-        {
-            GameModule.Event.Unsubscribe(LoadConfigSuccessEventArgs.EventId, OnLoadConfigSuccess);
-            GameModule.Event.Unsubscribe(LoadConfigFailureEventArgs.EventId, OnLoadConfigFailure);
-            GameModule.Event.Unsubscribe(LoadDataTableSuccessEventArgs.EventId, OnLoadDataTableSuccess);
-            GameModule.Event.Unsubscribe(LoadDataTableFailureEventArgs.EventId, OnLoadDataTableFailure);
-            GameModule.Event.Unsubscribe(LoadDictionarySuccessEventArgs.EventId, OnLoadDictionarySuccess);
-            GameModule.Event.Unsubscribe(LoadDictionaryFailureEventArgs.EventId, OnLoadDictionaryFailure);
-
-            base.OnLeave(procedureOwner, isShutdown);
         }
 
         protected override void OnUpdate(ProcedureOwner procedureOwner, float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(procedureOwner, elapseSeconds, realElapseSeconds);
 
-            var totalCount = m_LoadedFlag.Count <= 0 ? 1 : m_LoadedFlag.Count;
+            var totalCount = _loadedFlag.Count <= 0 ? 1 : _loadedFlag.Count;
 
-            var loadCount = m_LoadedFlag.Count <= 0 ? 1 : 0;
+            var loadCount = _loadedFlag.Count <= 0 ? 1 : 0;
 
-            foreach (KeyValuePair<string, bool> loadedFlag in m_LoadedFlag)
+            foreach (KeyValuePair<string, bool> loadedFlag in _loadedFlag)
             {
                 if (!loadedFlag.Value)
                 {
@@ -84,122 +69,90 @@ namespace GameMain
                 }
             }
 
-            UILoadMgr.Show(UIDefine.UILoadUpdate, Utility.Text.Format(LoadText.Instance.Label_Load_Load_Progress, (float)loadCount / totalCount * 100));
+            if (_loadedFlag.Count != 0)
+            {
+                UILoadMgr.Show(UIDefine.UILoadUpdate, Utility.Text.Format(LoadText.Instance.Label_Load_Load_Progress, (float)loadCount / totalCount * 100));
+            }
+            else
+            {
+                GameEvent.Send(StringId.StringToHash("DownProgress"), _progress);
+
+                string progressStr = $"{_progress * 100:f1}";
+
+                if (Math.Abs(_progress - 1f) < 0.001f)
+                {
+                    UILoadMgr.Show(UIDefine.UILoadUpdate, "加载完成");
+                }
+                else
+                {
+                    UILoadMgr.Show(UIDefine.UILoadUpdate, Utility.Text.Format(LoadText.Instance.Label_Load_Load_Progress, progressStr));
+                }
+            }
 
             if (loadCount < totalCount)
             {
                 return;
             }
 
-            if (m_InitConfigXml == false)
+            ChangeState<ProcedureLoadAssembly>(procedureOwner);
+        }
+
+
+        public IEnumerator SmoothValue(float value, float duration, Action callback = null)
+        {
+            float time = 0f;
+            while (time < duration)
             {
-                return;
+                time += Time.deltaTime;
+                var result = Mathf.Lerp(0, value, time / duration);
+                _progress = result;
+                yield return new WaitForEndOfFrame();
             }
 
-            UILoadMgr.HideAll();
-
-            ChangeState<ProcedureLoadAssembly>(procedureOwner);
+            _progress = value;
+            callback?.Invoke();
         }
 
         private void PreloadResources()
         {
-            AwaitableExtensions.SubscribeEvent();
-            if (m_needProLoadConfig)
+            // await SmoothValue(1f, 1.2f).ToUniTask(GameModule.Procedure);
+            if (_needProLoad)
             {
-                LoadAllConfig();
-            }
-            else
-            {
-                m_InitConfigXml = true;
+                PreLoad();
             }
         }
 
-        private void LoadAllConfig()
+        private void PreLoad()
         {
             if (GameModule.Resource.PlayMode == EPlayMode.EditorSimulateMode)
             {
-                m_InitConfigXml = true;
                 return;
             }
-        }
 
-        private void LoadDictionary(string dictionaryName)
-        {
-            string dictionaryAssetName = SettingsUtils.GetDictionaryAsset(dictionaryName, false);
-            m_LoadedFlag.Add(dictionaryAssetName, false);
-            GameModule.Localization.ReadData(dictionaryAssetName, this);
-        }
-
-        private void OnLoadConfigSuccess(object sender, GameEventArgs e)
-        {
-            LoadConfigSuccessEventArgs ne = (LoadConfigSuccessEventArgs)e;
-            if (ne.UserData != this)
+            string[] preLoadTags = SettingsUtils.GetPreLoadTags();
+            AssetInfo[] assetInfos = GameModule.Resource.GetAssetInfos(preLoadTags);
+            foreach (var assetInfo in assetInfos)
             {
-                return;
+                PreLoad(assetInfo.Address);
             }
-
-            m_LoadedFlag[ne.ConfigAssetName] = true;
-            Log.Info("Load config '{0}' OK.", ne.ConfigAssetName);
         }
 
-        private void OnLoadConfigFailure(object sender, GameEventArgs e)
+        private void PreLoad(string configName)
         {
-            LoadConfigFailureEventArgs ne = (LoadConfigFailureEventArgs)e;
-            if (ne.UserData != this)
-            {
-                return;
-            }
-
-            Log.Error("Can not load config '{0}' from '{1}' with error message '{2}'.", ne.ConfigAssetName,
-                ne.ConfigAssetName, ne.ErrorMessage);
+            _loadedFlag.Add(configName, false);
+            GameModule.Resource.LoadAssetAsync(configName, typeof(UnityEngine.Object), m_PreLoadAssetCallbacks, null);
         }
 
-        private void OnLoadDataTableSuccess(object sender, GameEventArgs e)
+        private void OnPreLoadAssetFailure(string assetName, LoadResourceStatus status, string errormessage, object userdata)
         {
-            LoadDataTableSuccessEventArgs ne = (LoadDataTableSuccessEventArgs)e;
-            if (ne.UserData != this)
-            {
-                return;
-            }
-
-            m_LoadedFlag[ne.DataTableAssetName] = true;
-            Log.Info("Load data table '{0}' OK.", ne.DataTableAssetName);
+            Log.Warning("Can not preload asset from '{0}' with error message '{1}'.", assetName, errormessage);
+            _loadedFlag[assetName] = true;
         }
 
-        private void OnLoadDataTableFailure(object sender, GameEventArgs e)
+        private void OnPreLoadAssetSuccess(string assetName, object asset, float duration, object userdata)
         {
-            LoadDataTableFailureEventArgs ne = (LoadDataTableFailureEventArgs)e;
-            if (ne.UserData != this)
-            {
-                return;
-            }
-
-            Log.Error("Can not load data table '{0}' from '{1}' with error message '{2}'.", ne.DataTableAssetName,
-                ne.DataTableAssetName, ne.ErrorMessage);
-        }
-
-        private void OnLoadDictionarySuccess(object sender, GameEventArgs e)
-        {
-            LoadDictionarySuccessEventArgs ne = (LoadDictionarySuccessEventArgs)e;
-            if (ne.UserData != this)
-            {
-                return;
-            }
-
-            m_LoadedFlag[ne.DictionaryAssetName] = true;
-            Log.Info("Load dictionary '{0}' OK.", ne.DictionaryAssetName);
-        }
-
-        private void OnLoadDictionaryFailure(object sender, GameEventArgs e)
-        {
-            LoadDictionaryFailureEventArgs ne = (LoadDictionaryFailureEventArgs)e;
-            if (ne.UserData != this)
-            {
-                return;
-            }
-
-            Log.Error("Can not load dictionary '{0}' from '{1}' with error message '{2}'.", ne.DictionaryAssetName,
-                ne.DictionaryAssetName, ne.ErrorMessage);
+            Log.Debug("Success preload asset from '{0}' duration '{1}'.", assetName, duration);
+            _loadedFlag[assetName] = true;
         }
     }
 }

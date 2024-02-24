@@ -223,4 +223,9 @@ public static class SettingsUtils
     {
         return FrameworkGlobalSettings.UIWidgetName;
     }
+    
+    public static string[] GetPreLoadTags()
+    {
+        return FrameworkGlobalSettings.PreLoadTags;
+    }
 }

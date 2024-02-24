@@ -168,6 +168,11 @@ public class FrameworkGlobalSettings
     }
     
     [SerializeField] private string @namespace = "GameLogic";
+    
+    [Header("PreLoad")] [SerializeField]
+    private string[] m_PreLoadTags = new []{"PRELOAD"};
+
+    public string[] PreLoadTags => m_PreLoadTags;
 
     public string NameSpace => @namespace;
 
