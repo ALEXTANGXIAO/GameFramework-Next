@@ -43,7 +43,8 @@ namespace GameMain
                         ChangeState<ProcedureInitResources>(procedureOwner);
                     }
                     // 可更新模式。
-                    else if (GameModule.Resource.PlayMode == EPlayMode.HostPlayMode)
+                    else if (GameModule.Resource.PlayMode == EPlayMode.HostPlayMode ||
+                             GameModule.Resource.PlayMode == EPlayMode.WebPlayMode)
                     {
                         // 打开启动UI。
                         UILoadMgr.Show(UIDefine.UILoadUpdate);
