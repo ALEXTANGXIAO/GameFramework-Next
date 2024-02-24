@@ -153,6 +153,37 @@ namespace GameFramework.Resource
         public HasAssetResult HasAsset(string location, string packageName = "");
 
         /// <summary>
+        /// 检查资源定位地址是否有效。
+        /// </summary>
+        /// <param name="location">资源的定位地址</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        bool CheckLocationValid(string location, string packageName = "");
+
+        /// <summary>
+        /// 获取资源信息列表。
+        /// </summary>
+        /// <param name="resTag">资源标签。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <returns>资源信息列表。</returns>
+        AssetInfo[] GetAssetInfos(string resTag, string packageName = "");
+
+        /// <summary>
+        /// 获取资源信息列表。
+        /// </summary>
+        /// <param name="tags">资源标签列表。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <returns>资源信息列表。</returns>
+        AssetInfo[] GetAssetInfos(string[] tags, string packageName = "");
+
+        /// <summary>
+        /// 获取资源信息。
+        /// </summary>
+        /// <param name="location">资源的定位地址。</param>
+        /// <param name="packageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <returns>资源信息。</returns>
+        AssetInfo GetAssetInfo(string location, string packageName = "");
+
+        /// <summary>
         /// 异步加载资源。
         /// </summary>
         /// <param name="location">资源的定位地址。</param>

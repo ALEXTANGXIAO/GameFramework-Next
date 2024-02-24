@@ -399,6 +399,62 @@ namespace UnityGameFramework.Runtime
         }
         #endregion
 
+        #region 获取资源
+        /// <summary>
+        /// 检查资源是否存在。
+        /// </summary>
+        /// <param name="location">要检查资源的名称。</param>
+        /// <param name="customPackageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <returns>检查资源是否存在的结果。</returns>
+        public HasAssetResult HasAsset(string location, string customPackageName = "")
+        {
+            return m_ResourceManager.HasAsset(location, packageName: customPackageName);
+        }
+        
+        /// <summary>
+        /// 检查资源定位地址是否有效。
+        /// </summary>
+        /// <param name="location">资源的定位地址</param>
+        /// <param name="customPackageName">指定资源包的名称。不传使用默认资源包</param>
+        public bool CheckLocationValid(string location, string customPackageName = "")
+        {
+            return m_ResourceManager.CheckLocationValid(location, packageName: customPackageName);
+        }
+        
+        /// <summary>
+        /// 获取资源信息列表。
+        /// </summary>
+        /// <param name="resTag">资源标签。</param>
+        /// <param name="customPackageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <returns>资源信息列表。</returns>
+        public AssetInfo[] GetAssetInfos(string resTag, string customPackageName = "")
+        {
+            return m_ResourceManager.GetAssetInfos(resTag, packageName: customPackageName);
+        }
+
+        /// <summary>
+        /// 获取资源信息列表。
+        /// </summary>
+        /// <param name="tags">资源标签列表。</param>
+        /// <param name="customPackageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <returns>资源信息列表。</returns>
+        public AssetInfo[] GetAssetInfos(string[] tags, string customPackageName = "")
+        {
+            return m_ResourceManager.GetAssetInfos(tags, packageName: customPackageName);
+        }
+
+        /// <summary>
+        /// 获取资源信息。
+        /// </summary>
+        /// <param name="location">资源的定位地址。</param>
+        /// <param name="customPackageName">指定资源包的名称。不传使用默认资源包</param>
+        /// <returns>资源信息。</returns>
+        public AssetInfo GetAssetInfo(string location, string customPackageName = "")
+        {
+            return m_ResourceManager.GetAssetInfo(location, packageName: customPackageName);
+        }
+        #endregion
+
         #region 加载资源
 
         /// <summary>
