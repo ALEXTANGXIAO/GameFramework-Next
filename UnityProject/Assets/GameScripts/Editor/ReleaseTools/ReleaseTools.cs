@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using YooAsset;
 using YooAsset.Editor;
 using BuildResult = UnityEditor.Build.Reporting.BuildResult;
 
@@ -54,6 +55,14 @@ namespace UnityGameFramework.Editor
             BuildInternal(target, outputRoot);
             Debug.LogWarning($"Start BuildPackage BuildTarget:{target} outputPath:{outputRoot}");
         }
+        
+        [MenuItem("Game Framework/Quick Build/一键打包AssetBundle")]
+        public static void BuildCurrentPlatformAB()
+        {
+            BuildTarget target = EditorUserBuildSettings.activeBuildTarget;
+            BuildInternal(target, Application.dataPath + "/../Builds/Windows", packageVersion: GetBuildPackageVersion());
+            AssetDatabase.Refresh();
+        }
 
         private static BuildTarget GetBuildTarget(string platform)
         {
@@ -92,30 +101,51 @@ namespace UnityGameFramework.Editor
             return target;
         }
 
-        private static void BuildInternal(BuildTarget buildTarget, string outputRoot, string packageVersion = "1.0")
+        private static void BuildInternal(BuildTarget buildTarget, string outputRoot, string packageVersion = "1.0",
+            EBuildPipeline buildPipeline = EBuildPipeline.ScriptableBuildPipeline)
         {
             Debug.Log($"开始构建 : {buildTarget}");
 
-            var buildoutputRoot = AssetBundleBuilderHelper.GetDefaultBuildOutputRoot();
-            var streamingAssetsRoot = AssetBundleBuilderHelper.GetStreamingAssetsRoot();
-            // 构建参数
-            BuiltinBuildParameters buildParameters = new BuiltinBuildParameters();
-            buildParameters.BuildOutputRoot = buildoutputRoot;
-            buildParameters.BuildinFileRoot = streamingAssetsRoot;
-            buildParameters.BuildPipeline = EBuildPipeline.BuiltinBuildPipeline.ToString();
+            IBuildPipeline pipeline = null;
+            BuildParameters buildParameters = null;
+            
+            if (buildPipeline == EBuildPipeline.BuiltinBuildPipeline)
+            {
+                // 构建参数
+                BuiltinBuildParameters builtinBuildParameters = new BuiltinBuildParameters();
+                
+                // 执行构建
+                pipeline = new BuiltinBuildPipeline();
+                buildParameters = builtinBuildParameters;
+                
+                builtinBuildParameters.CompressOption = ECompressOption.LZ4;
+            }
+            else
+            {
+                ScriptableBuildParameters scriptableBuildParameters = new ScriptableBuildParameters();
+                
+                // 执行构建
+                pipeline = new ScriptableBuildPipeline();
+                buildParameters = scriptableBuildParameters;
+                
+                scriptableBuildParameters.CompressOption = ECompressOption.LZ4;
+            }
+            
+            buildParameters.BuildOutputRoot = AssetBundleBuilderHelper.GetDefaultBuildOutputRoot();
+            buildParameters.BuildinFileRoot = AssetBundleBuilderHelper.GetStreamingAssetsRoot();
+            buildParameters.BuildPipeline = buildPipeline.ToString();
             buildParameters.BuildTarget = buildTarget;
-            buildParameters.BuildMode = EBuildMode.ForceRebuild;
+            buildParameters.BuildMode = EBuildMode.IncrementalBuild;
             buildParameters.PackageName = "DefaultPackage";
             buildParameters.PackageVersion = packageVersion;
             buildParameters.VerifyBuildingResult = true;
-            buildParameters.FileNameStyle = EFileNameStyle.HashName;
+            buildParameters.FileNameStyle =  EFileNameStyle.BundleName_HashName;
             buildParameters.BuildinFileCopyOption = EBuildinFileCopyOption.None;
             buildParameters.BuildinFileCopyParams = string.Empty;
-            buildParameters.EncryptionServices = new EncryptionNone();
-            buildParameters.CompressOption = ECompressOption.LZ4;
-
-            // 执行构建
-            BuiltinBuildPipeline pipeline = new BuiltinBuildPipeline();
+            buildParameters.EncryptionServices = CreateEncryptionInstance("DefaultPackage",buildPipeline);
+            // 启用共享资源打包
+            buildParameters.EnableSharePackRule = true;
+            
             var buildResult = pipeline.Run(buildParameters, true);
             if (buildResult.Success)
             {
@@ -124,6 +154,26 @@ namespace UnityGameFramework.Editor
             else
             {
                 Debug.LogError($"构建失败 : {buildResult.ErrorInfo}");
+            }
+            
+        }
+        
+        /// <summary>
+        /// 创建加密类实例
+        /// </summary>
+        private static IEncryptionServices CreateEncryptionInstance(string packageName, EBuildPipeline buildPipeline)
+        {
+            var encyptionClassName = AssetBundleBuilderSetting.GetPackageEncyptionClassName(packageName, buildPipeline);
+            var encryptionClassTypes = EditorTools.GetAssignableTypes(typeof(IEncryptionServices));
+            var classType = encryptionClassTypes.Find(x => x.FullName != null && x.FullName.Equals(encyptionClassName));
+            if (classType != null)
+            {
+                Debug.Log($"Use Encryption {classType}");
+                return (IEncryptionServices)Activator.CreateInstance(classType);
+            }
+            else
+            {
+                return null;
             }
         }
 
