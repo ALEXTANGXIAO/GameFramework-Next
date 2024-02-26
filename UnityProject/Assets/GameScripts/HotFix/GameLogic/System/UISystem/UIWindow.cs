@@ -241,12 +241,6 @@ namespace GameLogic
 
         internal void TryInvoke(System.Action<UIWindow> prepareCallback, System.Object[] userDatas)
         {
-            if (HideTimerId > 0)
-            {
-                GameModule.Timer.CancelTimer(HideTimerId);
-                HideTimerId = 0;
-            }
-            
             base.userDatas = userDatas;
             if (IsPrepare)
             {
@@ -256,6 +250,7 @@ namespace GameLogic
             {
                 _prepareCallback = prepareCallback;
             }
+            CancelHideToCloseTimer();
         }
 
         internal async UniTaskVoid InternalLoad(string location, Action<UIWindow> prepareCallback, bool isAsync, System.Object[] userDatas)
@@ -400,6 +395,7 @@ namespace GameLogic
                 Object.Destroy(_panel);
                 _panel = null;
             }
+            CancelHideToCloseTimer();
         }
 
         /// <summary>
@@ -443,6 +439,15 @@ namespace GameLogic
         protected virtual void Close()
         {
             UISystem.Instance.CloseUI(this.GetType());
+        }
+
+        internal void CancelHideToCloseTimer()
+        {
+            if (HideTimerId > 0)
+            {
+                GameModule.Timer.CancelTimer(HideTimerId);
+                HideTimerId = 0;
+            }
         }
     }
 }
