@@ -163,9 +163,9 @@ namespace UnityGameFramework.Editor
         /// </summary>
         private static IEncryptionServices CreateEncryptionInstance(string packageName, EBuildPipeline buildPipeline)
         {
-            var encyptionClassName = AssetBundleBuilderSetting.GetPackageEncyptionClassName(packageName, buildPipeline);
+            var encryptionClassName = AssetBundleBuilderSetting.GetPackageEncyptionClassName(packageName, buildPipeline);
             var encryptionClassTypes = EditorTools.GetAssignableTypes(typeof(IEncryptionServices));
-            var classType = encryptionClassTypes.Find(x => x.FullName != null && x.FullName.Equals(encyptionClassName));
+            var classType = encryptionClassTypes.Find(x => x.FullName != null && x.FullName.Equals(encryptionClassName));
             if (classType != null)
             {
                 Debug.Log($"Use Encryption {classType}");
