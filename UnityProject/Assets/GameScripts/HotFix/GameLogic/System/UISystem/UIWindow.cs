@@ -67,6 +67,13 @@ namespace GameLogic
         /// 是内部资源无需AB加载。
         /// </summary>
         public bool FromResources { private set; get; }
+        
+        /// <summary>
+        /// 隐藏窗口关闭时间。
+        /// </summary>
+        public int HideTimeToClose { get; set; }
+        
+        public int HideTimerId { get; set; }
 
         /// <summary>
         /// 自定义数据。
@@ -222,17 +229,24 @@ namespace GameLogic
 
         #endregion
 
-        public void Init(string name, int layer, bool fullScreen, string assetName, bool fromResources)
+        public void Init(string name, int layer, bool fullScreen, string assetName, bool fromResources, int hideTimeToClose)
         {
             WindowName = name;
             WindowLayer = layer;
             FullScreen = fullScreen;
             AssetName = assetName;
             FromResources = fromResources;
+            HideTimeToClose = hideTimeToClose;
         }
 
         internal void TryInvoke(System.Action<UIWindow> prepareCallback, System.Object[] userDatas)
         {
+            if (HideTimerId > 0)
+            {
+                GameModule.Timer.CancelTimer(HideTimerId);
+                HideTimerId = 0;
+            }
+            
             base.userDatas = userDatas;
             if (IsPrepare)
             {
@@ -428,7 +442,7 @@ namespace GameLogic
 
         protected virtual void Close()
         {
-            UISystem.Instance.CloseWindow(this.GetType());
+            UISystem.Instance.CloseUI(this.GetType());
         }
     }
 }

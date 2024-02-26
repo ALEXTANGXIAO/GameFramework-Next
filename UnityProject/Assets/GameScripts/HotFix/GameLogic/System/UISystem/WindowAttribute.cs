@@ -37,31 +37,39 @@ namespace GameLogic
         /// </summary>
         public readonly bool FromResources;
 
-        public WindowAttribute(int windowLayer, string location = "", bool fullScreen = false)
+        public readonly int HideTimeToClose;
+
+        public WindowAttribute(int windowLayer, string location = "", bool fullScreen = false, int hideTimeToClose = 10)
         {
             WindowLayer = windowLayer;
             Location = location;
             FullScreen = fullScreen;
+            HideTimeToClose = hideTimeToClose;
         }
 
-        public WindowAttribute(UILayer windowLayer, string location = "", bool fullScreen = false)
+        public WindowAttribute(UILayer windowLayer, string location = "", bool fullScreen = false, int hideTimeToClose = 10)
         {
             WindowLayer = (int)windowLayer;
             Location = location;
             FullScreen = fullScreen;
+            HideTimeToClose = hideTimeToClose;
         }
 
-        public WindowAttribute(UILayer windowLayer, bool fromResources, bool fullScreen = false)
+        public WindowAttribute(UILayer windowLayer, bool fromResources, bool fullScreen = false, int hideTimeToClose = 10)
         {
             WindowLayer = (int)windowLayer;
             FromResources = fromResources;
+            FullScreen = fullScreen;
+            HideTimeToClose = hideTimeToClose;
         }
 
-        public WindowAttribute(UILayer windowLayer, bool fromResources, string location, bool fullScreen = false)
+        public WindowAttribute(UILayer windowLayer, bool fromResources, string location, bool fullScreen = false, int hideTimeToClose = 10)
         {
             WindowLayer = (int)windowLayer;
             FromResources = fromResources;
             Location = location;
+            FullScreen = fullScreen;
+            HideTimeToClose = hideTimeToClose;
         }
     }
 }

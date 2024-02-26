@@ -93,35 +93,47 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 获取所有层级下顶部的窗口名称。
+        /// 获取所有层级下顶部的窗口。
         /// </summary>
-        public string GetTopWindow()
+        public UIWindow GetTopWindow()
         {
             if (_stack.Count == 0)
             {
-                return string.Empty;
+                return null;
             }
 
             UIWindow topWindow = _stack[^1];
-            return topWindow.WindowName;
+            return topWindow;
         }
 
         /// <summary>
-        /// 获取指定层级下顶部的窗口名称。
+        /// 获取指定层级下顶部的窗口。
         /// </summary>
-        public string GetTopWindow(int layer)
+        public UIWindow GetTopWindow(int layer)
         {
             UIWindow lastOne = null;
             for (int i = 0; i < _stack.Count; i++)
             {
                 if (_stack[i].WindowLayer == layer)
+                {
                     lastOne = _stack[i];
+                }
             }
 
             if (lastOne == null)
-                return string.Empty;
+            {
+                return null;
+            }
 
-            return lastOne.WindowName;
+            return lastOne;
+        }
+        
+        /// <summary>
+        /// 获取指定层级下顶部的窗口。
+        /// </summary>
+        public UIWindow GetTopWindow(UILayer layer)
+        {
+            return GetTopWindow((int)layer);
         }
 
         /// <summary>
@@ -225,12 +237,12 @@ namespace GameLogic
         /// <summary>
         /// 关闭窗口
         /// </summary>
-        public void CloseWindow<T>() where T : UIWindow
+        public void CloseUI<T>() where T : UIWindow
         {
-            CloseWindow(typeof(T));
+            CloseUI(typeof(T));
         }
 
-        public void CloseWindow(Type type)
+        public void CloseUI(Type type)
         {
             string windowName = type.FullName;
             UIWindow window = GetWindow(windowName);
@@ -241,6 +253,33 @@ namespace GameLogic
             Pop(window);
             OnSortWindowDepth(window.WindowLayer);
             OnSetWindowVisible();
+        }
+        
+        public void HideUI<T>() where T : UIWindow
+        {
+            HideUI(typeof(T));
+        }
+
+        public void HideUI(Type type)
+        {
+            string windowName = type.FullName;
+            UIWindow window = GetWindow(windowName);
+            if (window == null)
+            {
+                return;
+            }
+
+            if (window.HideTimeToClose <= 0)
+            {
+                CloseUI(type);
+                return;
+            }
+            
+            window.Visible = false;
+            window.HideTimerId = GameModule.Timer.AddOnceTimer(window.HideTimeToClose * 1000, () =>
+            {
+                CloseUI(type);
+            });
         }
 
         /// <summary>
@@ -346,11 +385,11 @@ namespace GameLogic
             if (attribute != null)
             {
                 string assetName = string.IsNullOrEmpty(attribute.Location) ? type.Name : attribute.Location;
-                window.Init(type.FullName, attribute.WindowLayer, attribute.FullScreen, assetName, attribute.FromResources);
+                window.Init(type.FullName, attribute.WindowLayer, attribute.FullScreen, assetName, attribute.FromResources, attribute.HideTimeToClose);
             }
             else
             {
-                window.Init(type.FullName, (int)UILayer.UI, fullScreen: window.FullScreen, assetName: type.Name, fromResources: false);
+                window.Init(type.FullName, (int)UILayer.UI, fullScreen: window.FullScreen, assetName: type.Name, fromResources: false, hideTimeToClose: 10);
             }
 
             return window;
