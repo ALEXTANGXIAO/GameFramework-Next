@@ -604,6 +604,15 @@ namespace GameFramework.Scene
             {
                 throw new GameFrameworkException("Scene asset name is invalid.");
             }
+
+            if (IsMainScene(sceneAssetName))
+            {
+                if (m_UnloadingSceneAssetNames.Contains(sceneAssetName))
+                {
+                    m_UnloadingSceneAssetNames.Remove(sceneAssetName);
+                }
+                return;
+            }
             
             _subScenes.TryGetValue(sceneAssetName, out SceneHandle subScene);
             
