@@ -47,7 +47,7 @@ public class TimerComponent : GameFrameworkComponent
 
         static Timer()
         {
-            m_SerialId = 0;
+            m_SerialId = 10000;
         }
 
         /// <summary>
