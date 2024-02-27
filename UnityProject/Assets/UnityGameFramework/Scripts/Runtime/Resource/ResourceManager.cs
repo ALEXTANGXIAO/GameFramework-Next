@@ -721,6 +721,11 @@ namespace GameFramework.Resource
 
             AssetHandle handle = GetHandleAsync(location, assetType, packageName: packageName);
 
+            if (loadAssetCallbacks.LoadAssetUpdateCallback != null)
+            {
+                InvokeProgress(location, handle, loadAssetCallbacks.LoadAssetUpdateCallback, userData).Forget();
+            }
+            
             await handle.ToUniTask();
 
             if (handle.AssetObject == null || handle.Status == EOperationStatus.Failed)
@@ -794,6 +799,11 @@ namespace GameFramework.Resource
 
             AssetHandle handle = GetHandleAsync(location, assetInfo.AssetType, packageName: packageName);
 
+            if (loadAssetCallbacks.LoadAssetUpdateCallback != null)
+            {
+                InvokeProgress(location, handle, loadAssetCallbacks.LoadAssetUpdateCallback, userData).Forget();
+            }
+            
             await handle.ToUniTask();
 
             if (handle.AssetObject == null || handle.Status == EOperationStatus.Failed)
@@ -817,6 +827,24 @@ namespace GameFramework.Resource
                     duration = Time.time - duration;
 
                     loadAssetCallbacks.LoadAssetSuccessCallback(location, handle.AssetObject, duration, userData);
+                }
+            }
+        }
+
+        private async UniTaskVoid InvokeProgress(string location, AssetHandle assetHandle, LoadAssetUpdateCallback loadAssetUpdateCallback, object userData)
+        {
+            if (string.IsNullOrEmpty(location))
+            {
+                throw new GameFrameworkException("Asset name is invalid.");
+            }
+            
+            if (loadAssetUpdateCallback != null)
+            {
+                while (assetHandle is { IsValid: true, IsDone: false })
+                {
+                    await UniTask.Yield();
+                
+                    loadAssetUpdateCallback.Invoke(location, assetHandle.Progress, userData);
                 }
             }
         }
