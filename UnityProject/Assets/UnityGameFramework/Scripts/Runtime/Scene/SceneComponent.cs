@@ -26,9 +26,6 @@ namespace UnityGameFramework.Runtime
         [SerializeField]
         private bool m_EnableLoadSceneUpdateEvent = true;
 
-        [SerializeField]
-        private bool m_EnableLoadSceneDependencyAssetEvent = true;
-
         /// <summary>
         /// 获取当前场景主摄像机。
         /// </summary>
@@ -60,11 +57,6 @@ namespace UnityGameFramework.Runtime
             if (m_EnableLoadSceneUpdateEvent)
             {
                 m_SceneManager.LoadSceneUpdate += OnLoadSceneUpdate;
-            }
-
-            if (m_EnableLoadSceneDependencyAssetEvent)
-            {
-                m_SceneManager.LoadSceneDependencyAsset += OnLoadSceneDependencyAsset;
             }
 
             m_SceneManager.UnloadSceneSuccess += OnUnloadSceneSuccess;
@@ -395,11 +387,6 @@ namespace UnityGameFramework.Runtime
         private void OnLoadSceneUpdate(object sender, GameFramework.Scene.LoadSceneUpdateEventArgs e)
         {
             m_EventComponent.Fire(this, LoadSceneUpdateEventArgs.Create(e));
-        }
-
-        private void OnLoadSceneDependencyAsset(object sender, GameFramework.Scene.LoadSceneDependencyAssetEventArgs e)
-        {
-            m_EventComponent.Fire(this, LoadSceneDependencyAssetEventArgs.Create(e));
         }
 
         private void OnUnloadSceneSuccess(object sender, GameFramework.Scene.UnloadSceneSuccessEventArgs e)
