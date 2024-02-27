@@ -43,11 +43,6 @@ namespace GameFramework.Entity
         event EventHandler<ShowEntityUpdateEventArgs> ShowEntityUpdate;
 
         /// <summary>
-        /// 显示实体时加载依赖资源事件。
-        /// </summary>
-        event EventHandler<ShowEntityDependencyAssetEventArgs> ShowEntityDependencyAsset;
-
-        /// <summary>
         /// 隐藏实体完成事件。
         /// </summary>
         event EventHandler<HideEntityCompleteEventArgs> HideEntityComplete;

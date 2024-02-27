@@ -27,9 +27,6 @@ namespace UnityGameFramework.Runtime
         private bool m_EnableShowEntityUpdateEvent = false;
 
         [SerializeField]
-        private bool m_EnableShowEntityDependencyAssetEvent = false;
-
-        [SerializeField]
         private Transform m_InstanceRoot = null;
 
         [SerializeField]
@@ -89,11 +86,6 @@ namespace UnityGameFramework.Runtime
             if (m_EnableShowEntityUpdateEvent)
             {
                 m_EntityManager.ShowEntityUpdate += OnShowEntityUpdate;
-            }
-
-            if (m_EnableShowEntityDependencyAssetEvent)
-            {
-                m_EntityManager.ShowEntityDependencyAsset += OnShowEntityDependencyAsset;
             }
 
             m_EntityManager.HideEntityComplete += OnHideEntityComplete;
@@ -1154,11 +1146,6 @@ namespace UnityGameFramework.Runtime
         private void OnShowEntityUpdate(object sender, GameFramework.Entity.ShowEntityUpdateEventArgs e)
         {
             m_EventComponent.Fire(this, ShowEntityUpdateEventArgs.Create(e));
-        }
-
-        private void OnShowEntityDependencyAsset(object sender, GameFramework.Entity.ShowEntityDependencyAssetEventArgs e)
-        {
-            m_EventComponent.Fire(this, ShowEntityDependencyAssetEventArgs.Create(e));
         }
 
         private void OnHideEntityComplete(object sender, GameFramework.Entity.HideEntityCompleteEventArgs e)

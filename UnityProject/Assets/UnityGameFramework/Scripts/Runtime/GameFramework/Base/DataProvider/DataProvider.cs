@@ -19,7 +19,6 @@ namespace GameFramework
         private EventHandler<ReadDataSuccessEventArgs> m_ReadDataSuccessEventHandler;
         private EventHandler<ReadDataFailureEventArgs> m_ReadDataFailureEventHandler;
         private EventHandler<ReadDataUpdateEventArgs> m_ReadDataUpdateEventHandler;
-        private EventHandler<ReadDataDependencyAssetEventArgs> m_ReadDataDependencyAssetEventHandler;
 
         /// <summary>
         /// 初始化数据提供者的新实例。
@@ -28,13 +27,12 @@ namespace GameFramework
         public DataProvider(T owner)
         {
             m_Owner = owner;
-            m_LoadAssetCallbacks = new LoadAssetCallbacks(LoadAssetSuccessCallback, LoadAssetOrBinaryFailureCallback, LoadAssetUpdateCallback, LoadAssetDependencyAssetCallback);
+            m_LoadAssetCallbacks = new LoadAssetCallbacks(LoadAssetSuccessCallback, LoadAssetOrBinaryFailureCallback, LoadAssetUpdateCallback);
             m_ResourceManager = null;
             m_DataProviderHelper = null;
             m_ReadDataSuccessEventHandler = null;
             m_ReadDataFailureEventHandler = null;
             m_ReadDataUpdateEventHandler = null;
-            m_ReadDataDependencyAssetEventHandler = null;
         }
 
         /// <summary>
@@ -90,21 +88,6 @@ namespace GameFramework
             remove
             {
                 m_ReadDataUpdateEventHandler -= value;
-            }
-        }
-
-        /// <summary>
-        /// 读取数据时加载依赖资源事件。
-        /// </summary>
-        public event EventHandler<ReadDataDependencyAssetEventArgs> ReadDataDependencyAsset
-        {
-            add
-            {
-                m_ReadDataDependencyAssetEventHandler += value;
-            }
-            remove
-            {
-                m_ReadDataDependencyAssetEventHandler -= value;
             }
         }
 
@@ -407,16 +390,6 @@ namespace GameFramework
                 ReadDataUpdateEventArgs loadDataUpdateEventArgs = ReadDataUpdateEventArgs.Create(dataAssetName, progress, userData);
                 m_ReadDataUpdateEventHandler(this, loadDataUpdateEventArgs);
                 ReferencePool.Release(loadDataUpdateEventArgs);
-            }
-        }
-
-        private void LoadAssetDependencyAssetCallback(string dataAssetName, string dependencyAssetName, int loadedCount, int totalCount, object userData)
-        {
-            if (m_ReadDataDependencyAssetEventHandler != null)
-            {
-                ReadDataDependencyAssetEventArgs loadDataDependencyAssetEventArgs = ReadDataDependencyAssetEventArgs.Create(dataAssetName, dependencyAssetName, loadedCount, totalCount, userData);
-                m_ReadDataDependencyAssetEventHandler(this, loadDataDependencyAssetEventArgs);
-                ReferencePool.Release(loadDataDependencyAssetEventArgs);
             }
         }
 

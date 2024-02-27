@@ -23,9 +23,6 @@ namespace UnityGameFramework.Runtime
         private bool m_EnableLoadDataTableUpdateEvent = false;
 
         [SerializeField]
-        private bool m_EnableLoadDataTableDependencyAssetEvent = false;
-
-        [SerializeField]
         private string m_DataTableHelperTypeName = "UnityGameFramework.Runtime.DefaultDataTableHelper";
 
         [SerializeField]
@@ -265,11 +262,6 @@ namespace UnityGameFramework.Runtime
                 dataTableBase.ReadDataUpdate += OnReadDataUpdate;
             }
 
-            if (m_EnableLoadDataTableDependencyAssetEvent)
-            {
-                dataTableBase.ReadDataDependencyAsset += OnReadDataDependencyAsset;
-            }
-
             return dataTable;
         }
 
@@ -288,11 +280,6 @@ namespace UnityGameFramework.Runtime
             if (m_EnableLoadDataTableUpdateEvent)
             {
                 dataTable.ReadDataUpdate += OnReadDataUpdate;
-            }
-
-            if (m_EnableLoadDataTableDependencyAssetEvent)
-            {
-                dataTable.ReadDataDependencyAsset += OnReadDataDependencyAsset;
             }
 
             return dataTable;
@@ -375,11 +362,6 @@ namespace UnityGameFramework.Runtime
         private void OnReadDataUpdate(object sender, ReadDataUpdateEventArgs e)
         {
             m_EventComponent.Fire(this, LoadDataTableUpdateEventArgs.Create(e));
-        }
-
-        private void OnReadDataDependencyAsset(object sender, ReadDataDependencyAssetEventArgs e)
-        {
-            m_EventComponent.Fire(this, LoadDataTableDependencyAssetEventArgs.Create(e));
         }
     }
 }

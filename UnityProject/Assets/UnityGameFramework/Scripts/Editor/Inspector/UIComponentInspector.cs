@@ -9,7 +9,6 @@ namespace UnityGameFramework.Editor
         private SerializedProperty m_EnableOpenUIFormSuccessEvent = null;
         private SerializedProperty m_EnableOpenUIFormFailureEvent = null;
         private SerializedProperty m_EnableOpenUIFormUpdateEvent = null;
-        private SerializedProperty m_EnableOpenUIFormDependencyAssetEvent = null;
         private SerializedProperty m_EnableCloseUIFormCompleteEvent = null;
         private SerializedProperty m_InstanceAutoReleaseInterval = null;
         private SerializedProperty m_InstanceCapacity = null;
@@ -35,7 +34,6 @@ namespace UnityGameFramework.Editor
                 EditorGUILayout.PropertyField(m_EnableOpenUIFormSuccessEvent);
                 EditorGUILayout.PropertyField(m_EnableOpenUIFormFailureEvent);
                 EditorGUILayout.PropertyField(m_EnableOpenUIFormUpdateEvent);
-                EditorGUILayout.PropertyField(m_EnableOpenUIFormDependencyAssetEvent);
                 EditorGUILayout.PropertyField(m_EnableCloseUIFormCompleteEvent);
             }
             EditorGUI.EndDisabledGroup();
@@ -124,7 +122,6 @@ namespace UnityGameFramework.Editor
             m_EnableOpenUIFormSuccessEvent = serializedObject.FindProperty("m_EnableOpenUIFormSuccessEvent");
             m_EnableOpenUIFormFailureEvent = serializedObject.FindProperty("m_EnableOpenUIFormFailureEvent");
             m_EnableOpenUIFormUpdateEvent = serializedObject.FindProperty("m_EnableOpenUIFormUpdateEvent");
-            m_EnableOpenUIFormDependencyAssetEvent = serializedObject.FindProperty("m_EnableOpenUIFormDependencyAssetEvent");
             m_EnableCloseUIFormCompleteEvent = serializedObject.FindProperty("m_EnableCloseUIFormCompleteEvent");
             m_InstanceAutoReleaseInterval = serializedObject.FindProperty("m_InstanceAutoReleaseInterval");
             m_InstanceCapacity = serializedObject.FindProperty("m_InstanceCapacity");

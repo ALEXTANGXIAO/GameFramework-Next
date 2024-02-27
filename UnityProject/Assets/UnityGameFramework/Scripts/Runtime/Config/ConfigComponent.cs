@@ -21,9 +21,6 @@ namespace UnityGameFramework.Runtime
         private bool m_EnableLoadConfigUpdateEvent = false;
 
         [SerializeField]
-        private bool m_EnableLoadConfigDependencyAssetEvent = false;
-
-        [SerializeField]
         private string m_ConfigHelperTypeName = "UnityGameFramework.Runtime.DefaultConfigHelper";
 
         [SerializeField]
@@ -74,11 +71,6 @@ namespace UnityGameFramework.Runtime
             if (m_EnableLoadConfigUpdateEvent)
             {
                 m_ConfigManager.ReadDataUpdate += OnReadDataUpdate;
-            }
-
-            if (m_EnableLoadConfigDependencyAssetEvent)
-            {
-                m_ConfigManager.ReadDataDependencyAsset += OnReadDataDependencyAsset;
             }
         }
 
@@ -384,11 +376,6 @@ namespace UnityGameFramework.Runtime
         private void OnReadDataUpdate(object sender, ReadDataUpdateEventArgs e)
         {
             m_EventComponent.Fire(this, LoadConfigUpdateEventArgs.Create(e));
-        }
-
-        private void OnReadDataDependencyAsset(object sender, ReadDataDependencyAssetEventArgs e)
-        {
-            m_EventComponent.Fire(this, LoadConfigDependencyAssetEventArgs.Create(e));
         }
     }
 }

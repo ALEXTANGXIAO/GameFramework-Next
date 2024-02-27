@@ -129,21 +129,6 @@ namespace GameFramework.Localization
         }
 
         /// <summary>
-        /// 读取字典时加载依赖资源事件。
-        /// </summary>
-        public event EventHandler<ReadDataDependencyAssetEventArgs> ReadDataDependencyAsset
-        {
-            add
-            {
-                m_DataProvider.ReadDataDependencyAsset += value;
-            }
-            remove
-            {
-                m_DataProvider.ReadDataDependencyAsset -= value;
-            }
-        }
-
-        /// <summary>
         /// 本地化管理器轮询。
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>

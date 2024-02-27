@@ -26,7 +26,6 @@ namespace GameFramework.Entity
         private EventHandler<ShowEntitySuccessEventArgs> m_ShowEntitySuccessEventHandler;
         private EventHandler<ShowEntityFailureEventArgs> m_ShowEntityFailureEventHandler;
         private EventHandler<ShowEntityUpdateEventArgs> m_ShowEntityUpdateEventHandler;
-        private EventHandler<ShowEntityDependencyAssetEventArgs> m_ShowEntityDependencyAssetEventHandler;
         private EventHandler<HideEntityCompleteEventArgs> m_HideEntityCompleteEventHandler;
 
         /// <summary>
@@ -39,7 +38,7 @@ namespace GameFramework.Entity
             m_EntitiesBeingLoaded = new Dictionary<int, int>();
             m_EntitiesToReleaseOnLoad = new HashSet<int>();
             m_RecycleQueue = new Queue<EntityInfo>();
-            m_LoadAssetCallbacks = new LoadAssetCallbacks(LoadAssetSuccessCallback, LoadAssetFailureCallback, LoadAssetUpdateCallback, LoadAssetDependencyAssetCallback);
+            m_LoadAssetCallbacks = new LoadAssetCallbacks(LoadAssetSuccessCallback, LoadAssetFailureCallback, LoadAssetUpdateCallback);
             m_ObjectPoolManager = null;
             m_ResourceManager = null;
             m_EntityHelper = null;
@@ -48,7 +47,6 @@ namespace GameFramework.Entity
             m_ShowEntitySuccessEventHandler = null;
             m_ShowEntityFailureEventHandler = null;
             m_ShowEntityUpdateEventHandler = null;
-            m_ShowEntityDependencyAssetEventHandler = null;
             m_HideEntityCompleteEventHandler = null;
         }
 
@@ -116,21 +114,6 @@ namespace GameFramework.Entity
             remove
             {
                 m_ShowEntityUpdateEventHandler -= value;
-            }
-        }
-
-        /// <summary>
-        /// 显示实体时加载依赖资源事件。
-        /// </summary>
-        public event EventHandler<ShowEntityDependencyAssetEventArgs> ShowEntityDependencyAsset
-        {
-            add
-            {
-                m_ShowEntityDependencyAssetEventHandler += value;
-            }
-            remove
-            {
-                m_ShowEntityDependencyAssetEventHandler -= value;
             }
         }
 
@@ -1443,22 +1426,6 @@ namespace GameFramework.Entity
                 ShowEntityUpdateEventArgs showEntityUpdateEventArgs = ShowEntityUpdateEventArgs.Create(showEntityInfo.EntityId, entityAssetName, showEntityInfo.EntityGroup.Name, progress, showEntityInfo.UserData);
                 m_ShowEntityUpdateEventHandler(this, showEntityUpdateEventArgs);
                 ReferencePool.Release(showEntityUpdateEventArgs);
-            }
-        }
-
-        private void LoadAssetDependencyAssetCallback(string entityAssetName, string dependencyAssetName, int loadedCount, int totalCount, object userData)
-        {
-            ShowEntityInfo showEntityInfo = (ShowEntityInfo)userData;
-            if (showEntityInfo == null)
-            {
-                throw new GameFrameworkException("Show entity info is invalid.");
-            }
-
-            if (m_ShowEntityDependencyAssetEventHandler != null)
-            {
-                ShowEntityDependencyAssetEventArgs showEntityDependencyAssetEventArgs = ShowEntityDependencyAssetEventArgs.Create(showEntityInfo.EntityId, entityAssetName, showEntityInfo.EntityGroup.Name, dependencyAssetName, loadedCount, totalCount, showEntityInfo.UserData);
-                m_ShowEntityDependencyAssetEventHandler(this, showEntityDependencyAssetEventArgs);
-                ReferencePool.Release(showEntityDependencyAssetEventArgs);
             }
         }
     }

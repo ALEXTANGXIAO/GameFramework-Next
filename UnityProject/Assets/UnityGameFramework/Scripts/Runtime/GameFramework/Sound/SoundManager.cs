@@ -19,7 +19,6 @@ namespace GameFramework.Sound
         private EventHandler<PlaySoundSuccessEventArgs> m_PlaySoundSuccessEventHandler;
         private EventHandler<PlaySoundFailureEventArgs> m_PlaySoundFailureEventHandler;
         private EventHandler<PlaySoundUpdateEventArgs> m_PlaySoundUpdateEventHandler;
-        private EventHandler<PlaySoundDependencyAssetEventArgs> m_PlaySoundDependencyAssetEventHandler;
 
         /// <summary>
         /// 初始化声音管理器的新实例。
@@ -29,14 +28,13 @@ namespace GameFramework.Sound
             m_SoundGroups = new Dictionary<string, SoundGroup>(StringComparer.Ordinal);
             m_SoundsBeingLoaded = new List<int>();
             m_SoundsToReleaseOnLoad = new HashSet<int>();
-            m_LoadAssetCallbacks = new LoadAssetCallbacks(LoadAssetSuccessCallback, LoadAssetFailureCallback, LoadAssetUpdateCallback, LoadAssetDependencyAssetCallback);
+            m_LoadAssetCallbacks = new LoadAssetCallbacks(LoadAssetSuccessCallback, LoadAssetFailureCallback, LoadAssetUpdateCallback);
             m_ResourceManager = null;
             m_SoundHelper = null;
             m_Serial = 0;
             m_PlaySoundSuccessEventHandler = null;
             m_PlaySoundFailureEventHandler = null;
             m_PlaySoundUpdateEventHandler = null;
-            m_PlaySoundDependencyAssetEventHandler = null;
         }
 
         /// <summary>
@@ -92,21 +90,6 @@ namespace GameFramework.Sound
             remove
             {
                 m_PlaySoundUpdateEventHandler -= value;
-            }
-        }
-
-        /// <summary>
-        /// 播放声音时加载依赖资源事件。
-        /// </summary>
-        public event EventHandler<PlaySoundDependencyAssetEventArgs> PlaySoundDependencyAsset
-        {
-            add
-            {
-                m_PlaySoundDependencyAssetEventHandler += value;
-            }
-            remove
-            {
-                m_PlaySoundDependencyAssetEventHandler -= value;
             }
         }
 
@@ -725,22 +708,6 @@ namespace GameFramework.Sound
                 PlaySoundUpdateEventArgs playSoundUpdateEventArgs = PlaySoundUpdateEventArgs.Create(playSoundInfo.SerialId, soundAssetName, playSoundInfo.SoundGroup.Name, playSoundInfo.PlaySoundParams, progress, playSoundInfo.UserData);
                 m_PlaySoundUpdateEventHandler(this, playSoundUpdateEventArgs);
                 ReferencePool.Release(playSoundUpdateEventArgs);
-            }
-        }
-
-        private void LoadAssetDependencyAssetCallback(string soundAssetName, string dependencyAssetName, int loadedCount, int totalCount, object userData)
-        {
-            PlaySoundInfo playSoundInfo = (PlaySoundInfo)userData;
-            if (playSoundInfo == null)
-            {
-                throw new GameFrameworkException("Play sound info is invalid.");
-            }
-
-            if (m_PlaySoundDependencyAssetEventHandler != null)
-            {
-                PlaySoundDependencyAssetEventArgs playSoundDependencyAssetEventArgs = PlaySoundDependencyAssetEventArgs.Create(playSoundInfo.SerialId, soundAssetName, playSoundInfo.SoundGroup.Name, playSoundInfo.PlaySoundParams, dependencyAssetName, loadedCount, totalCount, playSoundInfo.UserData);
-                m_PlaySoundDependencyAssetEventHandler(this, playSoundDependencyAssetEventArgs);
-                ReferencePool.Release(playSoundDependencyAssetEventArgs);
             }
         }
     }

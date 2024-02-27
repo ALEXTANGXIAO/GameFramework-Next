@@ -9,7 +9,6 @@ namespace UnityGameFramework.Editor
     internal sealed class DataTableComponentInspector : GameFrameworkInspector
     {
         private SerializedProperty m_EnableLoadDataTableUpdateEvent = null;
-        private SerializedProperty m_EnableLoadDataTableDependencyAssetEvent = null;
         private SerializedProperty m_CachedBytesSize = null;
 
         private HelperInfo<DataTableHelperBase> m_DataTableHelperInfo = new HelperInfo<DataTableHelperBase>("DataTable");
@@ -25,7 +24,6 @@ namespace UnityGameFramework.Editor
             EditorGUI.BeginDisabledGroup(EditorApplication.isPlayingOrWillChangePlaymode);
             {
                 EditorGUILayout.PropertyField(m_EnableLoadDataTableUpdateEvent);
-                EditorGUILayout.PropertyField(m_EnableLoadDataTableDependencyAssetEvent);
                 m_DataTableHelperInfo.Draw();
                 EditorGUILayout.PropertyField(m_CachedBytesSize);
             }
@@ -58,7 +56,6 @@ namespace UnityGameFramework.Editor
         private void OnEnable()
         {
             m_EnableLoadDataTableUpdateEvent = serializedObject.FindProperty("m_EnableLoadDataTableUpdateEvent");
-            m_EnableLoadDataTableDependencyAssetEvent = serializedObject.FindProperty("m_EnableLoadDataTableDependencyAssetEvent");
             m_CachedBytesSize = serializedObject.FindProperty("m_CachedBytesSize");
 
             m_DataTableHelperInfo.Init(serializedObject);
