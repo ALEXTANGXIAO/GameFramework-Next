@@ -54,6 +54,7 @@ GameObject:
   m_Component:
   - component: {fileID: 432002}
   - component: {fileID: 4861881215341461167}
+  - component: {fileID: 1711382602995508534}
   m_Layer: 0
   m_Name: Resource
   m_TagString: Untagged
@@ -101,6 +102,20 @@ MonoBehaviour:
   m_AssetCapacity: 64
   m_AssetExpireTime: 60
   m_AssetPriority: 0
+--- !u!114 &1711382602995508534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3b90e2bddce46bab4190eadf4ed642a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CheckCanReleaseInterval: 30
+  m_AutoReleaseInterval: 60
 --- !u!1 &109252
 GameObject:
   m_ObjectHideFlags: 0
@@ -146,7 +161,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EnableLoadDictionaryUpdateEvent: 0
-  m_EnableLoadDictionaryDependencyAssetEvent: 0
   m_LocalizationHelperTypeName: GameMain.JsonLocalizationHelper
   m_CustomLocalizationHelper: {fileID: 0}
   m_CachedBytesSize: 0
@@ -245,7 +259,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EnableShowEntityUpdateEvent: 0
-  m_EnableShowEntityDependencyAssetEvent: 0
   m_InstanceRoot: {fileID: 0}
   m_EntityHelperTypeName: UnityGameFramework.Runtime.DefaultEntityHelper
   m_CustomEntityHelper: {fileID: 0}
@@ -580,7 +593,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EnableLoadConfigUpdateEvent: 0
-  m_EnableLoadConfigDependencyAssetEvent: 0
   m_ConfigHelperTypeName: UnityGameFramework.Runtime.DefaultConfigHelper
   m_CustomConfigHelper: {fileID: 0}
   m_CachedBytesSize: 0
@@ -688,7 +700,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EnablePlaySoundUpdateEvent: 0
-  m_EnablePlaySoundDependencyAssetEvent: 0
   m_InstanceRoot: {fileID: 0}
   m_AudioMixer: {fileID: 24100000, guid: 0f5b0f1b1b7760c458f2fefab02f273b, type: 2}
   m_SoundHelperTypeName: UnityGameFramework.Runtime.DefaultSoundHelper
@@ -848,7 +859,6 @@ MonoBehaviour:
   m_EnableOpenUIFormSuccessEvent: 1
   m_EnableOpenUIFormFailureEvent: 1
   m_EnableOpenUIFormUpdateEvent: 0
-  m_EnableOpenUIFormDependencyAssetEvent: 0
   m_EnableCloseUIFormCompleteEvent: 1
   m_InstanceAutoReleaseInterval: 60
   m_InstanceCapacity: 16
@@ -1002,7 +1012,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EnableLoadDataTableUpdateEvent: 0
-  m_EnableLoadDataTableDependencyAssetEvent: 0
   m_DataTableHelperTypeName: UnityGameFramework.Runtime.DefaultDataTableHelper
   m_CustomDataTableHelper: {fileID: 0}
   m_CachedBytesSize: 0
@@ -1051,7 +1060,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EnableLoadSceneUpdateEvent: 1
-  m_EnableLoadSceneDependencyAssetEvent: 1
 --- !u!1 &189908
 GameObject:
   m_ObjectHideFlags: 0

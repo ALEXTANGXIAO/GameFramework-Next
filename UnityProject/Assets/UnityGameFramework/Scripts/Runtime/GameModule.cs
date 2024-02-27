@@ -120,6 +120,10 @@ public class GameModule : MonoBehaviour
     /// </summary>
     public static TextureSetComponent TextureSet{ get; private set; }
     
+    /// <summary>
+    /// 资源组件拓展。
+    /// </summary>
+    public static ResourceExtComponent ResourceExt { get; private set; }
     #endregion
 
     /// <summary>
@@ -149,6 +153,7 @@ public class GameModule : MonoBehaviour
         WebRequest = Get<WebRequestComponent>();
         Timer = Get<TimerComponent>();
         TextureSet = Get<TextureSetComponent>();
+        ResourceExt = Get<ResourceExtComponent>();
     }
 
     public static void InitCustomComponents()

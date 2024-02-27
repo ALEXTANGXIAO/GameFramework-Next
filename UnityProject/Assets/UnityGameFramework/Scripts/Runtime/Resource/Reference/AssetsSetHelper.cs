@@ -14,7 +14,7 @@ namespace GameFramework.Resource
                 _resourceManager = GameFrameworkEntry.GetModule<IResourceManager>();
             }
         }
-
+/*
         #region SetSprite设置图片
 
         public static void SetSprite(this Image image, string location, bool isAsync = false, string packageName = "")
@@ -82,7 +82,7 @@ namespace GameFramework.Resource
         }
 
         #endregion
-
+*/
         #region SetMaterial
 
         public static void SetMaterial(this Image image, string location, bool isAsync = false, string packageName = "")
