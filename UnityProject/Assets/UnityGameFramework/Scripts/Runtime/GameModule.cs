@@ -16,21 +16,6 @@ public class GameModule : MonoBehaviour
     public static BaseComponent Base { get; private set; }
 
     /// <summary>
-    /// 获取配置组件。
-    /// </summary>
-    public static ConfigComponent Config { get; private set; }
-
-    /// <summary>
-    /// 获取数据结点组件。
-    /// </summary>
-    public static DataNodeComponent DataNode { get; private set; }
-
-    /// <summary>
-    /// 获取数据表组件。
-    /// </summary>
-    public static DataTableComponent DataTable { get; private set; }
-
-    /// <summary>
     /// 获取调试组件。
     /// </summary>
     public static DebuggerComponent Debugger { get; private set; }
@@ -132,9 +117,6 @@ public class GameModule : MonoBehaviour
     public static void InitFrameWorkComponents()
     {
         Base = Get<BaseComponent>();
-        Config = Get<ConfigComponent>();
-        DataNode = Get<DataNodeComponent>();
-        DataTable = Get<DataTableComponent>();
         Debugger = Get<DebuggerComponent>();
         Download = Get<DownloadComponent>();
         Entity = Get<EntityComponent>();

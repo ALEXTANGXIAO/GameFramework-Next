@@ -189,7 +189,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="instanceExpireTime">实体实例对象池对象过期秒数。</param>
         /// <param name="instancePriority">实体实例对象池的优先级。</param>
         /// <returns>是否增加实体组成功。</returns>
-        public bool AddEntityGroup(string entityGroupName, float instanceAutoReleaseInterval, int instanceCapacity, float instanceExpireTime, int instancePriority)
+        public bool AddEntityGroup(string entityGroupName, float instanceAutoReleaseInterval = 60, int instanceCapacity = 64, float instanceExpireTime = 60, int instancePriority = 1000)
         {
             if (m_EntityManager.HasEntityGroup(entityGroupName))
             {
