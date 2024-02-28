@@ -44,7 +44,6 @@
         /// <param name="loadSceneSuccessCallback">加载场景成功回调函数。</param>
         /// <param name="loadSceneFailureCallback">加载场景失败回调函数。</param>
         /// <param name="loadSceneUpdateCallback">加载场景更新回调函数。</param>
-        /// <param name="loadSceneDependencyAssetCallback">加载场景时加载依赖资源回调函数。</param>
         public LoadSceneCallbacks(LoadSceneSuccessCallback loadSceneSuccessCallback, LoadSceneFailureCallback loadSceneFailureCallback, LoadSceneUpdateCallback loadSceneUpdateCallback)
         {
             if (loadSceneSuccessCallback == null)
