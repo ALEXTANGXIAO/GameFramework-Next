@@ -55,7 +55,7 @@ namespace UnityGameFramework.Runtime
             }
             set
             {
-                SetLanguage(DefaultLocalizationHelper.GetLanguage(m_CurrentLanguage));
+                SetLanguage(DefaultLocalizationHelper.GetLanguageStr(value));
             }
         }
             
@@ -123,7 +123,32 @@ namespace UnityGameFramework.Runtime
         }
 
         /// <summary>
-        /// 加载语言。
+        /// 加载语言总表。
+        /// </summary>
+        public async UniTask LoadLanguageTotalAsset(string assetName)
+        {
+#if UNITY_EDITOR
+            if (!m_UseRuntimeModule)
+            {
+                Log.Warning($"禁止在此模式下 动态加载语言");
+                return;
+            }
+#endif
+            TextAsset assetTextAsset= await m_ResourceManager.LoadAssetAsync<TextAsset>(assetName);
+            
+            if (assetTextAsset == null)
+            {
+                Log.Warning($"没有加载到语言总表");
+                return;
+            }
+
+            Log.Info($"加载语言总表成功");
+
+            UseLocalizationCSV(assetTextAsset.text, true);
+        }
+
+        /// <summary>
+        /// 加载语言分表。
         /// </summary>
         /// <param name="language">语言类型。</param>
         /// <param name="setCurrent">是否立刻设置成当前语言。</param>
@@ -137,13 +162,6 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 #endif
-
-            if (CheckLanguage(language))
-            {
-                Log.Warning($"当前语言已存在 请勿重复加载 {language}");
-                return;
-            }
-
             TextAsset assetTextAsset;
 
             if (!fromInit)
@@ -268,10 +286,9 @@ namespace UnityGameFramework.Runtime
 
         private void UseLocalizationCSV(string text, bool isLocalizeAll = false)
         {
-            m_SourceData.Import_CSV(string.Empty, text, eSpreadsheetUpdateMode.Replace, ',');
+            m_SourceData.Import_CSV(string.Empty, text, eSpreadsheetUpdateMode.Merge, ',');
             if (isLocalizeAll)
             {
-                // 强制使用新数据本地化所有启用的标签或者精灵
                 LocalizationManager.LocalizeAll();
             }
 
