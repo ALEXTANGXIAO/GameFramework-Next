@@ -7,7 +7,7 @@ using UnityEngine.Audio;
 
 namespace UnityGameFramework.Runtime
 {
-    public class SoundAgentHelper: SoundAgentHelperBase
+    public class DefaultSoundAgentHelper: SoundAgentHelperBase
     {
         private Transform m_CachedTransform = null;
         private AudioSource m_AudioSource = null;
