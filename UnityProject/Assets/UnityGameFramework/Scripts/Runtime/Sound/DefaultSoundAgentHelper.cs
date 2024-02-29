@@ -4,9 +4,8 @@ using GameFramework;
 using GameFramework.Sound;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityGameFramework.Runtime;
 
-namespace UGFExtensions.Helper
+namespace UnityGameFramework.Runtime
 {
     public class SoundAgentHelper: SoundAgentHelperBase
     {
