@@ -160,10 +160,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 706e6317a59f61044b2805be79f6b284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EnableLoadDictionaryUpdateEvent: 0
-  m_LocalizationHelperTypeName: GameMain.JsonLocalizationHelper
-  m_CustomLocalizationHelper: {fileID: 0}
-  m_CachedBytesSize: 0
+  m_InnerLocalizationCSV: {fileID: 0}
+  m_AllLanguage: []
+  m_UseRuntimeModule: 1
 --- !u!1 &109548
 GameObject:
   m_ObjectHideFlags: 0

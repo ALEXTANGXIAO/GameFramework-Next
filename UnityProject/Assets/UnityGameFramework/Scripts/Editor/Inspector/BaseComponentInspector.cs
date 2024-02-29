@@ -47,6 +47,8 @@ namespace UnityGameFramework.Editor
             {
                 EditorGUILayout.BeginVertical("box");
                 {
+                    EditorGUILayout.PropertyField(m_EditorLanguage);
+                    
                     EditorGUILayout.LabelField("Global Helpers", EditorStyles.boldLabel);
 
                     int textHelperSelectedIndex = EditorGUILayout.Popup("Text Helper", m_TextHelperTypeNameIndex, m_TextHelperTypeNames);
