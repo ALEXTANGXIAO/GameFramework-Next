@@ -5,7 +5,8 @@
         "UnityGameFramework.Runtime",
         "HybridCLR.Editor",
         "YooAsset",
-        "YooAsset.Editor"
+        "YooAsset.Editor",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [
         "Editor"
