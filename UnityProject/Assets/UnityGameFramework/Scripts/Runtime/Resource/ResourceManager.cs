@@ -256,7 +256,9 @@ namespace GameFramework.Resource
         internal override void Shutdown()
         {
             m_AssetPool = null;
+#if !UNITY_WEBGL
             YooAssets.Destroy();
+#endif
         }
 
         #region Public Methods
