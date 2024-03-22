@@ -6,7 +6,8 @@
         "HybridCLR.Editor",
         "YooAsset",
         "YooAsset.Editor",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Unity.TextMeshPro.Editor"
     ],
     "includePlatforms": [
         "Editor"
