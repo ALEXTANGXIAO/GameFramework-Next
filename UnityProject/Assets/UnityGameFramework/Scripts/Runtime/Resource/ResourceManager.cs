@@ -534,7 +534,7 @@ namespace GameFramework.Resource
             return ret;
         }
 
-        public GameObject LoadGameObject(string location, string packageName = "", Transform parent = null)
+        public GameObject LoadGameObject(string location, Transform parent = null, string packageName = "")
         {
             if (string.IsNullOrEmpty(location))
             {
@@ -665,8 +665,7 @@ namespace GameFramework.Resource
             return handle.AssetObject as T;
         }
 
-        public async UniTask<GameObject> LoadGameObjectAsync(string location, CancellationToken cancellationToken = default, string packageName = "",
-            Transform parent = null)
+        public async UniTask<GameObject> LoadGameObjectAsync(string location, Transform parent = null, CancellationToken cancellationToken = default, string packageName = "")
         {
             if (string.IsNullOrEmpty(location))
             {

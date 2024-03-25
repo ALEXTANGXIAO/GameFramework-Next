@@ -312,7 +312,7 @@ namespace GameLogic
         /// <returns>UIWidget实例。</returns>
         public async UniTask<T> CreateWidgetByPathAsync<T>(Transform parentTrans, string assetLocation, bool visible = true) where T : UIWidget, new()
         {
-            GameObject goInst = await GameModule.Resource.LoadGameObjectAsync(assetLocation, gameObject.GetCancellationTokenOnDestroy(), parent: parentTrans);
+            GameObject goInst = await GameModule.Resource.LoadGameObjectAsync(assetLocation, parentTrans, gameObject.GetCancellationTokenOnDestroy());
             return CreateWidget<T>(goInst, visible);
         }
 
