@@ -741,7 +741,7 @@ namespace GameFramework.Resource
             
             AssetInfo assetInfo = GetAssetInfo(location, packageName);
 
-            if (!assetInfo.Error.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(assetInfo.Error))
             {
                 string errorMessage = Utility.Text.Format("Can not load asset '{0}' because :'{1}'.", location, assetInfo.Error);
                 if (loadAssetCallbacks.LoadAssetFailureCallback != null)
@@ -828,7 +828,7 @@ namespace GameFramework.Resource
 
             AssetInfo assetInfo = GetAssetInfo(location, packageName);
 
-            if (!assetInfo.Error.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(assetInfo.Error))
             {
                 string errorMessage = Utility.Text.Format("Can not load asset '{0}' because :'{1}'.", location, assetInfo.Error);
                 if (loadAssetCallbacks.LoadAssetFailureCallback != null)
@@ -897,12 +897,33 @@ namespace GameFramework.Resource
                 }
             }
         }
-
+        
+        private readonly TimeoutController _timeoutController = new TimeoutController();
+        
         private async UniTask TryWaitingLoading(string assetObjectKey)
         {
             if (_assetLoadingList.Contains(assetObjectKey))
             {
-                await UniTask.WaitUntil(() => !_assetLoadingList.Contains(assetObjectKey), cancellationToken:CancellationToken);
+                try
+                {
+                    await UniTask.WaitUntil(
+                        () => !_assetLoadingList.Contains(assetObjectKey), 
+                        cancellationToken:CancellationToken)
+#if UNITY_EDITOR
+                        .AttachExternalCancellation(_timeoutController.Timeout(TimeSpan.FromSeconds(60)));
+                    _timeoutController.Reset();
+#else
+                    ;
+#endif
+                
+                }
+                catch (OperationCanceledException ex)
+                {
+                    if (_timeoutController.IsTimeout())
+                    {
+                        Log.Error($"LoadAssetAsync Waiting {assetObjectKey} timeout. reason:{ex.Message}");
+                    }
+                }
             }
         }
         #endregion
