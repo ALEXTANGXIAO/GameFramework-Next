@@ -77,7 +77,17 @@ namespace UnityGameFramework.Runtime
 #endif
             }
         }
+        
+        /// <summary>
+        /// 是否支持边玩边下载。
+        /// </summary>
+        [SerializeField] private bool m_UpdatableWhilePlaying = false;
 
+        /// <summary>
+        /// 是否支持边玩边下载。
+        /// </summary>
+        public bool UpdatableWhilePlaying => m_UpdatableWhilePlaying;
+            
         /// <summary>
         /// 下载文件校验等级。
         /// </summary>

@@ -32,6 +32,13 @@ namespace GameMain
             
             if(operation.Status == EOperationStatus.Succeed)
             {
+                if (GameModule.Resource.PlayMode == EPlayMode.WebPlayMode ||
+                    GameModule.Resource.UpdatableWhilePlaying)
+                {
+                    // 边玩边下载还可以拓展首包支持。
+                    ChangeState<ProcedurePreload>(procedureOwner);
+                    return;
+                }
                 ChangeState<ProcedureCreateDownloader>(procedureOwner);
             }
             else

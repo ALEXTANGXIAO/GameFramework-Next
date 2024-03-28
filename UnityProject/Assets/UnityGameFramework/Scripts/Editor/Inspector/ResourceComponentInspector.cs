@@ -24,6 +24,7 @@ namespace UnityGameFramework.Editor
         };
 
         private SerializedProperty m_PlayMode = null;
+        private SerializedProperty m_UpdatableWhilePlaying = null;
         private SerializedProperty m_VerifyLevel = null;
         private SerializedProperty m_Milliseconds = null;
         private SerializedProperty m_ReadWritePathType = null;
@@ -74,6 +75,8 @@ namespace UnityGameFramework.Editor
 
                 m_ReadWritePathType.enumValueIndex = (int)(ReadWritePathType)EditorGUILayout.EnumPopup("Read-Write Path Type", t.ReadWritePathType);
             }
+            EditorGUILayout.PropertyField(m_UpdatableWhilePlaying);
+            
             EditorGUI.EndDisabledGroup();
 
             int milliseconds = EditorGUILayout.DelayedIntField("Milliseconds", m_Milliseconds.intValue);
@@ -223,6 +226,7 @@ namespace UnityGameFramework.Editor
         private void OnEnable()
         {
             m_PlayMode = serializedObject.FindProperty("playMode");
+            m_UpdatableWhilePlaying = serializedObject.FindProperty("m_UpdatableWhilePlaying");
             m_VerifyLevel = serializedObject.FindProperty("VerifyLevel");
             m_Milliseconds = serializedObject.FindProperty("Milliseconds");
             m_ReadWritePathType = serializedObject.FindProperty("m_ReadWritePathType");
