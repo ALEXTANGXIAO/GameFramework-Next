@@ -191,9 +191,11 @@ public static class SettingsUtils
 
             case RuntimePlatform.Android:
                 return "Android";
+            
+            case RuntimePlatform.WebGLPlayer:
+                return "WebGL";
             default:
-                throw new System.NotSupportedException(string.Format("Platform '{0}' is not supported.",
-                    Application.platform.ToString()));
+                throw new System.NotSupportedException($"Platform '{Application.platform.ToString()}' is not supported.");
         }
 #endif
     }
