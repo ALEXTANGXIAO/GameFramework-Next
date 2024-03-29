@@ -194,8 +194,9 @@ public static class SettingsUtils
             
             case RuntimePlatform.WebGLPlayer:
                 return "WebGL";
+            
             default:
-                throw new System.NotSupportedException($"Platform '{Application.platform.ToString()}' is not supported.");
+                return Application.platform.ToString();
         }
 #endif
     }
