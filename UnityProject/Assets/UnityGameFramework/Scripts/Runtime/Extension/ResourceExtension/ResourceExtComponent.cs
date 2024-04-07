@@ -1,8 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using GameFramework;
 using GameFramework.ObjectPool;
 using UnityEngine;
+using Object = UnityEngine.Object;
 #if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
 #endif
@@ -16,6 +19,14 @@ namespace UnityGameFramework.Runtime
     [AddComponentMenu("Game Framework/ResourceExt")]
     public partial class ResourceExtComponent : GameFrameworkComponent
     {
+                
+        private readonly TimeoutController _timeoutController = new TimeoutController();
+        
+        /// <summary>
+        /// 正在加载的资源列表。
+        /// </summary>
+        private readonly HashSet<string> _assetLoadingList = new HashSet<string>();
+        
         /// <summary>
         /// 检查是否可以释放间隔
         /// </summary>
@@ -106,6 +117,32 @@ namespace UnityGameFramework.Runtime
         {
             m_LoadAssetObjectsLinkedList.AddLast(new LoadAssetObject(setAssetObject, assetObject));
             setAssetObject.SetAsset(assetObject);
+        }
+        
+        private async UniTask TryWaitingLoading(string assetObjectKey)
+        {
+            if (_assetLoadingList.Contains(assetObjectKey))
+            {
+                try
+                {
+                    await UniTask.WaitUntil(
+                            () => !_assetLoadingList.Contains(assetObjectKey))
+#if UNITY_EDITOR
+                        .AttachExternalCancellation(_timeoutController.Timeout(TimeSpan.FromSeconds(60)));
+                    _timeoutController.Reset();
+#else
+                    ;
+#endif
+                
+                }
+                catch (OperationCanceledException ex)
+                {
+                    if (_timeoutController.IsTimeout())
+                    {
+                        Log.Error($"LoadAssetAsync Waiting {assetObjectKey} timeout. reason:{ex.Message}");
+                    }
+                }
+            }
         }
     }
 }

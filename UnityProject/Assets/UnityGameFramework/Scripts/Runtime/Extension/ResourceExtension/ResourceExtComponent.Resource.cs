@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using GameFramework.Resource;
 
 namespace UnityGameFramework.Runtime
@@ -19,11 +20,13 @@ namespace UnityGameFramework.Runtime
 
         private void OnLoadAssetFailure(string assetName, LoadResourceStatus status, string errormessage, object userdata)
         {
+            _assetLoadingList.Remove(assetName);
             Log.Error("Can not load asset from '{1}' with error message '{2}'.", assetName, errormessage);
         }
 
         private void OnLoadAssetSuccess(string assetName, object asset, float duration, object userdata)
         {
+            _assetLoadingList.Remove(assetName);
             ISetAssetObject setAssetObject = (ISetAssetObject)userdata;
             UnityEngine.Object assetObject = asset as UnityEngine.Object;
             if (assetObject != null)
@@ -41,8 +44,10 @@ namespace UnityGameFramework.Runtime
         /// 通过资源系统设置资源。
         /// </summary>
         /// <param name="setAssetObject">需要设置的对象。</param>
-        public void SetAssetByResources<T>(ISetAssetObject setAssetObject) where T : UnityEngine.Object
+        public async UniTaskVoid SetAssetByResources<T>(ISetAssetObject setAssetObject) where T : UnityEngine.Object
         {
+            await TryWaitingLoading(setAssetObject.Location);
+            
             if (m_AssetItemPool.CanSpawn(setAssetObject.Location))
             {
                 var assetObject = (T)m_AssetItemPool.Spawn(setAssetObject.Location).Target;
@@ -50,6 +55,7 @@ namespace UnityGameFramework.Runtime
             }
             else
             {
+                _assetLoadingList.Add(setAssetObject.Location);
                 m_ResourceComponent.LoadAssetAsync(setAssetObject.Location, typeof(T), m_LoadAssetCallbacks, setAssetObject);
             }
         }
