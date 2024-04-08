@@ -33,7 +33,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_ObjectPoolManager = GameFrameworkEntry.GetModule<IObjectPoolManager>();
+            m_ObjectPoolManager = GameFrameworkSystem.GetModule<IObjectPoolManager>();
             if (m_ObjectPoolManager == null)
             {
                 Log.Fatal("Object pool manager is invalid.");

@@ -8,7 +8,7 @@ namespace GameFramework.UI
     /// <summary>
     /// 界面管理器。
     /// </summary>
-    internal sealed partial class UIManager : GameFrameworkModule, IUIManager
+    internal sealed partial class UIManager : GameFrameworkModule, IUIManager, IUpdateModule
     {
         private readonly Dictionary<string, UIGroup> m_UIGroups;
         private readonly Dictionary<int, string> m_UIFormsBeingLoaded;
@@ -184,7 +184,7 @@ namespace GameFramework.UI
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
-        internal override void Update(float elapseSeconds, float realElapseSeconds)
+        public void Update(float elapseSeconds, float realElapseSeconds)
         {
             while (m_RecycleQueue.Count > 0)
             {

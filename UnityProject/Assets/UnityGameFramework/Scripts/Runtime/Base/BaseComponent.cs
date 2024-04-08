@@ -188,7 +188,7 @@ namespace UnityGameFramework.Runtime
 
         private void Update()
         {
-            GameFrameworkEntry.Update(Time.deltaTime, Time.unscaledDeltaTime);
+            GameFrameworkSystem.Update(Time.deltaTime, Time.unscaledDeltaTime);
         }
 
         private void OnApplicationQuit()
@@ -201,7 +201,7 @@ namespace UnityGameFramework.Runtime
 
         private void OnDestroy()
         {
-            GameFrameworkEntry.Shutdown();
+            GameFrameworkSystem.Shutdown();
         }
 
         /// <summary>

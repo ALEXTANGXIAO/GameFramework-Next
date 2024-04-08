@@ -143,7 +143,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_DownloadManager = GameFrameworkEntry.GetModule<IDownloadManager>();
+            m_DownloadManager = GameFrameworkSystem.GetModule<IDownloadManager>();
             if (m_DownloadManager == null)
             {
                 Log.Fatal("Download manager is invalid.");

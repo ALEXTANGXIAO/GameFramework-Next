@@ -6,7 +6,7 @@ namespace GameFramework.WebRequest
     /// <summary>
     /// Web 请求管理器。
     /// </summary>
-    internal sealed partial class WebRequestManager : GameFrameworkModule, IWebRequestManager
+    internal sealed partial class WebRequestManager : GameFrameworkModule, IWebRequestManager, IUpdateModule
     {
         private readonly TaskPool<WebRequestTask> m_TaskPool;
         private float m_Timeout;
@@ -135,7 +135,7 @@ namespace GameFramework.WebRequest
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
-        internal override void Update(float elapseSeconds, float realElapseSeconds)
+        public void Update(float elapseSeconds, float realElapseSeconds)
         {
             m_TaskPool.Update(elapseSeconds, realElapseSeconds);
         }

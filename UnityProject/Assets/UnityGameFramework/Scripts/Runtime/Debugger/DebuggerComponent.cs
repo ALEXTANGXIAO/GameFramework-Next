@@ -167,7 +167,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_DebuggerManager = GameFrameworkEntry.GetModule<IDebuggerManager>();
+            m_DebuggerManager = GameFrameworkSystem.GetModule<IDebuggerManager>();
             if (m_DebuggerManager == null)
             {
                 Log.Fatal("Debugger manager is invalid.");

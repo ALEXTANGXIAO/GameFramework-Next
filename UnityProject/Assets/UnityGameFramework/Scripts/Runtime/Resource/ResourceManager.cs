@@ -142,7 +142,7 @@ namespace GameFramework.Resource
 
             CancellationToken = InstanceRoot.gameObject.GetCancellationTokenOnDestroy();
 
-            IObjectPoolManager objectPoolManager = GameFrameworkEntry.GetModule<IObjectPoolManager>();
+            IObjectPoolManager objectPoolManager = GameFrameworkSystem.GetModule<IObjectPoolManager>();
             SetObjectPoolManager(objectPoolManager);
         }
 
@@ -253,10 +253,6 @@ namespace GameFramework.Resource
             Log.Info($"Init resource package version : {initializationOperation?.PackageVersion}");
 
             return initializationOperation;
-        }
-
-        internal override void Update(float elapseSeconds, float realElapseSeconds)
-        {
         }
 
         internal override void Shutdown()

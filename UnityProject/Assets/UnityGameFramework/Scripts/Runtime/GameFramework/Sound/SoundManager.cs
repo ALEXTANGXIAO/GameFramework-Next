@@ -92,16 +92,7 @@ namespace GameFramework.Sound
                 m_PlaySoundUpdateEventHandler -= value;
             }
         }
-
-        /// <summary>
-        /// 声音管理器轮询。
-        /// </summary>
-        /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
-        /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
-        internal override void Update(float elapseSeconds, float realElapseSeconds)
-        {
-        }
-
+        
         /// <summary>
         /// 关闭并清理声音管理器。
         /// </summary>

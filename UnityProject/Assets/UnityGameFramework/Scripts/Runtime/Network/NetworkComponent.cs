@@ -33,7 +33,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_NetworkManager = GameFrameworkEntry.GetModule<INetworkManager>();
+            m_NetworkManager = GameFrameworkSystem.GetModule<INetworkManager>();
             if (m_NetworkManager == null)
             {
                 Log.Fatal("Network manager is invalid.");

@@ -83,7 +83,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_SoundManager = GameFrameworkEntry.GetModule<ISoundManager>();
+            m_SoundManager = GameFrameworkSystem.GetModule<ISoundManager>();
             if (m_SoundManager == null)
             {
                 Log.Fatal("Sound manager is invalid.");
@@ -134,7 +134,7 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            m_SoundManager.SetResourceManager(GameFrameworkEntry.GetModule<IResourceManager>());
+            m_SoundManager.SetResourceManager(GameFrameworkSystem.GetModule<IResourceManager>());
 
             SoundHelperBase soundHelper = Helper.CreateHelper(m_SoundHelperTypeName, m_CustomSoundHelper);
             if (soundHelper == null)

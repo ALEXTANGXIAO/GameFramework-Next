@@ -73,7 +73,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_EntityManager = GameFrameworkEntry.GetModule<IEntityManager>();
+            m_EntityManager = GameFrameworkSystem.GetModule<IEntityManager>();
             if (m_EntityManager == null)
             {
                 Log.Fatal("Entity manager is invalid.");
@@ -107,9 +107,9 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            m_EntityManager.SetResourceManager(GameFrameworkEntry.GetModule<IResourceManager>());
+            m_EntityManager.SetResourceManager(GameFrameworkSystem.GetModule<IResourceManager>());
 
-            m_EntityManager.SetObjectPoolManager(GameFrameworkEntry.GetModule<IObjectPoolManager>());
+            m_EntityManager.SetObjectPoolManager(GameFrameworkSystem.GetModule<IObjectPoolManager>());
 
             EntityHelperBase entityHelper = Helper.CreateHelper(m_EntityHelperTypeName, m_CustomEntityHelper);
             if (entityHelper == null)

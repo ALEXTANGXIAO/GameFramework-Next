@@ -39,7 +39,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_SettingManager = GameFrameworkEntry.GetModule<ISettingManager>();
+            m_SettingManager = GameFrameworkSystem.GetModule<ISettingManager>();
             if (m_SettingManager == null)
             {
                 Log.Fatal("Setting manager is invalid.");

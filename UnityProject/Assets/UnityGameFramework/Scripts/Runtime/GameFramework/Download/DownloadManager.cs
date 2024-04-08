@@ -6,7 +6,7 @@ namespace GameFramework.Download
     /// <summary>
     /// 下载管理器。
     /// </summary>
-    internal sealed partial class DownloadManager : GameFrameworkModule, IDownloadManager
+    internal sealed partial class DownloadManager : GameFrameworkModule, IDownloadManager, IUpdateModule
     {
         private const int OneMegaBytes = 1024 * 1024;
 
@@ -211,7 +211,7 @@ namespace GameFramework.Download
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
-        internal override void Update(float elapseSeconds, float realElapseSeconds)
+        public void Update(float elapseSeconds, float realElapseSeconds)
         {
             m_TaskPool.Update(elapseSeconds, realElapseSeconds);
             m_DownloadCounter.Update(elapseSeconds, realElapseSeconds);

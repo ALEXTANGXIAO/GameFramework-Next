@@ -43,7 +43,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_EventManager = GameFrameworkEntry.GetModule<IEventManager>();
+            m_EventManager = GameFrameworkSystem.GetModule<IEventManager>();
             if (m_EventManager == null)
             {
                 Log.Fatal("Event manager is invalid.");

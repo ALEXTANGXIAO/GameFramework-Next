@@ -44,7 +44,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_SceneManager = GameFrameworkEntry.GetModule<ISceneManager>();
+            m_SceneManager = GameFrameworkSystem.GetModule<ISceneManager>();
             if (m_SceneManager == null)
             {
                 Log.Fatal("Scene manager is invalid.");
@@ -86,7 +86,7 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            m_SceneManager.SetResourceManager(GameFrameworkEntry.GetModule<IResourceManager>());
+            m_SceneManager.SetResourceManager(GameFrameworkSystem.GetModule<IResourceManager>());
         }
 
         /// <summary>

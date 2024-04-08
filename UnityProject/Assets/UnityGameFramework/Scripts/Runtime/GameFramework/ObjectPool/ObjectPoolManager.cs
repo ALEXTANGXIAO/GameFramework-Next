@@ -6,7 +6,7 @@ namespace GameFramework.ObjectPool
     /// <summary>
     /// 对象池管理器。
     /// </summary>
-    internal sealed partial class ObjectPoolManager : GameFrameworkModule, IObjectPoolManager
+    internal sealed partial class ObjectPoolManager : GameFrameworkModule, IObjectPoolManager, IUpdateModule
     {
         private const int DefaultCapacity = int.MaxValue;
         private const float DefaultExpireTime = float.MaxValue;
@@ -54,7 +54,7 @@ namespace GameFramework.ObjectPool
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
-        internal override void Update(float elapseSeconds, float realElapseSeconds)
+        public void Update(float elapseSeconds, float realElapseSeconds)
         {
             foreach (KeyValuePair<TypeNamePair, ObjectPoolBase> objectPool in m_ObjectPools)
             {

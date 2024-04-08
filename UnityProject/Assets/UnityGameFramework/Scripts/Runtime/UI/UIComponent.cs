@@ -166,7 +166,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_UIManager = GameFrameworkEntry.GetModule<IUIManager>();
+            m_UIManager = GameFrameworkSystem.GetModule<IUIManager>();
             if (m_UIManager == null)
             {
                 Log.Fatal("UI manager is invalid.");
@@ -207,9 +207,9 @@ namespace UnityGameFramework.Runtime
                 return;
             }
 
-            m_UIManager.SetResourceManager(GameFrameworkEntry.GetModule<IResourceManager>());
+            m_UIManager.SetResourceManager(GameFrameworkSystem.GetModule<IResourceManager>());
 
-            m_UIManager.SetObjectPoolManager(GameFrameworkEntry.GetModule<IObjectPoolManager>());
+            m_UIManager.SetObjectPoolManager(GameFrameworkSystem.GetModule<IObjectPoolManager>());
             m_UIManager.InstanceAutoReleaseInterval = m_InstanceAutoReleaseInterval;
             m_UIManager.InstanceCapacity = m_InstanceCapacity;
             m_UIManager.InstanceExpireTime = m_InstanceExpireTime;

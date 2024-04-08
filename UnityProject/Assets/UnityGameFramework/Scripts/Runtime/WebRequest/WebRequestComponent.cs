@@ -98,7 +98,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_WebRequestManager = GameFrameworkEntry.GetModule<IWebRequestManager>();
+            m_WebRequestManager = GameFrameworkSystem.GetModule<IWebRequestManager>();
             if (m_WebRequestManager == null)
             {
                 Log.Fatal("Web request manager is invalid.");

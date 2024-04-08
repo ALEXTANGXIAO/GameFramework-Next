@@ -38,7 +38,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_FileSystemManager = GameFrameworkEntry.GetModule<IFileSystemManager>();
+            m_FileSystemManager = GameFrameworkSystem.GetModule<IFileSystemManager>();
             if (m_FileSystemManager == null)
             {
                 Log.Fatal("File system manager is invalid.");

@@ -33,7 +33,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
 
-            m_FsmManager = GameFrameworkEntry.GetModule<IFsmManager>();
+            m_FsmManager = GameFrameworkSystem.GetModule<IFsmManager>();
             if (m_FsmManager == null)
             {
                 Log.Fatal("FSM manager is invalid.");

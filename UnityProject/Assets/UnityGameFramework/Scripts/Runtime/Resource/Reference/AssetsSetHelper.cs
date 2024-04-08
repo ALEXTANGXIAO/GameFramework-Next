@@ -11,7 +11,7 @@ namespace GameFramework.Resource
         {
             if (_resourceManager == null)
             {
-                _resourceManager = GameFrameworkEntry.GetModule<IResourceManager>();
+                _resourceManager = GameFrameworkSystem.GetModule<IResourceManager>();
             }
         }
 /*

@@ -73,7 +73,7 @@ namespace UnityGameFramework.Runtime
         {
             base.Awake();
             
-            m_ResourceManager = GameFrameworkEntry.GetModule<IResourceManager>();
+            m_ResourceManager = GameFrameworkSystem.GetModule<IResourceManager>();
             if (m_ResourceManager == null)
             {
                 Log.Fatal("Resource component is invalid.");

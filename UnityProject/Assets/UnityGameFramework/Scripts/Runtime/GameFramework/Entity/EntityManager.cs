@@ -10,7 +10,7 @@ namespace GameFramework.Entity
     /// <summary>
     /// 实体管理器。
     /// </summary>
-    internal sealed partial class EntityManager : GameFrameworkModule, IEntityManager
+    internal sealed partial class EntityManager : GameFrameworkModule, IEntityManager, IUpdateModule
     {
         private readonly Dictionary<int, EntityInfo> m_EntityInfos;
         private readonly Dictionary<string, EntityGroup> m_EntityGroups;
@@ -137,7 +137,7 @@ namespace GameFramework.Entity
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
-        internal override void Update(float elapseSeconds, float realElapseSeconds)
+        public void Update(float elapseSeconds, float realElapseSeconds)
         {
             while (m_RecycleQueue.Count > 0)
             {

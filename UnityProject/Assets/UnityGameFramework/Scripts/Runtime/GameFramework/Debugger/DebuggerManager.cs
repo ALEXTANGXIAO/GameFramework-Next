@@ -3,7 +3,7 @@
     /// <summary>
     /// 调试器管理器。
     /// </summary>
-    internal sealed partial class DebuggerManager : GameFrameworkModule, IDebuggerManager
+    internal sealed partial class DebuggerManager : GameFrameworkModule, IDebuggerManager, IUpdateModule
     {
         private readonly DebuggerWindowGroup m_DebuggerWindowRoot;
         private bool m_ActiveWindow;
@@ -60,7 +60,7 @@
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
-        internal override void Update(float elapseSeconds, float realElapseSeconds)
+        public void Update(float elapseSeconds, float realElapseSeconds)
         {
             if (!m_ActiveWindow)
             {

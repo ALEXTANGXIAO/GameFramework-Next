@@ -6,7 +6,7 @@ namespace GameFramework.Fsm
     /// <summary>
     /// 有限状态机管理器。
     /// </summary>
-    internal sealed class FsmManager : GameFrameworkModule, IFsmManager
+    internal sealed class FsmManager : GameFrameworkModule, IFsmManager, IUpdateModule
     {
         private readonly Dictionary<TypeNamePair, FsmBase> m_Fsms;
         private readonly List<FsmBase> m_TempFsms;
@@ -48,7 +48,7 @@ namespace GameFramework.Fsm
         /// </summary>
         /// <param name="elapseSeconds">逻辑流逝时间，以秒为单位。</param>
         /// <param name="realElapseSeconds">真实流逝时间，以秒为单位。</param>
-        internal override void Update(float elapseSeconds, float realElapseSeconds)
+        public void Update(float elapseSeconds, float realElapseSeconds)
         {
             m_TempFsms.Clear();
             if (m_Fsms.Count <= 0)
