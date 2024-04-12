@@ -171,6 +171,7 @@ namespace GameFramework.Editor
                         if (andPlatformSettings.format != TextureImporterFormat.ASTC_6x6)
                         {
                             andPlatformSettings.format = TextureImporterFormat.ASTC_6x6;
+                            andPlatformSettings.compressionQuality = 50;
                             ti.SetPlatformTextureSettings(andPlatformSettings);
                             modify = true;
                         }
@@ -188,6 +189,22 @@ namespace GameFramework.Editor
                             iosPlatformSettings.format = TextureImporterFormat.ASTC_5x5;
                             iosPlatformSettings.compressionQuality = 50;
                             ti.SetPlatformTextureSettings(iosPlatformSettings);
+                            modify = true;
+                        }
+                        
+                        //调整WebGL格式
+                        var webglSettings = ti.GetPlatformTextureSettings("WebGL");
+                        if (!webglSettings.overridden)
+                        {
+                            webglSettings.overridden = true;
+                            modify = true;
+                        }
+                        
+                        if (webglSettings.format != TextureImporterFormat.ASTC_6x6)
+                        {
+                            webglSettings.format = TextureImporterFormat.ASTC_6x6;
+                            webglSettings.compressionQuality = 50;
+                            ti.SetPlatformTextureSettings(webglSettings);
                             modify = true;
                         }
                     }
