@@ -387,8 +387,7 @@ namespace GameFramework.Editor
                 }
             }
 
-            var pathv2 = $"{NormalAtlasDir}/{atlasName}.spriteatlasv2";
-            var path = $"{NormalAtlasDir}/{atlasName}.asset";
+            var path = $"{NormalAtlasDir}/{atlasName}.spriteatlas";
 
             if (spriteList.Count == 0)
             {
@@ -397,15 +396,11 @@ namespace GameFramework.Editor
                     AssetDatabase.DeleteAsset(path);
                 }
 
-                if (File.Exists(pathv2))
-                {
-                    AssetDatabase.DeleteAsset(pathv2);
-                }
-
                 return;
             }
 
-            var atlas = new SpriteAtlasAsset();
+            var atlas = new SpriteAtlas();
+            // var atlas = new SpriteAtlasAsset();
             var setting = new SpriteAtlasPackingSettings
             {
                 blockOffset = 1,
@@ -427,30 +422,34 @@ namespace GameFramework.Editor
             if (!iphonePlatformSetting.overridden)
             {
                 iphonePlatformSetting.overridden = true;
-                iphonePlatformSetting.format = isOpaque ? TextureImporterFormat.ASTC_5x5 : TextureImporterFormat.ASTC_5x5;
+                iphonePlatformSetting.format = TextureImporterFormat.ASTC_5x5;
                 iphonePlatformSetting.compressionQuality = 100;
                 atlas.SetPlatformSettings(iphonePlatformSetting);
             }
 
             var androidPlatformSetting = atlas.GetPlatformSettings("Android");
-            if (isOpaque && !androidPlatformSetting.overridden)
+            if (!androidPlatformSetting.overridden)
             {
                 androidPlatformSetting.overridden = true;
-                androidPlatformSetting.format = TextureImporterFormat.ETC_RGB4;
+                androidPlatformSetting.format = TextureImporterFormat.ASTC_6x6;
                 androidPlatformSetting.compressionQuality = 100;
                 atlas.SetPlatformSettings(androidPlatformSetting);
+            }
+            
+            var webglSettings = atlas.GetPlatformSettings("WebGL");
+            if (!webglSettings.overridden)
+            {
+                webglSettings.overridden = true;
+                webglSettings.format = TextureImporterFormat.ASTC_6x6;
+                webglSettings.compressionQuality = 50;
+                atlas.SetPlatformSettings(webglSettings);
             }
 
             atlas.SetPackingSettings(setting);
             atlas.Add(spriteList.ToArray());
 
             AssetDatabase.CreateAsset(atlas, path);
-            if (File.Exists(pathv2))
-            {
-                AssetDatabase.DeleteAsset(pathv2);
-            }
-
-            File.Move(path, pathv2);
+            AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
 
