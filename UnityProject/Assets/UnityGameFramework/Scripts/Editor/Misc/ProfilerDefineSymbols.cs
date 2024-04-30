@@ -17,7 +17,7 @@ namespace UnityGameFramework.Editor
         /// 禁用所有日志脚本宏定义。
         /// </summary>
         [MenuItem("Game Framework/Profiler Define Symbols/Disable All Profiler", false, 30)]
-        public static void DisableAllLogs()
+        public static void DisableAllProfiler()
         {
             foreach (string aboveLogScriptingDefineSymbol in AllProfilerDefineSymbols)
             {
@@ -29,9 +29,9 @@ namespace UnityGameFramework.Editor
         /// 开启所有日志脚本宏定义。
         /// </summary>
         [MenuItem("Game Framework/Profiler Define Symbols/Enable All Profiler", false, 31)]
-        public static void EnableAllLogs()
+        public static void EnableAllProfiler()
         {
-            DisableAllLogs();
+            DisableAllProfiler();
             foreach (string aboveLogScriptingDefineSymbol in AllProfilerDefineSymbols)
             {
                 ScriptingDefineSymbols.AddScriptingDefineSymbol(aboveLogScriptingDefineSymbol);
