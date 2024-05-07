@@ -127,7 +127,10 @@ namespace GameFramework.Resource
         public void Initialize()
         {
             // 初始化资源系统
-            YooAssets.Initialize(new ResourceLogger());
+            if (!YooAssets.Initialized)
+            {
+                YooAssets.Initialize(new ResourceLogger());
+            }
             YooAssets.SetOperationSystemMaxTimeSlice(Milliseconds);
 
             // 创建默认的资源包
