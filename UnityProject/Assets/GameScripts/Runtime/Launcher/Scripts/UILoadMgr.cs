@@ -18,7 +18,7 @@ namespace GameMain
         /// </summary>
         public static void Initialize()
         {
-            _uiRoot = GameModule.UI.UIRoot;
+            _uiRoot = GameObject.Find("UIRoot/UICanvas")?.transform;
             if (_uiRoot == null)
             {
                 Log.Error("Failed to Find UIRoot. Please check the resource path");

@@ -86,11 +86,6 @@ public class GameModule : MonoBehaviour
     public static SoundComponent Sound { get; private set; }
 
     /// <summary>
-    /// 获取界面组件。
-    /// </summary>
-    public static UIComponent UI { get; private set; }
-
-    /// <summary>
     /// 获取网络组件。
     /// </summary>
     public static WebRequestComponent WebRequest { get; private set; }
@@ -131,7 +126,6 @@ public class GameModule : MonoBehaviour
         Scene = Get<SceneComponent>();
         Setting = Get<SettingComponent>();
         Sound = Get<SoundComponent>();
-        UI = Get<UIComponent>();
         WebRequest = Get<WebRequestComponent>();
         Timer = Get<TimerComponent>();
         TextureSet = Get<TextureSetComponent>();

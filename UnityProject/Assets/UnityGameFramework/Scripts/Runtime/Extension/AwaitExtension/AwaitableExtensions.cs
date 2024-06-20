@@ -11,9 +11,6 @@ namespace UGFExtensions.Await
 {
     public static partial class AwaitableExtensions
     {
-        private static readonly Dictionary<int, TaskCompletionSource<UIForm>> s_UIFormTcs =
-            new Dictionary<int, TaskCompletionSource<UIForm>>();
-
         private static readonly Dictionary<int, TaskCompletionSource<Entity>> s_EntityTcs =
             new Dictionary<int, TaskCompletionSource<Entity>>();
 
@@ -39,8 +36,6 @@ namespace UGFExtensions.Await
         public static void SubscribeEvent()
         {
             EventComponent eventComponent = UnityGameFramework.Runtime.GameSystem.GetComponent<EventComponent>();
-            eventComponent.Subscribe(OpenUIFormSuccessEventArgs.EventId, OnOpenUIFormSuccess);
-            eventComponent.Subscribe(OpenUIFormFailureEventArgs.EventId, OnOpenUIFormFailure);
 
             eventComponent.Subscribe(ShowEntitySuccessEventArgs.EventId, OnShowEntitySuccess);
             eventComponent.Subscribe(ShowEntityFailureEventArgs.EventId, OnShowEntityFailure);
@@ -67,42 +62,6 @@ namespace UGFExtensions.Await
             }
         }
 #endif
-
-        /// <summary>
-        /// 打开界面（可等待）
-        /// </summary>
-        public static Task<UIForm> OpenUIFormAsync(this UIComponent uiComponent, string uiFormAssetName, string uiGroupName, int priority, bool pauseCoveredUIForm, object userData)
-        {
-#if UNITY_EDITOR
-            TipsSubscribeEvent();
-#endif
-            int serialId = uiComponent.OpenUIForm(uiFormAssetName, uiGroupName, priority, pauseCoveredUIForm, userData);
-            var tcs = new TaskCompletionSource<UIForm>();
-            s_UIFormTcs.Add(serialId, tcs);
-            return tcs.Task;
-        }
-
-        private static void OnOpenUIFormSuccess(object sender, GameEventArgs e)
-        {
-            OpenUIFormSuccessEventArgs ne = (OpenUIFormSuccessEventArgs)e;
-            s_UIFormTcs.TryGetValue(ne.UIForm.SerialId, out TaskCompletionSource<UIForm> tcs);
-            if (tcs != null)
-            {
-                tcs.SetResult(ne.UIForm);
-                s_UIFormTcs.Remove(ne.UIForm.SerialId);
-            }
-        }
-
-        private static void OnOpenUIFormFailure(object sender, GameEventArgs e)
-        {
-            OpenUIFormFailureEventArgs ne = (OpenUIFormFailureEventArgs)e;
-            s_UIFormTcs.TryGetValue(ne.SerialId, out TaskCompletionSource<UIForm> tcs);
-            if (tcs != null)
-            {
-                tcs.SetException(new GameFrameworkException(ne.ErrorMessage));
-                s_UIFormTcs.Remove(ne.SerialId);
-            }
-        }
 
         /// <summary>
         /// 显示实体（可等待）
