@@ -35,6 +35,8 @@ namespace UnityGameFramework.Runtime
 
         [SerializeField] private float m_MaxUnloadUnusedAssetsInterval = 300f;
 
+        [SerializeField] private bool m_UseSystemUnloadUnusedAssets = true;
+        
         /// <summary>
         /// 当前最新的包裹版本。
         /// </summary>
@@ -150,6 +152,15 @@ namespace UnityGameFramework.Runtime
         {
             get => m_MaxUnloadUnusedAssetsInterval;
             set => m_MaxUnloadUnusedAssetsInterval = value;
+        }
+        
+        /// <summary>
+        /// 使用系统释放无用资源策略。
+        /// </summary>
+        public bool UseSystemUnloadUnusedAssets
+        {
+            get => m_UseSystemUnloadUnusedAssets;
+            set => m_UseSystemUnloadUnusedAssets = value;
         }
 
         /// <summary>
@@ -652,6 +663,10 @@ namespace UnityGameFramework.Runtime
                 m_PreorderUnloadUnusedAssets = false;
                 m_LastUnloadUnusedAssetsOperationElapseSeconds = 0f;
                 m_AsyncOperation = Resources.UnloadUnusedAssets();
+                if (m_UseSystemUnloadUnusedAssets)
+                {
+                    m_ResourceManager.UnloadUnusedAssets();
+                }
             }
 
             if (m_AsyncOperation is { isDone: true })
