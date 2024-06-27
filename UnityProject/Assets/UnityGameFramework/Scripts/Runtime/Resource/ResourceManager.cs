@@ -203,8 +203,8 @@ namespace GameFramework.Resource
             if (package == null)
             {
                 package = YooAssets.CreatePackage(packageName);
-                PackageMap[packageName] = package;
             }
+            PackageMap[packageName] = package;
 
             // 编辑器下的模拟模式
             InitializationOperation initializationOperation = null;
