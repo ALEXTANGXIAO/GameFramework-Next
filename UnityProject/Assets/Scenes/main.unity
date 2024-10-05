@@ -178,14 +178,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 11454530, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
-      propertyPath: m_UICamera
-      value: 
-      objectReference: {fileID: 194702495}
-    - target: {fileID: 11454530, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
-      propertyPath: m_InstanceRoot
-      value: 
-      objectReference: {fileID: 226473277}
     - target: {fileID: 11494652, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
       propertyPath: m_InstanceRoot
       value: 
@@ -196,16 +188,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 433714, guid: adb3eb1c35fcff14f89fba7b05c9d71c, type: 3}
   m_PrefabInstance: {fileID: 194006811}
-  m_PrefabAsset: {fileID: 0}
---- !u!20 &194702495 stripped
-Camera:
-  m_CorrespondingSourceObject: {fileID: 482543430416567601, guid: 542c298f5529b1046b8251c73f854e95, type: 3}
-  m_PrefabInstance: {fileID: 482543430257828270}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &226473277 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 482543430309303443, guid: 542c298f5529b1046b8251c73f854e95, type: 3}
-  m_PrefabInstance: {fileID: 482543430257828270}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
