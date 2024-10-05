@@ -1,0 +1,16 @@
+body { padding: 0; margin: 0 }
+#tuanjie-container { position: absolute }
+#tuanjie-container.tuanjie-desktop { left: 50%; top: 50%; transform: translate(-50%, -50%) }
+#tuanjie-container.tuanjie-mobile { position: fixed; width: 100%; height: 100% }
+#tuanjie-canvas { background: #231F20 }
+.tuanjie-mobile #tuanjie-canvas { width: 100%; height: 100% }
+#tuanjie-loading-bar { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none }
+#tuanjie-logo { width: 154px; height: 130px; background: url('tuanjie-logo-dark.png') no-repeat center }
+#tuanjie-progress-bar-empty { width: 141px; height: 18px; margin-top: 10px; margin-left: 6.5px; background: url('progress-bar-empty-dark.png') no-repeat center }
+#tuanjie-progress-bar-full { width: 0%; height: 18px; margin-top: 10px; background: url('progress-bar-full-dark.png') no-repeat center }
+#tuanjie-footer { position: relative }
+.tuanjie-mobile #tuanjie-footer { display: none }
+#tuanjie-webgl-logo { float:left; width: 204px; height: 38px; background: url('webgl-logo.png') no-repeat center }
+#tuanjie-build-title { float: right; margin-right: 10px; line-height: 38px; font-family: arial; font-size: 18px }
+#tuanjie-fullscreen-button { cursor:pointer; float: right; width: 38px; height: 38px; background: url('fullscreen-button.png') no-repeat center }
+#tuanjie-warning { position: absolute; left: 50%; top: 5%; transform: translate(-50%); background: white; padding: 10px; display: none }
