@@ -29,7 +29,7 @@ public partial class GameApp
     /// </summary>
     private void RegisterAllSystem()
     {
-        
+        AddLogicSys(UISystem.Instance);
     }
 
     /// <summary>
